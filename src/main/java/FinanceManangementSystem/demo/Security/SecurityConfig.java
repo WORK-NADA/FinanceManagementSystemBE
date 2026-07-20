@@ -47,7 +47,7 @@ public class SecurityConfig {
                                 "/user/**"
                         ).permitAll()
                         .requestMatchers("/admin/**").hasAuthority("Admin")
-                        .requestMatchers("/customer/**").hasAuthority("customer")
+                        .requestMatchers("/client/**").hasAuthority("Client")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

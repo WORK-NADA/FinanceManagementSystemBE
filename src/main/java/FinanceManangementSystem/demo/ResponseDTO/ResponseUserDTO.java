@@ -1,6 +1,6 @@
 package FinanceManangementSystem.demo.ResponseDTO;
 
-import FinanceManangementSystem.demo.Model.Address;
+import FinanceManangementSystem.demo.Model.UserAddress;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.OneToOne;
 
@@ -15,8 +15,19 @@ public class ResponseUserDTO {
 
     private String role;
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy = "user")
-    private Address address;
+    private ResponseAddressDTO address;
+
+    public ResponseUserDTO() {
+    }
+
+    public ResponseUserDTO(String name, String email, String password, long contact, String role, ResponseAddressDTO address) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.contact = contact;
+        this.role = role;
+        this.address = address;
+    }
 
     public String getName() {
         return name;
@@ -58,11 +69,11 @@ public class ResponseUserDTO {
         this.role = role;
     }
 
-    public Address getAddress() {
+    public ResponseAddressDTO getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(ResponseAddressDTO address) {
         this.address = address;
     }
 }

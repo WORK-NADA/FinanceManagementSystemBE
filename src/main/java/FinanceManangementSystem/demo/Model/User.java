@@ -23,7 +23,7 @@ public class User {
     private UserRole role;
 
     @OneToOne(cascade = CascadeType.ALL,mappedBy = "user")
-    private Address address;
+    private UserAddress address;
 
     public int getUserId() {
         return userId;
@@ -73,11 +73,11 @@ public class User {
         this.role = role;
     }
 
-    public Address getAddress() {
+    public UserAddress getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(UserAddress address) {
         this.address = address;
     }
 }

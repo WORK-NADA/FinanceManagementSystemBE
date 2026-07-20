@@ -2,16 +2,13 @@ package FinanceManangementSystem.demo.Service;
 
 import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Repository.UserRepository;
-import FinanceManangementSystem.demo.RequestDTO.RequestLoginDTO;
 import FinanceManangementSystem.demo.RequestDTO.RequestUserDTO;
-import FinanceManangementSystem.demo.ResponseDTO.ResponseLoginDTO;
 import FinanceManangementSystem.demo.ResponseDTO.ResponseUserDTO;
 import FinanceManangementSystem.demo.Security.JwtUtil;
 import FinanceManangementSystem.demo.UserRole.UserRole;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +42,7 @@ public class AdminService implements AdminServiceInterface{
 
         User user = modelMapper.map(dto,User.class);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole(UserRole.Customer);
+        user.setRole(UserRole.Client);
         if(user.getAddress()!=null){
             user.getAddress().setUser(user);
         }
@@ -53,20 +50,5 @@ public class AdminService implements AdminServiceInterface{
 
         ResponseUserDTO response = modelMapper.map(user,ResponseUserDTO.class);
         return response;
-    }
-
-    public ResponseLoginDTO login(RequestLoginDTO dto){
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        dto.getEmail(),
-                        dto.getPassword()
-                )
-        );
-
-        Optional<User> user = userRepo.findByEmail(dto.getEmail());
-        String token =
-                jwtUtil.generateToken(user.get());
-
-        return new ResponseLoginDTO(token);
     }
 }

@@ -2,8 +2,8 @@ package FinanceManangementSystem.demo.Model;
 
 import jakarta.persistence.*;
 
-@Entity(name = "address")
-public class Address {
+@Entity(name = "supplier_address")
+public class SupplierAddress{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -23,12 +23,13 @@ public class Address {
     private String country;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "supplier_id")
+    private Supplier supplier;
 
-    public Address(){}
+    public SupplierAddress() {
+    }
 
-    public Address(int houseNo, String societyName, String area, String city, int pincode, String state, String country) {
+    public SupplierAddress(int houseNo, String societyName, String area, String city, int pincode, String state, String country, Supplier supplier) {
         this.houseNo = houseNo;
         this.societyName = societyName;
         this.area = area;
@@ -36,6 +37,7 @@ public class Address {
         this.pincode = pincode;
         this.state = state;
         this.country = country;
+        this.supplier = supplier;
     }
 
     public int getId() {
@@ -102,11 +104,11 @@ public class Address {
         this.country = country;
     }
 
-    public User getUser() {
-        return user;
+    public Supplier getSupplier() {
+        return supplier;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
     }
 }

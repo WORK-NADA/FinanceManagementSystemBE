@@ -1,9 +1,9 @@
 package FinanceManangementSystem.demo.Controller;
 
 import FinanceManangementSystem.demo.APIResponse.APIResponse;
-import FinanceManangementSystem.demo.RequestDTO.RequestLoginDTO;
-import FinanceManangementSystem.demo.ResponseDTO.ResponseLoginDTO;
-import FinanceManangementSystem.demo.Service.AdminService;
+import FinanceManangementSystem.demo.RequestDTO.RequestSupplierDTO;
+import FinanceManangementSystem.demo.ResponseDTO.ResponseSupplierDTO;
+import FinanceManangementSystem.demo.Service.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,19 +14,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("user")
-public class UserController {
+@RequestMapping("client")
+public class ClientController {
 
     @Autowired
-    AdminService service;
+    ClientService service;
 
-    @PostMapping("login")
-    public ResponseEntity<APIResponse<ResponseLoginDTO>> login(@Valid @RequestBody RequestLoginDTO dto){
+    @PostMapping("addSupplier")
+    public ResponseEntity<APIResponse<ResponseSupplierDTO>> addSupplier(@Valid @RequestBody RequestSupplierDTO dto){
+        System.out.println(dto.getEmail());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
-                        new APIResponse<>("Logged in successfully...",
-                                service.login(dto))
+                        new APIResponse<>(
+                                "Supplier added successfully...",
+                                service.addSupplier(dto)
+                        )
                 );
     }
 }
