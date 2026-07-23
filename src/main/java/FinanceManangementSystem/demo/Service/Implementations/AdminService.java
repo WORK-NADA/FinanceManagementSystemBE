@@ -1,10 +1,11 @@
-package FinanceManangementSystem.demo.Service;
+package FinanceManangementSystem.demo.Service.Implementations;
 
 import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Repository.UserRepository;
 import FinanceManangementSystem.demo.RequestDTO.RequestUserDTO;
 import FinanceManangementSystem.demo.ResponseDTO.ResponseUserDTO;
 import FinanceManangementSystem.demo.Security.JwtUtil;
+import FinanceManangementSystem.demo.Service.AdminServiceInterface;
 import FinanceManangementSystem.demo.UserRole.UserRole;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class AdminService implements AdminServiceInterface{
+public class AdminService implements AdminServiceInterface {
 
     @Autowired
     UserRepository userRepo;

@@ -1,20 +1,10 @@
-package FinanceManangementSystem.demo.Model;
-
-import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.Positive;
+package FinanceManangementSystem.demo.ResponseDTO;
 
 import java.time.LocalDate;
 
-@Entity(name = "purchase")
-public class Purchase {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer purchaseId;
+public class ResponsePurchaseDTO {
 
-    @ManyToOne
-    @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
+    private ResponseSufficientSupplierDTO supplier;
 
     private String item;
 
@@ -24,20 +14,13 @@ public class Purchase {
 
     private LocalDate date;
 
-    @Positive(message = "Amount must be greater than 0")
-    @DecimalMax(value = "100000000.00", message = "Amount is too large")
     private double amount;
 
     private double gst;
 
-    @Positive(message = "Amount with GST must be greater than 0")
-    @DecimalMax(value = "100000000.00", message = "Amount with GST is too large")
     private double withGstAmount;
 
-    public Purchase() {
-    }
-
-    public Purchase(Supplier supplier, String item, double price, double weight, LocalDate date, double amount, double gst, double withGstAmount) {
+    public ResponsePurchaseDTO(ResponseSufficientSupplierDTO supplier, String item, double price, double weight, LocalDate date, double amount, double gst, double withGstAmount) {
         this.supplier = supplier;
         this.item = item;
         this.price = price;
@@ -48,26 +31,14 @@ public class Purchase {
         this.withGstAmount = withGstAmount;
     }
 
-    @PrePersist
-    public void prePersist(){
-        if(this.getDate() == null){
-            this.date = LocalDate.now();
-        }
+    public ResponsePurchaseDTO() {
     }
 
-    public Integer getPurchaseId() {
-        return purchaseId;
-    }
-
-    public void setPurchaseId(Integer purchaseId) {
-        this.purchaseId = purchaseId;
-    }
-
-    public Supplier getSupplier() {
+    public ResponseSufficientSupplierDTO getSupplier() {
         return supplier;
     }
 
-    public void setSupplier(Supplier supplier) {
+    public void setSupplier(ResponseSufficientSupplierDTO supplier) {
         this.supplier = supplier;
     }
 

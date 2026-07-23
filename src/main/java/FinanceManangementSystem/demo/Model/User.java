@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    private Integer userId;
 
     private String name;
 
@@ -25,11 +25,11 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL,mappedBy = "user")
     private UserAddress address;
 
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 

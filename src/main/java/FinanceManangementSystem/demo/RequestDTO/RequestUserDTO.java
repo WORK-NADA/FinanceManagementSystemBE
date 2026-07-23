@@ -30,7 +30,7 @@ public class RequestUserDTO {
     @NotNull(message = "Contact number is required")
     @Min(value = 1000000000L, message = "Contact number must be 10 digits")
     @Max(value = 9999999999L, message = "Contact number must be 10 digits")
-    private long contact;
+    private Long contact;
 
     @Valid
     @NotNull(message = "Address is required")
@@ -62,11 +62,11 @@ public class RequestUserDTO {
         this.password = password;
     }
 
-    public long getContact() {
+    public Long getContact() {
         return contact;
     }
 
-    public void setContact(long contact) {
+    public void setContact(Long contact) {
         this.contact = contact;
     }
 

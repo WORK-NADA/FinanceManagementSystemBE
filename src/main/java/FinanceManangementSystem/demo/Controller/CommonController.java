@@ -3,7 +3,7 @@ package FinanceManangementSystem.demo.Controller;
 import FinanceManangementSystem.demo.APIResponse.APIResponse;
 import FinanceManangementSystem.demo.RequestDTO.RequestLoginDTO;
 import FinanceManangementSystem.demo.ResponseDTO.ResponseLoginDTO;
-import FinanceManangementSystem.demo.Service.CommonService;
+import FinanceManangementSystem.demo.Service.Implementations.CommonService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 public class SupplierAddress{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     private int houseNo;
 
@@ -40,11 +40,11 @@ public class SupplierAddress{
         this.supplier = supplier;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

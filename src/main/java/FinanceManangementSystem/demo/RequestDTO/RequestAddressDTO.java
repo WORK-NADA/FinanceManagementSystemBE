@@ -1,12 +1,13 @@
 package FinanceManangementSystem.demo.RequestDTO;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 
 
 public class RequestAddressDTO {
     @NotNull(message = "House number is required")
     @Positive(message = "House number must be greater than 0")
-    private int houseNo;
+    private Integer houseNo;
 
     @NotBlank(message = "Society name is required")
     @Size(min = 3, max = 100, message = "Society name must be between 3 and 100 characters")
@@ -28,7 +29,7 @@ public class RequestAddressDTO {
     )
     private String city;
 
-    @NotBlank(message = "Pincode is required")
+//    @NotBlank(message = "Pincode is required")
     @Pattern(
             regexp = "^[1-9][0-9]{5}$",
             message = "Pincode must be a valid 6-digit Indian pincode"
@@ -43,12 +44,7 @@ public class RequestAddressDTO {
     )
     private String state;
 
-    @NotBlank(message = "Country is required")
-    @Size(min = 2, max = 50, message = "Country must be between 2 and 50 characters")
-    @Pattern(
-            regexp = "^[A-Za-z ]+$",
-            message = "Country should contain only alphabets and spaces"
-    )
+    @Column(columnDefinition = "VARCHAR(20) DEFAULT 'India'")
     private String country;
 
     public RequestAddressDTO() {
@@ -66,11 +62,11 @@ public class RequestAddressDTO {
         this.country = country;
     }
 
-    public int getHouseNo() {
+    public Integer getHouseNo() {
         return houseNo;
     }
 
-    public void setHouseNo(int houseNo) {
+    public void setHouseNo(Integer houseNo) {
         this.houseNo = houseNo;
     }
 

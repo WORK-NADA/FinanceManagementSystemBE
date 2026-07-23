@@ -14,9 +14,9 @@ public class RequestSupplierDTO {
 
     @Min(value = 6000000000L, message = "Contact number must be a valid 10-digit Indian mobile number")
     @Max(value = 9999999999L, message = "Contact number must be a valid 10-digit Indian mobile number")
-    private long contact;
+    private Long contact;
 
-    @NotBlank(message = "Email is required")
+//    @NotBlank(message = "Email is required")
     @Email(message = "Enter a valid email address")
     @Size(max = 100, message = "Email cannot exceed 100 characters")
     private String email;
@@ -35,14 +35,14 @@ public class RequestSupplierDTO {
     )
     private String panNo;
 
-    @NotNull(message = "Address is required")
+//    @NotNull(message = "Address is required")
     @Valid
     private RequestAddressDTO address;
 
     public RequestSupplierDTO() {
     }
 
-    public RequestSupplierDTO(String name, long contact, String email, String gstNo, String panNo, RequestAddressDTO address) {
+    public RequestSupplierDTO(String name, Long contact, String email, String gstNo, String panNo, RequestAddressDTO address) {
         this.name = name;
         this.contact = contact;
         this.email = email;
@@ -59,11 +59,11 @@ public class RequestSupplierDTO {
         this.name = name;
     }
 
-    public long getContact() {
+    public Long getContact() {
         return contact;
     }
 
-    public void setContact(long contact) {
+    public void setContact(Long contact) {
         this.contact = contact;
     }
 
