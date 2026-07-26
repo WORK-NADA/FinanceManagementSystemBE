@@ -2,11 +2,11 @@ package FinanceManangementSystem.demo.Service.Implementations;
 
 import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Repository.UserRepository;
-import FinanceManangementSystem.demo.RequestDTO.RequestUserDTO;
-import FinanceManangementSystem.demo.ResponseDTO.ResponseUserDTO;
+import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestUserDTO;
+import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseUserDTO;
 import FinanceManangementSystem.demo.Security.JwtUtil;
 import FinanceManangementSystem.demo.Service.AdminServiceInterface;
-import FinanceManangementSystem.demo.UserRole.UserRole;
+import FinanceManangementSystem.demo.Model.Enums.UserRole;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,26 +18,29 @@ import java.util.Optional;
 @Service
 public class AdminService implements AdminServiceInterface {
 
-    @Autowired
-    UserRepository userRepo;
+    private final UserRepository userRepo;
 
-    @Autowired
-    ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
+
+    public AdminService(UserRepository userRepo,ModelMapper modelMapper,BCryptPasswordEncoder passwordEncoder,AuthenticationManager authenticationManager,JwtUtil jwtUtil){
+        this.userRepo = userRepo;
+        this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     public ResponseUserDTO registration(RequestUserDTO dto) {
         Optional<String> name = userRepo.findByEmailOrContact(dto.getContact(),dto.getEmail());
 
-        if(!name.isEmpty()){
+        if(name.isPresent()){
             throw new RuntimeException("User already exists...");
         }
 

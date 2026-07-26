@@ -1,8 +1,4 @@
-package FinanceManangementSystem.demo.ResponseDTO;
-
-import FinanceManangementSystem.demo.Model.UserAddress;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.OneToOne;
+package FinanceManangementSystem.demo.Payloads.ResponseDTO;
 
 public class ResponseUserDTO {
     private String name;

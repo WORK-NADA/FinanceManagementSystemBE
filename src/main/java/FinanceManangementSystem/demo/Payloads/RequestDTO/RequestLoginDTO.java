@@ -1,4 +1,4 @@
-package FinanceManangementSystem.demo.RequestDTO;
+package FinanceManangementSystem.demo.Payloads.RequestDTO;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

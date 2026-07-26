@@ -4,17 +4,15 @@ import FinanceManangementSystem.demo.Model.Purchase;
 import FinanceManangementSystem.demo.Model.Supplier;
 import FinanceManangementSystem.demo.Repository.PurchaseRepository;
 import FinanceManangementSystem.demo.Repository.SupplierRepository;
-import FinanceManangementSystem.demo.RequestDTO.RequestPurchaseDTO;
-import FinanceManangementSystem.demo.RequestDTO.RequestSupplierDTO;
-import FinanceManangementSystem.demo.ResponseDTO.ResponsePurchaseDTO;
-import FinanceManangementSystem.demo.ResponseDTO.ResponseSufficientSupplierDTO;
-import FinanceManangementSystem.demo.ResponseDTO.ResponseSupplierDTO;
+import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestPurchaseDTO;
+import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestSupplierDTO;
+import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponsePurchaseDTO;
+import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseSufficientSupplierDTO;
+import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseSupplierDTO;
 import FinanceManangementSystem.demo.Service.ClientServiceInterface;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service

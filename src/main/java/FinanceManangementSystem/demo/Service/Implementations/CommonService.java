@@ -2,14 +2,13 @@ package FinanceManangementSystem.demo.Service.Implementations;
 
 import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Repository.UserRepository;
-import FinanceManangementSystem.demo.RequestDTO.RequestLoginDTO;
-import FinanceManangementSystem.demo.ResponseDTO.ResponseLoginDTO;
+import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestLoginDTO;
+import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseLoginDTO;
 import FinanceManangementSystem.demo.Security.JwtUtil;
 import FinanceManangementSystem.demo.Service.CommonServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

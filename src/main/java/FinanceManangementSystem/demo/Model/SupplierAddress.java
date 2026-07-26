@@ -26,6 +26,13 @@ public class SupplierAddress{
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
 
+    @PrePersist
+    public void prePersist(){
+        if(this.country == null){
+            this.country = "India";
+        }
+    }
+
     public SupplierAddress() {
     }
 

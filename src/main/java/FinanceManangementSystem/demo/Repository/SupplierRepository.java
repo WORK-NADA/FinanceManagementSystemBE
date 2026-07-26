@@ -1,7 +1,6 @@
 package FinanceManangementSystem.demo.Repository;
 
 import FinanceManangementSystem.demo.Model.Supplier;
-import FinanceManangementSystem.demo.ResponseDTO.ResponseSupplierDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

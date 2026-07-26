@@ -1,6 +1,6 @@
 package FinanceManangementSystem.demo.Model;
 
-import FinanceManangementSystem.demo.UserRole.UserRole;
+import FinanceManangementSystem.demo.Model.Enums.UserRole;
 import jakarta.persistence.*;
 
 @Entity
@@ -24,6 +24,15 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL,mappedBy = "user")
     private UserAddress address;
+
+    public User(String name, String email, String password, long contact, UserRole role, UserAddress address) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.contact = contact;
+        this.role = role;
+        this.address = address;
+    }
 
     public Integer getUserId() {
         return userId;

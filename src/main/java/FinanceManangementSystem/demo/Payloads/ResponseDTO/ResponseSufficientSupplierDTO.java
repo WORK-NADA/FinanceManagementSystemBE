@@ -1,4 +1,4 @@
-package FinanceManangementSystem.demo.ResponseDTO;
+package FinanceManangementSystem.demo.Payloads.ResponseDTO;
 
 public class ResponseSufficientSupplierDTO {
     private int supplierId;

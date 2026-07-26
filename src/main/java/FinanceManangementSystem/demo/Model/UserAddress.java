@@ -26,16 +26,22 @@ public class UserAddress {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @PrePersist
+    public void prePersist(){
+        if(this.country == null){
+            this.country = "India";
+        }
+    }
+
     public UserAddress(){}
 
-    public UserAddress(int houseNo, String societyName, String area, String city, int pincode, String state, String country) {
+    public UserAddress(int houseNo, String societyName, String area, String city, int pincode, String state) {
         this.houseNo = houseNo;
         this.societyName = societyName;
         this.area = area;
         this.city = city;
         this.pincode = pincode;
         this.state = state;
-        this.country = country;
     }
 
     public Integer getId() {
