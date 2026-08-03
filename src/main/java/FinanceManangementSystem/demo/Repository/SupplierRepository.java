@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface SupplierRepository extends JpaRepository<Supplier,Integer> {
+public interface SupplierRepository extends JpaRepository<Supplier,Long> {
     @Query(value = "SELECT name FROM supplier WHERE contact=?1 OR email=?2 OR pan_no=?3",nativeQuery = true)
     Optional<String> findByEmailorContactorPANno(long contact,String email,String panNo);
 }

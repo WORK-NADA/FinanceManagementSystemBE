@@ -2,7 +2,13 @@ package FinanceManangementSystem.demo.Payloads.RequestDTO;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class RequestSupplierDTO {
     @NotBlank(message = "Supplier name is required")
     @Size(min = 2, max = 100, message = "Supplier name must be between 2 and 100 characters")
@@ -37,67 +43,6 @@ public class RequestSupplierDTO {
 
 //    @NotNull(message = "Address is required")
     @Valid
-    private RequestAddressDTO address;
+    private RequestUserAddressDTO address;
 
-    public RequestSupplierDTO() {
-    }
-
-    public RequestSupplierDTO(String name, Long contact, String email, String gstNo, String panNo, RequestAddressDTO address) {
-        this.name = name;
-        this.contact = contact;
-        this.email = email;
-        this.gstNo = gstNo;
-        this.panNo = panNo;
-        this.address = address;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getContact() {
-        return contact;
-    }
-
-    public void setContact(Long contact) {
-        this.contact = contact;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getGstNo() {
-        System.out.println(this.gstNo);
-        return gstNo;
-    }
-
-    public void setGstNo(String gstNo) {
-        this.gstNo = gstNo;
-    }
-
-    public String getPanNo() {
-        System.out.println(this.panNo);
-        return panNo;
-    }
-
-    public void setPanNo(String panNo) {
-        this.panNo = panNo;
-    }
-
-    public RequestAddressDTO getAddress() {
-        return address;
-    }
-
-    public void setAddress(RequestAddressDTO address) {
-        this.address = address;
-    }
 }

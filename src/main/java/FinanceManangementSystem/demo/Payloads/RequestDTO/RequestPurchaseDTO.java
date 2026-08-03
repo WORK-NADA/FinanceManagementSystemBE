@@ -1,14 +1,22 @@
 package FinanceManangementSystem.demo.Payloads.RequestDTO;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RequestPurchaseDTO {
 
     @NotNull(message = "Supplier is required")
     @Positive(message = "Invalid supplier ID")
-    private Integer supplierId;
+    private Long supplierId;
 
     @NotBlank(message = "Item name is required")
     @Size(min = 2, max = 100, message = "Item name must be between 2 and 100 characters")
@@ -32,53 +40,5 @@ public class RequestPurchaseDTO {
     @PositiveOrZero(message = "GST cannot be negative")
     @DecimalMax(value = "100.00", message = "GST cannot exceed 100%")
     private Double gst;
-
-    public Integer getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(Integer supplierId) {
-        this.supplierId = supplierId;
-    }
-
-    public String getItem() {
-        return item;
-    }
-
-    public void setItem(String item) {
-        this.item = item;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Double weight) {
-        this.weight = weight;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public Double getGst() {
-        return gst;
-    }
-
-    public void setGst(Double gst) {
-        this.gst = gst;
-    }
 
 }

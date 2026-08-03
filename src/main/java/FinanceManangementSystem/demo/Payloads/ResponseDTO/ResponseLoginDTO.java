@@ -1,17 +1,33 @@
 package FinanceManangementSystem.demo.Payloads.ResponseDTO;
 
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ResponseLoginDTO {
-    private String token;
+    private String accessToken;
 
-    public ResponseLoginDTO(String token) {
-        this.token = token;
-    }
+    private String refreshToken;
 
-    public String getToken() {
-        return token;
-    }
+    private String tokenType;
 
-    public void setToken(String token) {
-        this.token = token;
-    }
+    private UUID publicId;
+
+    private String ownerName;
+
+    private String userName;
+
+    private String email;
+
+    private String role;
+
+    private Boolean firstLogin;
+
+    private LocalDateTime loginTime;
 }

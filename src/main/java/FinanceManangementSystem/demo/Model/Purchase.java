@@ -3,14 +3,21 @@ package FinanceManangementSystem.demo.Model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity(name = "purchase")
 public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer purchaseId;
+    private Long purchaseId;
 
     @ManyToOne
     @JoinColumn(name = "supplier_id")
@@ -34,20 +41,6 @@ public class Purchase {
     @DecimalMax(value = "100000000.00", message = "Amount with GST is too large")
     private double withGstAmount;
 
-    public Purchase() {
-    }
-
-    public Purchase(Supplier supplier, String item, double price, double weight, LocalDate date, double amount, double gst, double withGstAmount) {
-        this.supplier = supplier;
-        this.item = item;
-        this.price = price;
-        this.weight = weight;
-        this.date = date;
-        this.amount = amount;
-        this.gst = gst;
-        this.withGstAmount = withGstAmount;
-    }
-
     @PrePersist
     public void prePersist(){
         if(this.getDate() == null){
@@ -55,75 +48,4 @@ public class Purchase {
         }
     }
 
-    public Integer getPurchaseId() {
-        return purchaseId;
-    }
-
-    public void setPurchaseId(Integer purchaseId) {
-        this.purchaseId = purchaseId;
-    }
-
-    public Supplier getSupplier() {
-        return supplier;
-    }
-
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
-
-    public String getItem() {
-        return item;
-    }
-
-    public void setItem(String item) {
-        this.item = item;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public double getGst() {
-        return gst;
-    }
-
-    public void setGst(double gst) {
-        this.gst = gst;
-    }
-
-    public double getWithGstAmount() {
-        return withGstAmount;
-    }
-
-    public void setWithGstAmount(double withGstAmount) {
-        this.withGstAmount = withGstAmount;
-    }
 }

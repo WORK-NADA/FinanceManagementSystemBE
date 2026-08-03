@@ -1,33 +1,59 @@
 package FinanceManangementSystem.demo.Init;
 
-import FinanceManangementSystem.demo.Model.Enums.UserRole;
+import FinanceManangementSystem.demo.Enums.UserRole;
 import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Model.UserAddress;
 import FinanceManangementSystem.demo.Repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CreateAdminIfNot implements CommandLineRunner {
 
-    private final UserRepository userRepo;
-
+    private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public CreateAdminIfNot(UserRepository userRepo,BCryptPasswordEncoder passwordEncoder){
-        this.userRepo = userRepo;
+    public CreateAdminIfNot(UserRepository userRepository,
+                            BCryptPasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public void run(String... args) throws Exception {
-        if(userRepo.count() == 0){
-            User admin = new User("Urvi Gondaliya","urvi@gmail.com",passwordEncoder.encode("Urvi@2415"), 9892648658L, UserRole.Admin,
-                    new UserAddress(
-                            29,"Avadh Bunglows","Mota varaccha","Surat",394101,"Gujarat")
-                    );
+    public void run(String... args) {
 
-            userRepo.save(admin);
-            System.out.println("Default Admin Created.");
+        System.out.println("Checking default admin...");
+
+        if (userRepository.count() == 0) {
+
+            User admin = new User();
+
+            admin.setOwnerName("Ashish Patel");
+            admin.setUsername("Ashish@11");
+            admin.setEmail("ashish@gmail.com");
+            admin.setPassword(passwordEncoder.encode("Ashish@123"));
+            admin.setMobileNumber("9974729064");
+            admin.setRole(UserRole.ADMIN);
+
+            UserAddress address = new UserAddress();
+
+            address.setHouseNo("530");
+            address.setSocietyName("Mor");
+            address.setArea("Olpad");
+            address.setCity("Surat");
+            address.setPincode("394530");
+            address.setState("Gujarat");
+            // No need to set country.
+            // @PrePersist will automatically set it to "India".
+
+            // Establish bidirectional relationship
+            address.setUser(admin);
+            admin.setAddress(address);
+
+            userRepository.save(admin);
+
+            System.out.println("✅ Default Admin Created Successfully.");
         }
     }
 }

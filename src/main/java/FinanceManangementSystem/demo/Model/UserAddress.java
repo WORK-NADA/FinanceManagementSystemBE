@@ -1,118 +1,62 @@
 package FinanceManangementSystem.demo.Model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-@Entity(name = "user_address")
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity
+@Table(name = "user_address")
 public class UserAddress {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    private int houseNo;
+    @Column(name = "house_no", nullable = false, length = 20)
+    private String houseNo;
 
+    @Column(name = "society_name", nullable = false, length = 100)
     private String societyName;
 
+    @Column(nullable = false, length = 100)
     private String area;
 
+    @Column(nullable = false, length = 100)
     private String city;
 
-    private int pincode;
+    @Column(nullable = false, length = 10)
+    private String pincode;
 
+    @Column(nullable = false, length = 100)
     private String state;
 
+    @Column(nullable = false, length = 100)
     private String country;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
     @PrePersist
-    public void prePersist(){
-        if(this.country == null){
-            this.country = "India";
+    public void prePersist() {
+        if (country == null || country.isBlank()) {
+            country = "India";
         }
-    }
-
-    public UserAddress(){}
-
-    public UserAddress(int houseNo, String societyName, String area, String city, int pincode, String state) {
-        this.houseNo = houseNo;
-        this.societyName = societyName;
-        this.area = area;
-        this.city = city;
-        this.pincode = pincode;
-        this.state = state;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public int getHouseNo() {
-        return houseNo;
-    }
-
-    public void setHouseNo(int houseNo) {
-        this.houseNo = houseNo;
-    }
-
-    public String getSocietyName() {
-        return societyName;
-    }
-
-    public void setSocietyName(String societyName) {
-        this.societyName = societyName;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public int getPincode() {
-        return pincode;
-    }
-
-    public void setPincode(int pincode) {
-        this.pincode = pincode;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }

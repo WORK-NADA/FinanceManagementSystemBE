@@ -1,75 +1,34 @@
 package FinanceManangementSystem.demo.Payloads.ResponseDTO;
 
+import FinanceManangementSystem.demo.Enums.UserRole;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ResponseUserDTO {
-    private String name;
+    private UUID publicId;
+
+    private String username;
 
     private String email;
 
-    private String password;
+    private String mobileNumber;
 
-    private long contact;
+    private UserRole role;
 
-    private String role;
+    private boolean enabled;
 
-    private ResponseAddressDTO address;
+    private ResponseUserAddressDTO userAddress;
 
-    public ResponseUserDTO() {
-    }
+    private LocalDateTime createdAt;
 
-    public ResponseUserDTO(String name, String email, String password, long contact, String role, ResponseAddressDTO address) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.contact = contact;
-        this.role = role;
-        this.address = address;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public long getContact() {
-        return contact;
-    }
-
-    public void setContact(long contact) {
-        this.contact = contact;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public ResponseAddressDTO getAddress() {
-        return address;
-    }
-
-    public void setAddress(ResponseAddressDTO address) {
-        this.address = address;
-    }
+    private LocalDateTime updatedAt;
 }
