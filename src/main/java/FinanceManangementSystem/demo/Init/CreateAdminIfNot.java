@@ -4,10 +4,12 @@ import FinanceManangementSystem.demo.Enums.UserRole;
 import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Model.UserAddress;
 import FinanceManangementSystem.demo.Repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class CreateAdminIfNot implements CommandLineRunner {
 
@@ -23,7 +25,7 @@ public class CreateAdminIfNot implements CommandLineRunner {
     @Override
     public void run(String... args) {
 
-        System.out.println("Checking default admin...");
+        log.info("DEFAULT ADMIN - checking default admin...");
 
         if (userRepository.count() == 0) {
 
@@ -53,7 +55,7 @@ public class CreateAdminIfNot implements CommandLineRunner {
 
             userRepository.save(admin);
 
-            System.out.println("✅ Default Admin Created Successfully.");
+            log.info("✅ Default Admin Created Successfully...");
         }
     }
 }

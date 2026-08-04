@@ -10,6 +10,7 @@ import FinanceManangementSystem.demo.Service.CommonServiceInterface;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Slf4j
 @AllArgsConstructor
 @Service
 public class CommonService implements CommonServiceInterface {
@@ -35,7 +37,8 @@ public class CommonService implements CommonServiceInterface {
 
     @Override
     public ResponseLoginDTO login(RequestLoginDTO dto) {
-        System.out.println("Login initiated...");
+        log.info("SERVICE - request came in login...");
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         dto.getEmail(),
@@ -56,7 +59,9 @@ public class CommonService implements CommonServiceInterface {
 
         //delete old refresh token when not expired and login again.
         refreshRepo.deleteByUser(user.getUserId());
+        log.info("SERVICE - deleted old refresh token...");
 
+        log.info("SERVICE - logged in successfully and created new refresh token...");
         // Refresh Token
         return ResponseLoginDTO.builder()
 

@@ -1,0 +1,106 @@
+2026-08-04T11:58:58.752+05:30  INFO 15068 --- [FinanceManagementSystem] [main] F.demo.DemoApplication                   : Starting DemoApplication using Java 24.0.2 with PID 15068 (F:\Urvi Gondaliya\FinanceManagementSystem\target\classes started by Lenovo in F:\Urvi Gondaliya\FinanceManagementSystem)
+2026-08-04T11:58:58.757+05:30  INFO 15068 --- [FinanceManagementSystem] [main] F.demo.DemoApplication                   : No active profile set, falling back to 1 default profile: "default"
+2026-08-04T11:58:59.678+05:30  INFO 15068 --- [FinanceManagementSystem] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-04T11:58:59.782+05:30  INFO 15068 --- [FinanceManagementSystem] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 88 ms. Found 6 JPA repository interfaces.
+2026-08-04T11:59:00.492+05:30  INFO 15068 --- [FinanceManagementSystem] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-08-04T11:59:00.507+05:30  INFO 15068 --- [FinanceManagementSystem] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-04T11:59:00.507+05:30  INFO 15068 --- [FinanceManagementSystem] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.55]
+2026-08-04T11:59:00.580+05:30  INFO 15068 --- [FinanceManagementSystem] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-08-04T11:59:00.580+05:30  INFO 15068 --- [FinanceManagementSystem] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1762 ms
+2026-08-04T11:59:00.780+05:30  INFO 15068 --- [FinanceManagementSystem] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-08-04T11:59:00.886+05:30  INFO 15068 --- [FinanceManagementSystem] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.53.Final
+2026-08-04T11:59:00.949+05:30  INFO 15068 --- [FinanceManagementSystem] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-08-04T11:59:01.368+05:30  INFO 15068 --- [FinanceManagementSystem] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-04T11:59:01.425+05:30  INFO 15068 --- [FinanceManagementSystem] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-04T11:59:01.938+05:30  INFO 15068 --- [FinanceManagementSystem] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@61554b6b
+2026-08-04T11:59:01.941+05:30  INFO 15068 --- [FinanceManagementSystem] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-04T11:59:02.040+05:30  INFO 15068 --- [FinanceManagementSystem] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.40
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-08-04T11:59:03.173+05:30  INFO 15068 --- [FinanceManagementSystem] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-04T11:59:03.266+05:30  INFO 15068 --- [FinanceManagementSystem] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-04T11:59:03.496+05:30  INFO 15068 --- [FinanceManagementSystem] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-08-04T11:59:03.680+05:30  INFO 15068 --- [FinanceManagementSystem] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetaillsService
+2026-08-04T11:59:03.745+05:30  WARN 15068 --- [FinanceManagementSystem] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-08-04T11:59:04.390+05:30  INFO 15068 --- [FinanceManagementSystem] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-08-04T11:59:04.400+05:30  INFO 15068 --- [FinanceManagementSystem] [main] F.demo.DemoApplication                   : Started DemoApplication in 6.293 seconds (process running for 6.768)
+2026-08-04T11:59:04.838+05:30 DEBUG 15068 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : select count(*) from users u1_0
+2026-08-04T12:07:15.000+05:30  INFO 15068 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-08-04T12:07:15.017+05:30  INFO 15068 --- [FinanceManagementSystem] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-08-04T12:07:15.021+05:30  INFO 15068 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-08-04T12:07:15.024+05:30  INFO 15068 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-08-04T12:07:15.034+05:30  INFO 15068 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-08-04T12:07:19.744+05:30  INFO 21616 --- [FinanceManagementSystem] [main] F.demo.DemoApplication                   : Starting DemoApplication using Java 24.0.2 with PID 21616 (F:\Urvi Gondaliya\FinanceManagementSystem\target\classes started by Lenovo in F:\Urvi Gondaliya\FinanceManagementSystem)
+2026-08-04T12:07:19.758+05:30  INFO 21616 --- [FinanceManagementSystem] [main] F.demo.DemoApplication                   : No active profile set, falling back to 1 default profile: "default"
+2026-08-04T12:07:20.767+05:30  INFO 21616 --- [FinanceManagementSystem] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-04T12:07:20.870+05:30  INFO 21616 --- [FinanceManagementSystem] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 87 ms. Found 6 JPA repository interfaces.
+2026-08-04T12:07:21.634+05:30  INFO 21616 --- [FinanceManagementSystem] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-08-04T12:07:21.654+05:30  INFO 21616 --- [FinanceManagementSystem] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-04T12:07:21.654+05:30  INFO 21616 --- [FinanceManagementSystem] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.55]
+2026-08-04T12:07:21.739+05:30  INFO 21616 --- [FinanceManagementSystem] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-08-04T12:07:21.740+05:30  INFO 21616 --- [FinanceManagementSystem] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1912 ms
+2026-08-04T12:07:21.938+05:30  INFO 21616 --- [FinanceManagementSystem] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-08-04T12:07:22.017+05:30  INFO 21616 --- [FinanceManagementSystem] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.53.Final
+2026-08-04T12:07:22.065+05:30  INFO 21616 --- [FinanceManagementSystem] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-08-04T12:07:22.443+05:30  INFO 21616 --- [FinanceManagementSystem] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-04T12:07:22.491+05:30  INFO 21616 --- [FinanceManagementSystem] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-04T12:07:22.884+05:30  INFO 21616 --- [FinanceManagementSystem] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@78bad03b
+2026-08-04T12:07:22.886+05:30  INFO 21616 --- [FinanceManagementSystem] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-04T12:07:22.962+05:30  INFO 21616 --- [FinanceManagementSystem] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.40
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-08-04T12:07:23.929+05:30  INFO 21616 --- [FinanceManagementSystem] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-04T12:07:24.020+05:30  INFO 21616 --- [FinanceManagementSystem] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-04T12:07:24.246+05:30  INFO 21616 --- [FinanceManagementSystem] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-08-04T12:07:24.453+05:30  INFO 21616 --- [FinanceManagementSystem] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetaillsService
+2026-08-04T12:07:24.524+05:30  WARN 21616 --- [FinanceManagementSystem] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-08-04T12:07:25.177+05:30  INFO 21616 --- [FinanceManagementSystem] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-08-04T12:07:25.187+05:30  INFO 21616 --- [FinanceManagementSystem] [main] F.demo.DemoApplication                   : Started DemoApplication in 6.144 seconds (process running for 6.636)
+2026-08-04T12:07:25.567+05:30 DEBUG 21616 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : select count(*) from users u1_0
+2026-08-04T12:12:32.868+05:30  INFO 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-04T12:12:32.869+05:30  INFO 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-08-04T12:12:32.871+05:30  INFO 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-08-04T12:12:33.079+05:30  INFO 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.demo.Controller.CommonController       : Controller - request came in login controller...
+2026-08-04T12:12:33.081+05:30  INFO 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.S.Implementations.CommonService      : Service - request came in login...
+2026-08-04T12:12:33.222+05:30 DEBUG 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.SQL                        : SELECT * FROM users WHERE email=?
+2026-08-04T12:12:33.224+05:30 TRACE 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [ashish@gmail.com]
+2026-08-04T12:12:33.258+05:30 DEBUG 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.SQL                        : select ua1_0.id,ua1_0.area,ua1_0.city,ua1_0.country,ua1_0.created_at,ua1_0.house_no,ua1_0.pincode,ua1_0.society_name,ua1_0.state,ua1_0.updated_at,ua1_0.user_id from user_address ua1_0 where ua1_0.user_id=?
+2026-08-04T12:12:33.260+05:30 TRACE 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
+2026-08-04T12:12:33.347+05:30 DEBUG 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.SQL                        : SELECT * FROM users WHERE email=?
+2026-08-04T12:12:33.348+05:30 TRACE 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [ashish@gmail.com]
+2026-08-04T12:12:33.425+05:30 DEBUG 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.SQL                        : DELETE FROM refresh_tokens WHERE user_id=?
+2026-08-04T12:12:33.427+05:30 TRACE 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
+2026-08-04T12:12:33.443+05:30  INFO 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.S.Implementations.CommonService      : Service - deleted old refresh token...
+2026-08-04T12:12:33.443+05:30  INFO 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.S.Implementations.CommonService      : Service - logged in successfully and created new refresh token...
+2026-08-04T12:12:33.444+05:30  INFO 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.S.I.RefreshTokenService              : Service - request came in refresh token creation...
+2026-08-04T12:12:33.445+05:30  INFO 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.S.I.RefreshTokenService              : Service - refresh token created...
+2026-08-04T12:12:33.472+05:30 DEBUG 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.SQL                        : insert into refresh_tokens (expiry_date,token,user_id) values (?,?,?)
+2026-08-04T12:12:33.476+05:30 TRACE 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:TIMESTAMP) <- [2026-08-11T12:12:33.445747400]
+2026-08-04T12:12:33.477+05:30 TRACE 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (2:VARCHAR) <- [745d957d-964f-4f90-9e51-2a58beda0e68]
+2026-08-04T12:12:33.477+05:30 TRACE 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (3:BIGINT) <- [1]
+2026-08-04T12:14:09.556+05:30  INFO 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-3] F.d.Controller.RefreshTokenController    : Controller - request came in refresh token controller...
+2026-08-04T12:14:09.558+05:30 DEBUG 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.SQL                        : SELECT * from refresh_tokens WHERE token=?
+2026-08-04T12:14:09.559+05:30 TRACE 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [745d957d-964f-4f90-9e51-2a58beda0e68]
+2026-08-04T12:14:09.569+05:30 DEBUG 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.SQL                        : select u1_0.user_id,u1_0.account_non_expired,u1_0.account_non_locked,u1_0.created_at,u1_0.credentials_non_expired,u1_0.deleted,u1_0.email,u1_0.enabled,u1_0.failed_login_attempts,u1_0.first_login,u1_0.lock_time,u1_0.mobile_number,u1_0.owner_name,u1_0.password,u1_0.public_id,u1_0.role,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.user_id=?
+2026-08-04T12:14:09.571+05:30 TRACE 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
+2026-08-04T12:14:09.574+05:30 DEBUG 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.SQL                        : select ua1_0.id,ua1_0.area,ua1_0.city,ua1_0.country,ua1_0.created_at,ua1_0.house_no,ua1_0.pincode,ua1_0.society_name,ua1_0.state,ua1_0.updated_at,ua1_0.user_id from user_address ua1_0 where ua1_0.user_id=?
+2026-08-04T12:14:09.575+05:30 TRACE 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
+2026-08-04T12:14:09.581+05:30  INFO 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-3] F.d.S.I.RefreshTokenService              : Service - request came in verify refresh token...
+2026-08-04T12:14:09.582+05:30  INFO 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-3] F.d.S.I.RefreshTokenService              : Service - refresh token verified...
+2026-08-04T12:14:09.582+05:30  INFO 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-3] F.d.Controller.RefreshTokenController    : Controller - refresh token in not expired...
+2026-08-04T12:14:09.584+05:30  INFO 21616 --- [FinanceManagementSystem] [http-nio-8080-exec-3] F.d.Controller.RefreshTokenController    : Controller - new access token sent successfully...
+2026-08-04T12:20:05.278+05:30  INFO 21616 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-08-04T12:20:05.294+05:30  INFO 21616 --- [FinanceManagementSystem] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-08-04T12:20:05.298+05:30  INFO 21616 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-08-04T12:20:05.301+05:30  INFO 21616 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-08-04T12:20:05.309+05:30  INFO 21616 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

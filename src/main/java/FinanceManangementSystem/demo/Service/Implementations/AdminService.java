@@ -6,14 +6,14 @@ import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestUserDTO;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseUserDTO;
 import FinanceManangementSystem.demo.Service.AdminServiceInterface;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Slf4j
 @AllArgsConstructor
 @Service
 public class AdminService implements AdminServiceInterface {
@@ -27,6 +27,8 @@ public class AdminService implements AdminServiceInterface {
 
     @Override
     public ResponseUserDTO registration(RequestUserDTO dto) {
+        log.info("SERVICE - request came in registration...");
+
         Optional<String> name = userRepo.findByEmailOrContact(dto.getEmail(),dto.getMobileNumber());
 
         if(name.isPresent()){
@@ -40,6 +42,8 @@ public class AdminService implements AdminServiceInterface {
             user.getAddress().setUser(user);
         }
         user = userRepo.save(user);
+
+        log.info("SERVICE - registered successfully...");
 
         ResponseUserDTO response = modelMapper.map(user,ResponseUserDTO.class);
         return response;

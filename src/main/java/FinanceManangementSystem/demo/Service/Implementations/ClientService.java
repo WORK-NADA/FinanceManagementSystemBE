@@ -11,8 +11,6 @@ import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseSufficientSupp
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseSupplierDTO;
 import FinanceManangementSystem.demo.Service.ClientServiceInterface;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 

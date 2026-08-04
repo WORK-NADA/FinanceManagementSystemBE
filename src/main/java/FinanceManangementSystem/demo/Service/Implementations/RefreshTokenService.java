@@ -5,11 +5,13 @@ import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Repository.RefreshTokenRepository;
 import FinanceManangementSystem.demo.Service.RefreshTokenInterface;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Slf4j
 @AllArgsConstructor
 @Service
 public class RefreshTokenService implements RefreshTokenInterface {
@@ -20,6 +22,7 @@ public class RefreshTokenService implements RefreshTokenInterface {
 
     @Override
     public RefreshToken createToken(User user) {
+        log.info("SERVICE - request came in refresh token creation...");
 
         RefreshToken refreshToken =
                 RefreshToken.builder()
@@ -31,12 +34,14 @@ public class RefreshTokenService implements RefreshTokenInterface {
                         )
                         .build();
 
+        log.info("SERVICE - refresh token created...");
 
         return refreshRepo.save(refreshToken);
     }
 
     @Override
     public RefreshToken verifyToken(RefreshToken token) {
+        log.info("SERVICE - request came in verify refresh token...");
 
         if(token.getExpiryDate()
                 .isBefore(LocalDateTime.now())){
@@ -45,9 +50,11 @@ public class RefreshTokenService implements RefreshTokenInterface {
             refreshRepo.delete(token);
 
             throw new RuntimeException(
-                    "Refresh token expired"
+                    "Refresh token expired..."
             );
         }
+
+        log.info("SERVICE - refresh token verified...");
 
         return token;
     }
