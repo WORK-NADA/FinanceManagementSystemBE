@@ -1,83 +1,93 @@
 package FinanceManangementSystem.demo.Model;
 
-import FinanceManangementSystem.demo.UserRole.UserRole;
+import FinanceManangementSystem.demo.Enums.UserRole;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    private Long userId;
 
-    private String name;
+    @Column(name = "public_id",nullable = false, unique = true, updatable = false)
+    @UuidGenerator
+    private UUID publicId;
 
-    @Column(unique = true)
+    @Column(nullable = false)
+    private String ownerName;
+
+    @Column(nullable = false, unique = true)
+    private String username;
+
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
-    private long contact;
+    @Column(nullable = false, unique = true, length = 10)
+    private String mobileNumber;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserRole role;
 
-    @OneToOne(cascade = CascadeType.ALL,mappedBy = "user")
-    private Address address;
+    @Column(nullable = false)
+    private Boolean enabled = true;
 
-    public int getUserId() {
-        return userId;
+    @Column(nullable = false)
+    private Boolean accountNonLocked = true;
+
+    @Column(nullable = false)
+    private Boolean accountNonExpired = true;
+
+    @Column(nullable = false)
+    private Boolean credentialsNonExpired = true;
+
+    @Column(nullable = false)
+    private Integer failedLoginAttempts = 0;
+
+    private LocalDateTime lockTime;
+
+    @Column(nullable = false)
+    private Boolean deleted = false;
+
+    @Column(nullable = false)
+    private Boolean firstLogin = true;
+
+    @OneToOne(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true
+    )
+    private UserAddress address;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void prePersist(){
+        if(this.role == null){
+            this.role = UserRole.CLIENT;
+        }
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public long getContact() {
-        return contact;
-    }
-
-    public void setContact(long contact) {
-        this.contact = contact;
-    }
-
-    public UserRole getRole() {
-        return role;
-    }
-
-    public void setRole(UserRole role) {
-        this.role = role;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
 }
