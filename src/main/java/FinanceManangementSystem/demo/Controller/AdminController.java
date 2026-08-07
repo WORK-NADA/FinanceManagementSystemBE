@@ -21,7 +21,6 @@ public class AdminController {
 
     @Autowired
     AdminService service;
-    //testing harsh
 
     @PostMapping("register")
     public ResponseEntity<APIResponse<ResponseUserDTO>> register(@Valid @RequestBody RequestUserDTO dto){
