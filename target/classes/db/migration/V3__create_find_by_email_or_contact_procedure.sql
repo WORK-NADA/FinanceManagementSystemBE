@@ -1,0 +1,12 @@
+--DROP PROCEDURE IF EXISTS findByEmailOrContact;
+--
+--CREATE PROCEDURE findByEmailOrContact(
+--    IN input_Email VARCHAR(255),
+--    IN input_Contact VARCHAR(20)
+--)
+--BEGIN
+--    SELECT username
+--    FROM users
+--    WHERE mobile_number = input_Contact
+--       OR email = input_Email;
+--END;

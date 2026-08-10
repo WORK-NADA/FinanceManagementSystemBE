@@ -88,6 +88,18 @@
 			<version>3.2.4</version>
 		</dependency>
 
+
+		<!-- Flyway for migrating sql procedure -->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-mysql</artifactId>
+		</dependency>
+
 		<!-- Lombok (Boilerplate Code Reduction) -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
