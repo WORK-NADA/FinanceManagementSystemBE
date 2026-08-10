@@ -1,6 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
 import FinanceManangementSystem.demo.Model.User;
+import FinanceManangementSystem.demo.Model.UserAddress;
 import FinanceManangementSystem.demo.Repository.UserRepository;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestUserDTO;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseUserDTO;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -25,6 +27,7 @@ public class AdminService implements AdminServiceInterface {
     private final BCryptPasswordEncoder passwordEncoder;
 
 
+    @Transactional
     @Override
     public ResponseUserDTO registration(RequestUserDTO dto) {
         log.info("SERVICE - request came in registration...");
@@ -38,9 +41,14 @@ public class AdminService implements AdminServiceInterface {
         User user = modelMapper.map(dto,User.class);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        if(user.getAddress()!=null){
-            user.getAddress().setUser(user);
+        if (dto.getUserAddress() != null) {
+            UserAddress address = modelMapper.map(dto.getUserAddress(), UserAddress.class);
+
+            address.setUser(user);
+
+            user.setAddress(address);
         }
+
         user = userRepo.save(user);
 
         log.info("SERVICE - registered successfully...");

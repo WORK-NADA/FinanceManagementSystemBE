@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -34,7 +35,7 @@ public class CommonService implements CommonServiceInterface {
 
     private final RefreshTokenRepository refreshRepo;
 
-
+    @Transactional
     @Override
     public ResponseLoginDTO login(RequestLoginDTO dto) {
         log.info("SERVICE - request came in login...");
