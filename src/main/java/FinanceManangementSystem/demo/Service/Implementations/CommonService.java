@@ -69,7 +69,7 @@ public class CommonService implements CommonServiceInterface {
                 .accessToken(token)
 
                 .refreshToken(
-                        refreshTokenService.createToken(user).getToken()
+                        refreshTokenService.createRefreshToken(user).getToken()
                 )
 
                 .tokenType("Bearer")
