@@ -1,5 +1,6 @@
 package FinanceManangementSystem.demo.Security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,65 +34,86 @@ public class JwtFilter extends OncePerRequestFilter {
 
         log.debug("JwtFilter - JWT Filter invoked for {} {}", request.getMethod(), request.getRequestURI());
 
-        String authHeader = request.getHeader("Authorization");
+        try{
+            String authHeader = request.getHeader("Authorization");
 
-        String token = null;
-        String email = null;
+            String token = null;
+            String email = null;
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
-            log.debug("JwtFilter - Authorization header found.");
+                log.debug("JwtFilter - Authorization header found.");
 
-            token = authHeader.substring(7);
+                token = authHeader.substring(7);
 
-            email = jwtUtil.extractEmail(token);
+                email = jwtUtil.extractEmail(token);
 
-            log.debug("JwtFilter - JWT belongs to user: {}", email);
-
-        } else {
-
-            log.debug("JwtFilter - Authorization header missing or Bearer token not found.");
-        }
-
-        if (email != null &&
-                SecurityContextHolder.getContext().getAuthentication() == null) {
-
-            log.debug("JwtFilter - Loading user details for email: {}", email);
-
-            UserDetails userDetails =
-                    userDetailsService.loadUserByUsername(email);
-
-            if (jwtUtil.validateToken(token, userDetails)) {
-
-                log.info("JwtFilter - JWT validated successfully for user: {}", email);
-
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
-
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource()
-                                .buildDetails(request)
-                );
-
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authToken);
-
-                log.debug("JwtFilter - Security context updated for user: {}", email);
+                log.debug("JwtFilter - JWT belongs to user: {}", email);
 
             } else {
 
-                log.warn("JwtFilter - JWT validation failed for user: {}", email);
+                log.debug("JwtFilter - Authorization header missing or Bearer token not found.");
             }
+
+            if (email != null &&
+                    SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                log.debug("JwtFilter - Loading user details for email: {}", email);
+
+                UserDetails userDetails =
+                        userDetailsService.loadUserByUsername(email);
+
+                if (jwtUtil.validateToken(token, userDetails)) {
+
+                    log.info("JwtFilter - JWT validated successfully for user: {}", email);
+
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
+
+                    authToken.setDetails(
+                            new WebAuthenticationDetailsSource()
+                                    .buildDetails(request)
+                    );
+
+                    SecurityContextHolder.getContext()
+                            .setAuthentication(authToken);
+
+                    log.debug("JwtFilter - Security context updated for user: {}", email);
+
+                } else {
+
+                    log.warn("JwtFilter - JWT validation failed for user: {}", email);
+                }
+            }
+
+            filterChain.doFilter(request, response);
+
+            log.debug("JwtFilter - Request processing completed for {} {}",
+                    request.getMethod(),
+                    request.getRequestURI());
         }
+        catch (ExpiredJwtException e) {
 
-        filterChain.doFilter(request, response);
+            log.warn(
+                    "JwtFilter - Access token expired: {}",
+                    e.getMessage()
+            );
 
-        log.debug("JwtFilter - Request processing completed for {} {}",
-                request.getMethod(),
-                request.getRequestURI());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            response.getWriter().write("""
+                    {
+                        "code": "ACCESS_TOKEN_EXPIRED",
+                        "message": "Access token expired"
+                    }
+                    """);
+
+        }
     }
 }

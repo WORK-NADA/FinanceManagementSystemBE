@@ -1,5 +1,8 @@
 package FinanceManangementSystem.demo.Exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -27,6 +30,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
+
     // General Exceptions
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception ex) {
@@ -36,4 +40,37 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
+
+
+    //InvalidRefreshToken
+    @ExceptionHandler(InvalidRefreshTokenException.class)
+    public ResponseEntity<?> handleInvalidRefreshToken(InvalidRefreshTokenException ex){
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(
+                        Map.of(
+                                "code", "INVALID_REFRESH_TOKEN",
+                                "message", ex.getMessage()
+                        )
+                );
+    }
+
+
+    //RefreshTokenExpired
+    @ExceptionHandler(RefreshTokenExpiredException.class)
+    public ResponseEntity<?> handleRefreshTokenExpired(RefreshTokenExpiredException ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(
+                        Map.of(
+                                "code", "REFRESH_TOKEN_EXPIRED",
+                                "message", ex.getMessage()
+                        )
+                );
+    }
+
+
+
+
 }

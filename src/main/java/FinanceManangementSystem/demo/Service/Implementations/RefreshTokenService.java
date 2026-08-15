@@ -1,5 +1,6 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.RefreshTokenExpiredException;
 import FinanceManangementSystem.demo.Model.RefreshToken;
 import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Repository.RefreshTokenRepository;
@@ -18,10 +19,8 @@ public class RefreshTokenService implements RefreshTokenInterface {
 
     private final RefreshTokenRepository refreshRepo;
 
-
-
     @Override
-    public RefreshToken createToken(User user) {
+    public RefreshToken createRefreshToken(User user) {
         log.info("SERVICE - request came in refresh token creation...");
 
         RefreshToken refreshToken =
@@ -30,7 +29,7 @@ public class RefreshTokenService implements RefreshTokenInterface {
                         .user(user)
                         .expiryDate(
                                 LocalDateTime.now()
-                                        .plusDays(7)
+//                                        .plusDays(7)
                         )
                         .build();
 
@@ -49,8 +48,8 @@ public class RefreshTokenService implements RefreshTokenInterface {
 
             refreshRepo.delete(token);
 
-            throw new RuntimeException(
-                    "Refresh token expired..."
+            throw new RefreshTokenExpiredException(
+                    "Refresh Token Expired..."
             );
         }
 

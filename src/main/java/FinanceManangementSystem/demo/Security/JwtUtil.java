@@ -2,6 +2,7 @@ package FinanceManangementSystem.demo.Security;
 
 import FinanceManangementSystem.demo.Model.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -53,6 +54,7 @@ public class JwtUtil {
         log.debug("JwtUtil - Email extracted successfully: {}", email);
 
         return email;
+
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
@@ -65,11 +67,13 @@ public class JwtUtil {
 
         if (isValid) {
             log.info("JwtUtil - JWT token validation successful for user: {}", email);
-        } else {
+        }
+        else {
             log.warn("JwtUtil - JWT token validation failed for user: {}", email);
         }
 
         return isValid;
+
     }
 
     private boolean isTokenExpired(String token) {

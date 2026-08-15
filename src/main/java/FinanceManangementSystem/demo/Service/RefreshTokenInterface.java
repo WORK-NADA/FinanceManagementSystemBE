@@ -5,7 +5,7 @@ import FinanceManangementSystem.demo.Model.User;
 
 public interface RefreshTokenInterface {
 
-    RefreshToken createToken(User user);
+    RefreshToken createRefreshToken(User user);
 
     RefreshToken verifyToken(RefreshToken token);
 }

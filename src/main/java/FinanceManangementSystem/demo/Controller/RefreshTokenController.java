@@ -1,5 +1,6 @@
 package FinanceManangementSystem.demo.Controller;
 
+import FinanceManangementSystem.demo.Exceptions.InvalidRefreshTokenException;
 import FinanceManangementSystem.demo.Model.RefreshToken;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestRefreshTokenDTO;
 import FinanceManangementSystem.demo.Repository.RefreshTokenRepository;
@@ -38,8 +39,8 @@ public class RefreshTokenController {
                                 request.getRefreshToken()
                         )
                         .orElseThrow(
-                                () -> new RuntimeException(
-                                        "Invalid refresh token"
+                                () -> new InvalidRefreshTokenException(
+                                        "Invalid Refresh Token..."
                                 )
                         );
 
