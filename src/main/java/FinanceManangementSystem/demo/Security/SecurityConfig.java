@@ -52,7 +52,8 @@ public class SecurityConfig {
                         .requestMatchers("/user/**").permitAll()
                         .requestMatchers("/auth/refresh").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                        .requestMatchers("/client/**").hasAuthority("CLIENT")
+                        .requestMatchers("/supplier/**").hasAnyAuthority("CLIENT","ADMIN")
+                        .requestMatchers("/purchase/**").hasAnyAuthority("CLIENT","ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

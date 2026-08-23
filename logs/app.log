@@ -1,24 +1,24 @@
-2026-08-14T10:47:17.432+05:30  INFO 1192 --- [FinanceManagementSystem] [main] F.demo.DemoApplication                   : Starting DemoApplication using Java 24.0.2 with PID 1192 (F:\Urvi Gondaliya\FinanceManagementSystem\target\classes started by Lenovo in F:\Urvi Gondaliya\FinanceManagementSystem)
-2026-08-14T10:47:17.450+05:30  INFO 1192 --- [FinanceManagementSystem] [main] F.demo.DemoApplication                   : No active profile set, falling back to 1 default profile: "default"
-2026-08-14T10:47:19.834+05:30  INFO 1192 --- [FinanceManagementSystem] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-08-14T10:47:20.121+05:30  INFO 1192 --- [FinanceManagementSystem] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 255 ms. Found 6 JPA repository interfaces.
-2026-08-14T10:47:22.321+05:30  INFO 1192 --- [FinanceManagementSystem] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2026-08-14T10:47:22.407+05:30  INFO 1192 --- [FinanceManagementSystem] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-08-14T10:47:22.409+05:30  INFO 1192 --- [FinanceManagementSystem] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.55]
-2026-08-14T10:47:22.761+05:30  INFO 1192 --- [FinanceManagementSystem] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-08-14T10:47:22.762+05:30  INFO 1192 --- [FinanceManagementSystem] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 5169 ms
-2026-08-14T10:47:23.590+05:30  INFO 1192 --- [FinanceManagementSystem] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-08-14T10:47:24.733+05:30  INFO 1192 --- [FinanceManagementSystem] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@3a9b41a0
-2026-08-14T10:47:24.739+05:30  INFO 1192 --- [FinanceManagementSystem] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-08-14T10:47:24.913+05:30  INFO 1192 --- [FinanceManagementSystem] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/financemanagementsystem (MySQL 8.0)
-2026-08-14T10:47:25.192+05:30  INFO 1192 --- [FinanceManagementSystem] [main] o.f.core.internal.command.DbValidate     : Successfully validated 4 migrations (execution time 00:00.121s)
-2026-08-14T10:47:25.239+05:30  INFO 1192 --- [FinanceManagementSystem] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `financemanagementsystem`: 3
-2026-08-14T10:47:25.249+05:30  INFO 1192 --- [FinanceManagementSystem] [main] o.f.core.internal.command.DbMigrate      : Schema `financemanagementsystem` is up to date. No migration necessary.
-2026-08-14T10:47:25.539+05:30  INFO 1192 --- [FinanceManagementSystem] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-08-14T10:47:25.707+05:30  INFO 1192 --- [FinanceManagementSystem] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.53.Final
-2026-08-14T10:47:25.849+05:30  INFO 1192 --- [FinanceManagementSystem] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-08-14T10:47:26.670+05:30  INFO 1192 --- [FinanceManagementSystem] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-08-14T10:47:26.875+05:30  INFO 1192 --- [FinanceManagementSystem] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2026-08-15T11:29:34.906+05:30  INFO 21536 --- [FinanceManagementSystem] [main] F.demo.DemoApplication                   : Starting DemoApplication using Java 24.0.2 with PID 21536 (F:\Urvi Gondaliya\FinanceManagementSystem\target\classes started by Lenovo in F:\Urvi Gondaliya\FinanceManagementSystem)
+2026-08-15T11:29:34.921+05:30  INFO 21536 --- [FinanceManagementSystem] [main] F.demo.DemoApplication                   : No active profile set, falling back to 1 default profile: "default"
+2026-08-15T11:29:36.549+05:30  INFO 21536 --- [FinanceManagementSystem] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-15T11:29:36.773+05:30  INFO 21536 --- [FinanceManagementSystem] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 195 ms. Found 6 JPA repository interfaces.
+2026-08-15T11:29:38.028+05:30  INFO 21536 --- [FinanceManagementSystem] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-08-15T11:29:38.068+05:30  INFO 21536 --- [FinanceManagementSystem] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-15T11:29:38.069+05:30  INFO 21536 --- [FinanceManagementSystem] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.55]
+2026-08-15T11:29:38.231+05:30  INFO 21536 --- [FinanceManagementSystem] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-08-15T11:29:38.232+05:30  INFO 21536 --- [FinanceManagementSystem] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3175 ms
+2026-08-15T11:29:38.805+05:30  INFO 21536 --- [FinanceManagementSystem] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-15T11:29:39.786+05:30  INFO 21536 --- [FinanceManagementSystem] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@418f0534
+2026-08-15T11:29:39.790+05:30  INFO 21536 --- [FinanceManagementSystem] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-15T11:29:39.926+05:30  INFO 21536 --- [FinanceManagementSystem] [main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/financemanagementsystem (MySQL 8.0)
+2026-08-15T11:29:40.122+05:30  INFO 21536 --- [FinanceManagementSystem] [main] o.f.core.internal.command.DbValidate     : Successfully validated 4 migrations (execution time 00:00.096s)
+2026-08-15T11:29:40.154+05:30  INFO 21536 --- [FinanceManagementSystem] [main] o.f.core.internal.command.DbMigrate      : Current version of schema `financemanagementsystem`: 3
+2026-08-15T11:29:40.169+05:30  INFO 21536 --- [FinanceManagementSystem] [main] o.f.core.internal.command.DbMigrate      : Schema `financemanagementsystem` is up to date. No migration necessary.
+2026-08-15T11:29:40.397+05:30  INFO 21536 --- [FinanceManagementSystem] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-08-15T11:29:40.520+05:30  INFO 21536 --- [FinanceManagementSystem] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.53.Final
+2026-08-15T11:29:40.595+05:30  INFO 21536 --- [FinanceManagementSystem] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-08-15T11:29:41.157+05:30  INFO 21536 --- [FinanceManagementSystem] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-15T11:29:41.308+05:30  INFO 21536 --- [FinanceManagementSystem] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 8.0.40
@@ -26,129 +26,45 @@
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2026-08-14T10:47:29.078+05:30  INFO 1192 --- [FinanceManagementSystem] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-08-14T10:47:29.182+05:30  INFO 1192 --- [FinanceManagementSystem] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-08-14T10:47:29.751+05:30  INFO 1192 --- [FinanceManagementSystem] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-08-14T10:47:30.100+05:30  INFO 1192 --- [FinanceManagementSystem] [main] F.demo.Security.SecurityConfig           : SecurityConfig - Initializing BCryptPasswordEncoder bean.
-2026-08-14T10:47:30.207+05:30  INFO 1192 --- [FinanceManagementSystem] [main] F.demo.Security.SecurityConfig           : SecurityConfig - Initializing AuthenticationManager bean.
-2026-08-14T10:47:30.278+05:30  INFO 1192 --- [FinanceManagementSystem] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
-2026-08-14T10:47:30.455+05:30  WARN 1192 --- [FinanceManagementSystem] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-08-14T10:47:30.677+05:30  INFO 1192 --- [FinanceManagementSystem] [main] F.demo.Security.SecurityConfig           : SecurityConfig - Configuring Spring Security filter chain.
-2026-08-14T10:47:31.170+05:30  INFO 1192 --- [FinanceManagementSystem] [main] F.demo.Security.SecurityConfig           : SecurityConfig - Spring Security filter chain configured successfully.
-2026-08-14T10:47:31.847+05:30  INFO 1192 --- [FinanceManagementSystem] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2026-08-14T10:47:31.880+05:30  INFO 1192 --- [FinanceManagementSystem] [main] F.demo.DemoApplication                   : Started DemoApplication in 16.8 seconds (process running for 23.315)
-2026-08-14T10:47:31.888+05:30  INFO 1192 --- [FinanceManagementSystem] [main] F.demo.Init.CreateAdminIfNot             : DEFAULT ADMIN - checking default admin...
-2026-08-14T10:47:32.867+05:30 DEBUG 1192 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : select count(*) from users u1_0
-2026-08-14T10:51:21.096+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-08-14T10:51:21.151+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-08-14T10:51:21.304+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 149 ms
-2026-08-14T10:51:29.130+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.demo.Controller.CommonController       : CONTROLLER - request came in login controller...
-2026-08-14T10:51:29.127+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] F.demo.Controller.CommonController       : CONTROLLER - request came in login controller...
-2026-08-14T10:51:29.133+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] F.demo.Controller.CommonController       : CONTROLLER - request came in login controller...
-2026-08-14T10:51:29.281+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.S.Implementations.CommonService      : SERVICE - request came in login...
-2026-08-14T10:51:29.281+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] F.d.S.Implementations.CommonService      : SERVICE - request came in login...
-2026-08-14T10:51:29.281+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] F.d.S.Implementations.CommonService      : SERVICE - request came in login...
-2026-08-14T10:51:29.947+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.SQL                        : {call findByEmail(?)}
-2026-08-14T10:51:29.947+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] org.hibernate.SQL                        : {call findByEmail(?)}
-2026-08-14T10:51:29.947+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.SQL                        : {call findByEmail(?)}
-2026-08-14T10:51:30.532+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [ashish@gmail.com]
-2026-08-14T10:51:30.534+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [ashish@gmail.com]
-2026-08-14T10:51:30.532+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [ashish@gmail.com]
-2026-08-14T10:51:30.842+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.SQL                        : select ua1_0.id,ua1_0.area,ua1_0.city,ua1_0.country,ua1_0.created_at,ua1_0.house_no,ua1_0.pincode,ua1_0.society_name,ua1_0.state,ua1_0.updated_at,ua1_0.user_id from user_address ua1_0 where ua1_0.user_id=?
-2026-08-14T10:51:30.842+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] org.hibernate.SQL                        : select ua1_0.id,ua1_0.area,ua1_0.city,ua1_0.country,ua1_0.created_at,ua1_0.house_no,ua1_0.pincode,ua1_0.society_name,ua1_0.state,ua1_0.updated_at,ua1_0.user_id from user_address ua1_0 where ua1_0.user_id=?
-2026-08-14T10:51:30.842+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.SQL                        : select ua1_0.id,ua1_0.area,ua1_0.city,ua1_0.country,ua1_0.created_at,ua1_0.house_no,ua1_0.pincode,ua1_0.society_name,ua1_0.state,ua1_0.updated_at,ua1_0.user_id from user_address ua1_0 where ua1_0.user_id=?
-2026-08-14T10:51:30.846+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
-2026-08-14T10:51:30.847+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
-2026-08-14T10:51:30.845+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
-2026-08-14T10:51:30.995+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] F.d.Security.CustomUserDetailsService    : CustomUserDetailsService - User loaded successfully: ashish@gmail.com
-2026-08-14T10:51:30.995+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.Security.CustomUserDetailsService    : CustomUserDetailsService - User loaded successfully: ashish@gmail.com
-2026-08-14T10:51:30.995+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] F.d.Security.CustomUserDetailsService    : CustomUserDetailsService - User loaded successfully: ashish@gmail.com
-2026-08-14T10:51:31.216+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.SQL                        : {call findByEmail(?)}
-2026-08-14T10:51:31.218+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.SQL                        : {call findByEmail(?)}
-2026-08-14T10:51:31.220+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] org.hibernate.SQL                        : {call findByEmail(?)}
-2026-08-14T10:51:31.230+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [ashish@gmail.com]
-2026-08-14T10:51:31.242+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.demo.Security.JwtUtil                  : JwtUtil - Generating JWT access token for user: ashish@gmail.com
-2026-08-14T10:51:31.248+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [ashish@gmail.com]
-2026-08-14T10:51:31.256+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [ashish@gmail.com]
-2026-08-14T10:51:31.269+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] F.demo.Security.JwtUtil                  : JwtUtil - Generating JWT access token for user: ashish@gmail.com
-2026-08-14T10:51:31.271+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] F.demo.Security.JwtUtil                  : JwtUtil - Generating JWT access token for user: ashish@gmail.com
-2026-08-14T10:51:31.536+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] F.demo.Security.JwtUtil                  : JwtUtil - JWT access token generated successfully for user: ashish@gmail.com
-2026-08-14T10:51:31.534+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.demo.Security.JwtUtil                  : JwtUtil - JWT access token generated successfully for user: ashish@gmail.com
-2026-08-14T10:51:31.543+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] F.demo.Security.JwtUtil                  : JwtUtil - JWT access token generated successfully for user: ashish@gmail.com
-2026-08-14T10:51:31.802+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.SQL                        : DELETE FROM refresh_tokens WHERE user_id=?
-2026-08-14T10:51:31.804+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.SQL                        : DELETE FROM refresh_tokens WHERE user_id=?
-2026-08-14T10:51:31.809+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
-2026-08-14T10:51:31.806+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
-2026-08-14T10:51:31.833+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] org.hibernate.SQL                        : DELETE FROM refresh_tokens WHERE user_id=?
-2026-08-14T10:51:31.834+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
-2026-08-14T10:51:31.898+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] F.d.S.Implementations.CommonService      : SERVICE - deleted old refresh token...
-2026-08-14T10:51:31.899+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] F.d.S.Implementations.CommonService      : SERVICE - logged in successfully and created new refresh token...
-2026-08-14T10:51:31.904+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] F.d.S.I.RefreshTokenService              : SERVICE - request came in refresh token creation...
-2026-08-14T10:51:31.907+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] F.d.S.I.RefreshTokenService              : SERVICE - refresh token created...
-2026-08-14T10:51:31.992+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.SQL                        : insert into refresh_tokens (expiry_date,token,user_id) values (?,?,?)
-2026-08-14T10:51:32.009+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.orm.jdbc.bind              : binding parameter (1:TIMESTAMP) <- [2026-08-14T10:51:31.906493700]
-2026-08-14T10:51:32.010+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.orm.jdbc.bind              : binding parameter (2:VARCHAR) <- [9be218f8-7b2f-4aba-82f7-25a592c658b9]
-2026-08-14T10:51:32.011+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-3] org.hibernate.orm.jdbc.bind              : binding parameter (3:BIGINT) <- [1]
-2026-08-14T10:51:32.335+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] F.d.S.Implementations.CommonService      : SERVICE - deleted old refresh token...
-2026-08-14T10:51:32.336+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] F.d.S.Implementations.CommonService      : SERVICE - logged in successfully and created new refresh token...
-2026-08-14T10:51:32.337+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] F.d.S.I.RefreshTokenService              : SERVICE - request came in refresh token creation...
-2026-08-14T10:51:32.337+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] F.d.S.I.RefreshTokenService              : SERVICE - refresh token created...
-2026-08-14T10:51:32.342+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] org.hibernate.SQL                        : insert into refresh_tokens (expiry_date,token,user_id) values (?,?,?)
-2026-08-14T10:51:32.344+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (1:TIMESTAMP) <- [2026-08-14T10:51:32.337602800]
-2026-08-14T10:51:32.346+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (2:VARCHAR) <- [c126b54b-76f1-439c-8da0-74e3612b5d69]
-2026-08-14T10:51:32.347+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-2] org.hibernate.orm.jdbc.bind              : binding parameter (3:BIGINT) <- [1]
-2026-08-14T10:51:32.388+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.S.Implementations.CommonService      : SERVICE - deleted old refresh token...
-2026-08-14T10:51:32.389+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.S.Implementations.CommonService      : SERVICE - logged in successfully and created new refresh token...
-2026-08-14T10:51:32.389+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.S.I.RefreshTokenService              : SERVICE - request came in refresh token creation...
-2026-08-14T10:51:32.390+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.S.I.RefreshTokenService              : SERVICE - refresh token created...
-2026-08-14T10:51:32.391+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.SQL                        : insert into refresh_tokens (expiry_date,token,user_id) values (?,?,?)
-2026-08-14T10:51:32.392+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:TIMESTAMP) <- [2026-08-14T10:51:32.390125600]
-2026-08-14T10:51:32.393+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (2:VARCHAR) <- [b6eef80e-e7a0-4eb8-b471-6e62fb6a5e5e]
-2026-08-14T10:51:32.393+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (3:BIGINT) <- [1]
-2026-08-14T10:51:52.622+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] F.demo.Controller.CommonController       : CONTROLLER - request came in login controller...
-2026-08-14T10:51:52.624+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] F.d.S.Implementations.CommonService      : SERVICE - request came in login...
-2026-08-14T10:51:52.626+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] org.hibernate.SQL                        : {call findByEmail(?)}
-2026-08-14T10:51:52.645+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [ashish@gmail.com]
-2026-08-14T10:51:52.651+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] org.hibernate.SQL                        : select ua1_0.id,ua1_0.area,ua1_0.city,ua1_0.country,ua1_0.created_at,ua1_0.house_no,ua1_0.pincode,ua1_0.society_name,ua1_0.state,ua1_0.updated_at,ua1_0.user_id from user_address ua1_0 where ua1_0.user_id=?
-2026-08-14T10:51:52.652+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
-2026-08-14T10:51:52.656+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] F.d.Security.CustomUserDetailsService    : CustomUserDetailsService - User loaded successfully: ashish@gmail.com
-2026-08-14T10:51:52.778+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] org.hibernate.SQL                        : {call findByEmail(?)}
-2026-08-14T10:51:52.790+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [ashish@gmail.com]
-2026-08-14T10:51:52.795+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] F.demo.Security.JwtUtil                  : JwtUtil - Generating JWT access token for user: ashish@gmail.com
-2026-08-14T10:51:52.797+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] F.demo.Security.JwtUtil                  : JwtUtil - JWT access token generated successfully for user: ashish@gmail.com
-2026-08-14T10:51:52.799+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] org.hibernate.SQL                        : DELETE FROM refresh_tokens WHERE user_id=?
-2026-08-14T10:51:52.801+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
-2026-08-14T10:51:52.803+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] F.d.S.Implementations.CommonService      : SERVICE - deleted old refresh token...
-2026-08-14T10:51:52.803+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] F.d.S.Implementations.CommonService      : SERVICE - logged in successfully and created new refresh token...
-2026-08-14T10:51:52.804+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] F.d.S.I.RefreshTokenService              : SERVICE - request came in refresh token creation...
-2026-08-14T10:51:52.804+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] F.d.S.I.RefreshTokenService              : SERVICE - refresh token created...
-2026-08-14T10:51:52.805+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] org.hibernate.SQL                        : insert into refresh_tokens (expiry_date,token,user_id) values (?,?,?)
-2026-08-14T10:51:52.806+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (1:TIMESTAMP) <- [2026-08-14T10:51:52.804392700]
-2026-08-14T10:51:52.807+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (2:VARCHAR) <- [352a2320-13c7-4c8f-9c88-d9a61e7f3fcb]
-2026-08-14T10:51:52.807+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-5] org.hibernate.orm.jdbc.bind              : binding parameter (3:BIGINT) <- [1]
-2026-08-14T10:55:33.262+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] F.demo.Controller.CommonController       : CONTROLLER - request came in login controller...
-2026-08-14T10:55:33.319+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] F.d.S.Implementations.CommonService      : SERVICE - request came in login...
-2026-08-14T10:55:33.356+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] org.hibernate.SQL                        : {call findByEmail(?)}
-2026-08-14T10:55:33.403+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [ashish@gmail.com]
-2026-08-14T10:55:33.443+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] org.hibernate.SQL                        : select ua1_0.id,ua1_0.area,ua1_0.city,ua1_0.country,ua1_0.created_at,ua1_0.house_no,ua1_0.pincode,ua1_0.society_name,ua1_0.state,ua1_0.updated_at,ua1_0.user_id from user_address ua1_0 where ua1_0.user_id=?
-2026-08-14T10:55:33.446+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
-2026-08-14T10:55:33.466+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] F.d.Security.CustomUserDetailsService    : CustomUserDetailsService - User loaded successfully: ashish@gmail.com
-2026-08-14T10:55:33.636+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] org.hibernate.SQL                        : {call findByEmail(?)}
-2026-08-14T10:55:33.647+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [ashish@gmail.com]
-2026-08-14T10:55:33.651+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] F.demo.Security.JwtUtil                  : JwtUtil - Generating JWT access token for user: ashish@gmail.com
-2026-08-14T10:55:33.693+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] F.demo.Security.JwtUtil                  : JwtUtil - JWT access token generated successfully for user: ashish@gmail.com
-2026-08-14T10:55:33.716+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] org.hibernate.SQL                        : DELETE FROM refresh_tokens WHERE user_id=?
-2026-08-14T10:55:33.719+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
-2026-08-14T10:55:33.724+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] F.d.S.Implementations.CommonService      : SERVICE - deleted old refresh token...
-2026-08-14T10:55:33.724+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] F.d.S.Implementations.CommonService      : SERVICE - logged in successfully and created new refresh token...
-2026-08-14T10:55:33.725+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] F.d.S.I.RefreshTokenService              : SERVICE - request came in refresh token creation...
-2026-08-14T10:55:33.728+05:30  INFO 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] F.d.S.I.RefreshTokenService              : SERVICE - refresh token created...
-2026-08-14T10:55:33.744+05:30 DEBUG 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] org.hibernate.SQL                        : insert into refresh_tokens (expiry_date,token,user_id) values (?,?,?)
-2026-08-14T10:55:33.748+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] org.hibernate.orm.jdbc.bind              : binding parameter (1:TIMESTAMP) <- [2026-08-14T10:55:33.728776900]
-2026-08-14T10:55:33.748+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] org.hibernate.orm.jdbc.bind              : binding parameter (2:VARCHAR) <- [7f0bb8ce-ae84-4930-bfa8-e5f91acc05c3]
-2026-08-14T10:55:33.749+05:30 TRACE 1192 --- [FinanceManagementSystem] [http-nio-8080-exec-9] org.hibernate.orm.jdbc.bind              : binding parameter (3:BIGINT) <- [1]
-2026-08-14T11:11:06.228+05:30  INFO 1192 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2026-08-14T11:11:06.359+05:30  INFO 1192 --- [FinanceManagementSystem] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2026-08-14T11:11:06.454+05:30  INFO 1192 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-08-14T11:11:06.578+05:30  INFO 1192 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2026-08-14T11:11:06.658+05:30  INFO 1192 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-08-15T11:29:42.948+05:30  INFO 21536 --- [FinanceManagementSystem] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-15T11:29:43.049+05:30  INFO 21536 --- [FinanceManagementSystem] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-15T11:29:43.420+05:30  INFO 21536 --- [FinanceManagementSystem] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-08-15T11:29:43.611+05:30  INFO 21536 --- [FinanceManagementSystem] [main] F.demo.Security.SecurityConfig           : SecurityConfig - Initializing BCryptPasswordEncoder bean.
+2026-08-15T11:29:43.693+05:30  INFO 21536 --- [FinanceManagementSystem] [main] F.demo.Security.SecurityConfig           : SecurityConfig - Initializing AuthenticationManager bean.
+2026-08-15T11:29:43.722+05:30  INFO 21536 --- [FinanceManagementSystem] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-08-15T11:29:43.809+05:30  WARN 21536 --- [FinanceManagementSystem] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-08-15T11:29:43.903+05:30  INFO 21536 --- [FinanceManagementSystem] [main] F.demo.Security.SecurityConfig           : SecurityConfig - Configuring Spring Security filter chain.
+2026-08-15T11:29:44.142+05:30  INFO 21536 --- [FinanceManagementSystem] [main] F.demo.Security.SecurityConfig           : SecurityConfig - Spring Security filter chain configured successfully.
+2026-08-15T11:29:44.551+05:30  INFO 21536 --- [FinanceManagementSystem] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-08-15T11:29:44.568+05:30  INFO 21536 --- [FinanceManagementSystem] [main] F.demo.DemoApplication                   : Started DemoApplication in 10.82 seconds (process running for 12.175)
+2026-08-15T11:29:44.574+05:30  INFO 21536 --- [FinanceManagementSystem] [main] F.demo.Init.CreateAdminIfNot             : DEFAULT ADMIN - checking default admin...
+2026-08-15T11:29:45.071+05:30 DEBUG 21536 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : select count(*) from users u1_0
+2026-08-15T11:39:54.502+05:30  INFO 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-15T11:39:54.504+05:30  INFO 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-08-15T11:39:54.507+05:30  INFO 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2026-08-15T11:39:54.723+05:30  INFO 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.demo.Controller.CommonController       : CONTROLLER - request came in login controller...
+2026-08-15T11:39:54.731+05:30  INFO 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.S.Implementations.CommonService      : SERVICE - request came in login...
+2026-08-15T11:39:54.976+05:30 DEBUG 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.SQL                        : {call findByEmail(?)}
+2026-08-15T11:39:55.037+05:30 TRACE 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [ashish@gmail.com]
+2026-08-15T11:39:55.114+05:30 DEBUG 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.SQL                        : select ua1_0.id,ua1_0.area,ua1_0.city,ua1_0.country,ua1_0.created_at,ua1_0.house_no,ua1_0.pincode,ua1_0.society_name,ua1_0.state,ua1_0.updated_at,ua1_0.user_id from user_address ua1_0 where ua1_0.user_id=?
+2026-08-15T11:39:55.116+05:30 TRACE 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
+2026-08-15T11:39:55.148+05:30  INFO 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.Security.CustomUserDetailsService    : CustomUserDetailsService - User loaded successfully: ashish@gmail.com
+2026-08-15T11:39:55.278+05:30 DEBUG 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.SQL                        : {call findByEmail(?)}
+2026-08-15T11:39:55.289+05:30 TRACE 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:VARCHAR) <- [ashish@gmail.com]
+2026-08-15T11:39:55.297+05:30  INFO 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.demo.Security.JwtUtil                  : JwtUtil - Generating JWT access token for user: ashish@gmail.com
+2026-08-15T11:39:55.352+05:30  INFO 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.demo.Security.JwtUtil                  : JwtUtil - JWT access token generated successfully for user: ashish@gmail.com
+2026-08-15T11:39:55.649+05:30 DEBUG 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.SQL                        : DELETE FROM refresh_tokens WHERE user_id=?
+2026-08-15T11:39:55.650+05:30 TRACE 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:BIGINT) <- [1]
+2026-08-15T11:39:55.667+05:30  INFO 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.S.Implementations.CommonService      : SERVICE - deleted old refresh token...
+2026-08-15T11:39:55.669+05:30  INFO 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.S.Implementations.CommonService      : SERVICE - logged in successfully and created new refresh token...
+2026-08-15T11:39:55.670+05:30  INFO 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.S.I.RefreshTokenService              : SERVICE - request came in refresh token creation...
+2026-08-15T11:39:55.671+05:30  INFO 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] F.d.S.I.RefreshTokenService              : SERVICE - refresh token created...
+2026-08-15T11:39:55.698+05:30 DEBUG 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.SQL                        : insert into refresh_tokens (expiry_date,token,user_id) values (?,?,?)
+2026-08-15T11:39:55.702+05:30 TRACE 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (1:TIMESTAMP) <- [2026-08-15T11:39:55.670719400]
+2026-08-15T11:39:55.703+05:30 TRACE 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (2:VARCHAR) <- [725ea51b-4864-4972-bc50-9e5d58877999]
+2026-08-15T11:39:55.704+05:30 TRACE 21536 --- [FinanceManagementSystem] [http-nio-8080-exec-1] org.hibernate.orm.jdbc.bind              : binding parameter (3:BIGINT) <- [1]
+2026-08-15T11:41:38.224+05:30  INFO 21536 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-08-15T11:41:38.768+05:30  INFO 21536 --- [FinanceManagementSystem] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-08-15T11:41:38.783+05:30  INFO 21536 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-08-15T11:41:38.793+05:30  INFO 21536 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-08-15T11:41:38.838+05:30  INFO 21536 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
