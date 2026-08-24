@@ -1,26 +1,41 @@
 package FinanceManangementSystem.demo.Payloads.ResponseDTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ResponseSupplierDTO {
-    private String name;
 
-    private long contact;
+    private UUID publicId;
+
+    private String supplierName;
+
+    private String mobileNumber;
+
+    private String contactPerson;
+
+    private String alternateMobileNumber;
 
     private String email;
 
-    private String gstNo;
+    private String gstNumber;
 
-    private String panNo;
+    private BigDecimal openingBalance;
 
-    private ResponseUserAddressDTO address;
+    private Integer paymentTerms;
 
+    private Boolean isActive;
 
+    private ResponseSupplierAddressDTO address;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }

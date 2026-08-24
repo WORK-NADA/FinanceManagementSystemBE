@@ -1,32 +1,56 @@
 package FinanceManangementSystem.demo.Payloads.ResponseDTO;
 
+import FinanceManangementSystem.demo.Enums.PaymentStatus;
+import FinanceManangementSystem.demo.Enums.WeightUnit;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ResponsePurchaseDTO {
 
-    private ResponseSufficientSupplierDTO supplier;
+    private UUID publicId;
 
-    private String item;
+    private String purchaseNumber;
 
-    private double price;
+    private UUID supplierPublicId;
 
-    private double weight;
+    private String supplierName;
 
-    private LocalDate date;
+    private String rawMaterial;
 
-    private double amount;
+    private BigDecimal weight;
 
-    private double gst;
+    private WeightUnit unit;
 
-    private double withGstAmount;
+    private BigDecimal ratePerUnit;
 
+    private BigDecimal gstPercentage;
+
+    private BigDecimal amount;
+
+    private BigDecimal gstAmount;
+
+    private BigDecimal totalAmount;
+
+    private String supplierInvoiceNumber;
+
+    private LocalDate purchaseDate;
+
+    private PaymentStatus paymentStatus;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }

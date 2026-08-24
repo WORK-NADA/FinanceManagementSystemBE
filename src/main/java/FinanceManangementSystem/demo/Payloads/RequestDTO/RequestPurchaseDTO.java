@@ -1,12 +1,15 @@
 package FinanceManangementSystem.demo.Payloads.RequestDTO;
 
+import FinanceManangementSystem.demo.Enums.WeightUnit;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -15,30 +18,73 @@ import java.time.LocalDate;
 public class RequestPurchaseDTO {
 
     @NotNull(message = "Supplier is required")
-    @Positive(message = "Invalid supplier ID")
-    private Long supplierId;
+    private UUID supplierPublicId;
 
-    @NotBlank(message = "Item name is required")
-    @Size(min = 2, max = 100, message = "Item name must be between 2 and 100 characters")
-    @Pattern(
-            regexp = "^[A-Za-z0-9]+(?:[ A-Za-z0-9()-]*)?$",
-            message = "Item name can contain letters, numbers, spaces, parentheses and hyphens only"
+
+    @NotBlank(message = "Raw material is required")
+    @Size(
+            min = 2,
+            max = 150,
+            message = "Raw material must be between 2 and 150 characters"
     )
-    private String item;
+    private String rawMaterial;
 
-    @Positive(message = "Price must be greater than 0")
-    @DecimalMax(value = "10000000.00", message = "Price is too large")
-    private Double price;
 
-    @Positive(message = "Weight must be greater than 0")
-    @DecimalMax(value = "100000.00", message = "Weight is too large")
-    private Double weight;
+    @NotNull(message = "Weight is required")
+    @DecimalMin(
+            value = "0.001",
+            message = "Weight must be greater than zero"
+    )
+    @Digits(
+            integer = 12,
+            fraction = 3,
+            message = "Weight can have maximum 12 integer digits and 3 decimal places"
+    )
+    private BigDecimal weight;
 
-    @PastOrPresent(message = "Purchase date cannot be in the future")
-    private LocalDate date;
 
-    @PositiveOrZero(message = "GST cannot be negative")
-    @DecimalMax(value = "100.00", message = "GST cannot exceed 100%")
-    private Double gst;
+    @NotNull(message = "Weight unit is required")
+    private WeightUnit unit;
 
+
+    @NotNull(message = "Rate per Kg is required")
+    @DecimalMin(
+            value = "0.01",
+            message = "Rate per Kg must be greater than zero"
+    )
+    @Digits(
+            integer = 13,
+            fraction = 2,
+            message = "Rate per Kg can have maximum 13 integer digits and 2 decimal places"
+    )
+    private BigDecimal ratePerUnit;
+
+
+    @NotNull(message = "GST percentage is required")
+    @DecimalMin(
+            value = "0.00",
+            message = "GST percentage cannot be negative"
+    )
+    @DecimalMax(
+            value = "100.00",
+            message = "GST percentage cannot exceed 100"
+    )
+    @Digits(
+            integer = 3,
+            fraction = 2,
+            message = "Invalid GST percentage"
+    )
+    private BigDecimal gstPercentage =
+            new BigDecimal("18.00");
+
+
+    @Size(
+            max = 50,
+            message = "Supplier invoice number cannot exceed 50 characters"
+    )
+    private String supplierInvoiceNumber;
+
+
+    @NotNull(message = "Purchase date is required")
+    private LocalDate purchaseDate;
 }

@@ -4,40 +4,84 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity(name = "supplier_address")
-public class SupplierAddress{
+@Entity
+@Table(name = "supplier_address")
+public class SupplierAddress {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int houseNo;
-
-    private String societyName;
-
-    private String area;
-
-    private String city;
-
-    private int pincode;
-
-    private String state;
-
-    private String country;
 
     @OneToOne
-    @JoinColumn(name = "supplier_id")
+    @JoinColumn(
+            name = "supplier_id",
+            nullable = false,
+            unique = true
+    )
     private Supplier supplier;
 
-    @PrePersist
-    public void prePersist(){
-        if(this.country == null){
-            this.country = "India";
-        }
-    }
+
+    @Column(
+            name = "address_line_1",
+            nullable = false,
+            length = 150
+    )
+    private String addressLine1;
 
 
+    @Column(
+            name = "address_line_2",
+            length = 150
+    )
+    private String addressLine2;
+
+
+    @Column(
+            nullable = false,
+            length = 100
+    )
+    private String city;
+
+
+    @Column(
+            nullable = false,
+            length = 100
+    )
+    private String state;
+
+
+    @Column(
+            nullable = false,
+            length = 100
+    )
+    private String country = "India";
+
+
+    @Column(
+            nullable = false,
+            length = 6
+    )
+    private String pincode;
+
+
+    @CreationTimestamp
+    @Column(
+            nullable = false,
+            updatable = false
+    )
+    private LocalDateTime createdAt;
+
+
+    @UpdateTimestamp
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 }
