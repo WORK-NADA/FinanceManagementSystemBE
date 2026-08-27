@@ -69,7 +69,10 @@ public class DocumentSequenceService implements SequenceServiceInterface {
         }
     }
 
-    public String getPrefix(DocumentType documentType) {
+    private String getPrefix(
+            DocumentType documentType
+    ) {
+
         return switch (documentType) {
 
             case PURCHASE -> "PUR";
@@ -81,6 +84,8 @@ public class DocumentSequenceService implements SequenceServiceInterface {
             case CUSTOMER_RECEIPT -> "REC";
 
             case EXPENSE -> "EXP";
+
+            case STOCK_ADJUSTMENT -> "STA";
         };
     }
 }

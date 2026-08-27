@@ -12,7 +12,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -24,19 +27,34 @@ public class SupplierService implements SupplierServiceInterface {
     private final ModelMapper modelMapper;
 
 
+    // ==================================================
+    // ADD SUPPLIER
+    // ==================================================
+
     @Override
     @Transactional
-    public ResponseSupplierDTO addSupplier(RequestSupplierDTO dto) {
+    public ResponseSupplierDTO addSupplier(
+            RequestSupplierDTO dto
+    ) {
 
-        log.info("SERVICE - request came in addSupplier...");
+        log.info(
+                "SERVICE - request came in addSupplier..."
+        );
 
 
-        // Check mobile number
-        log.info("SERVICE - checking supplier mobile number...");
+        // ----------------------------------------------
+        // Check Mobile Number
+        // ----------------------------------------------
 
-        if (supplierRepo.existsByMobileNumber(dto.getMobileNumber())) {
+        log.info(
+                "SERVICE - checking supplier mobile number..."
+        );
 
-            log.warn(
+        if (supplierRepo.existsByMobileNumber(
+                dto.getMobileNumber()
+        )) {
+
+            log.info(
                     "SERVICE - supplier mobile number already exists..."
             );
 
@@ -46,28 +64,32 @@ public class SupplierService implements SupplierServiceInterface {
         }
 
 
-        // Check GST number
+        // ----------------------------------------------
+        // Check GST Number
+        // ----------------------------------------------
+
         if (dto.getGstNumber() != null
-                && !dto.getGstNumber().isBlank()) {
+                && !dto.getGstNumber().isBlank()
+                && supplierRepo.existsByGstNumber(
+                dto.getGstNumber()
+        )) {
 
-            log.info("SERVICE - checking supplier GST number...");
+            log.info(
+                    "SERVICE - supplier GST number already exists..."
+            );
 
-            if (supplierRepo.existsByGstNumber(dto.getGstNumber())) {
-
-                log.warn(
-                        "SERVICE - supplier GST number already exists..."
-                );
-
-                throw new RuntimeException(
-                        "Supplier with this GST number already exists"
-                );
-            }
+            throw new RuntimeException(
+                    "Supplier with this GST number already exists"
+            );
         }
 
 
-        // DTO → Entity
+        // ----------------------------------------------
+        // Map DTO → Entity
+        // ----------------------------------------------
+
         log.info(
-                "SERVICE - mapping RequestSupplierDTO to Supplier entity..."
+                "SERVICE - mapping supplier DTO to entity..."
         );
 
         Supplier supplier =
@@ -77,8 +99,15 @@ public class SupplierService implements SupplierServiceInterface {
                 );
 
 
-        // Set supplier relationship
+        // ----------------------------------------------
+        // Explicitly Handle Supplier Address
+        // ----------------------------------------------
+
         if (dto.getAddress() != null) {
+
+            log.info(
+                    "SERVICE - supplier address found..."
+            );
 
             SupplierAddress address =
                     modelMapper.map(
@@ -86,62 +115,80 @@ public class SupplierService implements SupplierServiceInterface {
                             SupplierAddress.class
                     );
 
+            // Explicit relationship
             address.setSupplier(supplier);
+
             supplier.setAddress(address);
         }
 
 
-        // Save supplier
-        log.info("SERVICE - saving supplier...");
+        // ----------------------------------------------
+        // Set Default Values
+        // ----------------------------------------------
 
-        supplier = supplierRepo.save(supplier);
+        if (supplier.getOpeningBalance() == null) {
+
+            supplier.setOpeningBalance(
+                    BigDecimal.ZERO
+            );
+        }
+
+        if (supplier.getPaymentTerms() == null) {
+
+            supplier.setPaymentTerms(30);
+        }
+
+        if (supplier.getIsActive() == null) {
+
+            supplier.setIsActive(true);
+        }
+
+
+        // ----------------------------------------------
+        // Save Supplier
+        // ----------------------------------------------
+
+        log.info(
+                "SERVICE - saving supplier..."
+        );
+
+        supplier =
+                supplierRepo.save(supplier);
 
 
         log.info(
-                "SERVICE - supplier saved successfully..."
+                "SERVICE - supplier added successfully..."
         );
 
 
-        // Entity → Response DTO
-        log.info(
-                "SERVICE - mapping Supplier entity to ResponseSupplierDTO..."
-        );
+        // ----------------------------------------------
+        // Map Entity → Response
+        // ----------------------------------------------
 
-        ResponseSupplierDTO response =
-                modelMapper.map(
-                        supplier,
-                        ResponseSupplierDTO.class
-                );
-
-
-        log.info(
-                "SERVICE - addSupplier completed successfully..."
-        );
-
-        return response;
+        return mapToResponse(supplier);
     }
 
 
+    // ==================================================
+    // GET SUPPLIER BY PUBLIC ID
+    // ==================================================
+
     @Override
     @Transactional(readOnly = true)
-    public ResponseSupplierDTO getSupplierByPublicId(UUID publicId) {
+    public ResponseSupplierDTO getSupplierByPublicId(
+            UUID publicId
+    ) {
 
         log.info(
                 "SERVICE - request came in getSupplierByPublicId..."
         );
 
 
-        // Find supplier
-        log.info(
-                "SERVICE - searching supplier by publicId..."
-        );
-
         Supplier supplier =
-                supplierRepo
-                        .findByPublicId(publicId)
+                supplierRepo.findByPublicId(publicId)
                         .orElseThrow(() -> {
 
-                            log.warn(
+                            log.info(
                                     "SERVICE - supplier not found..."
                             );
 
@@ -152,14 +199,351 @@ public class SupplierService implements SupplierServiceInterface {
 
 
         log.info(
-                "SERVICE - supplier found successfully..."
+                "SERVICE - supplier fetched successfully..."
         );
 
 
-        // Entity → Response DTO
+        return mapToResponse(supplier);
+    }
+
+
+    // ==================================================
+    // GET ALL SUPPLIERS
+    // ==================================================
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ResponseSupplierDTO> getAllSuppliers() {
+
         log.info(
-                "SERVICE - mapping Supplier entity to ResponseSupplierDTO..."
+                "SERVICE - request came in getAllSuppliers..."
         );
+
+
+        List<Supplier> suppliers =
+                supplierRepo.findAll();
+
+
+        log.info(
+                "SERVICE - suppliers fetched successfully..."
+        );
+
+
+        return suppliers.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+
+    // ==================================================
+    // UPDATE SUPPLIER
+    // ==================================================
+
+    @Override
+    @Transactional
+    public ResponseSupplierDTO updateSupplier(
+            UUID publicId,
+            RequestSupplierDTO dto
+    ) {
+
+        log.info(
+                "SERVICE - request came in updateSupplier..."
+        );
+
+
+        // ----------------------------------------------
+        // Find Supplier
+        // ----------------------------------------------
+
+        Supplier supplier =
+                supplierRepo.findByPublicId(publicId)
+                        .orElseThrow(() -> {
+
+                            log.info(
+                                    "SERVICE - supplier not found..."
+                            );
+
+                            return new RuntimeException(
+                                    "Supplier not found"
+                            );
+                        });
+
+
+        // ----------------------------------------------
+        // Check Mobile Number
+        // ----------------------------------------------
+
+        if (!supplier.getMobileNumber()
+                .equals(dto.getMobileNumber())
+                && supplierRepo.existsByMobileNumber(
+                dto.getMobileNumber()
+        )) {
+
+            log.info(
+                    "SERVICE - supplier mobile number already exists..."
+            );
+
+            throw new RuntimeException(
+                    "Supplier with this mobile number already exists"
+            );
+        }
+
+
+        // ----------------------------------------------
+        // Check Email
+        // ----------------------------------------------
+
+        if (dto.getEmail() != null
+                && !dto.getEmail().isBlank()
+                && !dto.getEmail().equals(
+                supplier.getEmail()
+        )
+                && supplierRepo.existsByEmail(
+                dto.getEmail()
+        )) {
+
+            log.info(
+                    "SERVICE - supplier email already exists..."
+            );
+
+            throw new RuntimeException(
+                    "Supplier with this email already exists"
+            );
+        }
+
+
+        // ----------------------------------------------
+        // Check GST Number
+        // ----------------------------------------------
+
+        if (dto.getGstNumber() != null
+                && !dto.getGstNumber().isBlank()
+                && !dto.getGstNumber().equals(
+                supplier.getGstNumber()
+        )
+                && supplierRepo.existsByGstNumber(
+                dto.getGstNumber()
+        )) {
+
+            log.info(
+                    "SERVICE - supplier GST number already exists..."
+            );
+
+            throw new RuntimeException(
+                    "Supplier with this GST number already exists"
+            );
+        }
+
+
+        // ----------------------------------------------
+        // Update Supplier Fields
+        // ----------------------------------------------
+
+        supplier.setSupplierName(
+                dto.getSupplierName()
+        );
+
+        supplier.setMobileNumber(
+                dto.getMobileNumber()
+        );
+
+        supplier.setContactPerson(
+                dto.getContactPerson()
+        );
+
+        supplier.setAlternateMobileNumber(
+                dto.getAlternateMobileNumber()
+        );
+
+        supplier.setEmail(
+                dto.getEmail()
+        );
+
+        supplier.setGstNumber(
+                dto.getGstNumber()
+        );
+
+        supplier.setOpeningBalance(
+                dto.getOpeningBalance()
+        );
+
+        supplier.setPaymentTerms(
+                dto.getPaymentTerms()
+        );
+
+
+        // ----------------------------------------------
+        // Explicitly Handle Address
+        // ----------------------------------------------
+
+        if (dto.getAddress() != null) {
+
+            log.info(
+                    "SERVICE - supplier address found..."
+            );
+
+
+            SupplierAddress address =
+                    supplier.getAddress();
+
+
+            if (address == null) {
+
+                address =
+                        modelMapper.map(
+                                dto.getAddress(),
+                                SupplierAddress.class
+                        );
+
+                address.setSupplier(supplier);
+
+                supplier.setAddress(address);
+
+            } else {
+
+                modelMapper.map(
+                        dto.getAddress(),
+                        address
+                );
+
+                address.setSupplier(supplier);
+            }
+        }
+
+
+        // ----------------------------------------------
+        // Save
+        // ----------------------------------------------
+
+        supplier =
+                supplierRepo.save(supplier);
+
+
+        log.info(
+                "SERVICE - supplier updated successfully..."
+        );
+
+
+        return mapToResponse(supplier);
+    }
+
+
+    // ==================================================
+    // DEACTIVATE SUPPLIER
+    // ==================================================
+
+    @Override
+    @Transactional
+    public void deactivateSupplier(
+            UUID publicId
+    ) {
+
+        log.info(
+                "SERVICE - request came in deactivateSupplier..."
+        );
+
+
+        Supplier supplier =
+                supplierRepo.findByPublicId(publicId)
+                        .orElseThrow(() -> {
+
+                            log.info(
+                                    "SERVICE - supplier not found..."
+                            );
+
+                            return new RuntimeException(
+                                    "Supplier not found"
+                            );
+                        });
+
+
+        if (!supplier.getIsActive()) {
+
+            log.info(
+                    "SERVICE - supplier is already inactive..."
+            );
+
+            throw new RuntimeException(
+                    "Supplier is already inactive"
+            );
+        }
+
+
+        supplier.setIsActive(false);
+
+        supplierRepo.save(supplier);
+
+
+        log.info(
+                "SERVICE - supplier deactivated successfully..."
+        );
+    }
+
+
+    // ==================================================
+    // ACTIVATE SUPPLIER
+    // ==================================================
+
+    @Override
+    @Transactional
+    public void activateSupplier(
+            UUID publicId
+    ) {
+
+        log.info(
+                "SERVICE - request came in activateSupplier..."
+        );
+
+
+        Supplier supplier =
+                supplierRepo.findByPublicId(publicId)
+                        .orElseThrow(() -> {
+
+                            log.info(
+                                    "SERVICE - supplier not found..."
+                            );
+
+                            return new RuntimeException(
+                                    "Supplier not found"
+                            );
+                        });
+
+
+        if (supplier.getIsActive()) {
+
+            log.info(
+                    "SERVICE - supplier is already active..."
+            );
+
+            throw new RuntimeException(
+                    "Supplier is already active"
+            );
+        }
+
+
+        supplier.setIsActive(true);
+
+        supplierRepo.save(supplier);
+
+
+        log.info(
+                "SERVICE - supplier activated successfully..."
+        );
+    }
+
+
+    // ==================================================
+    // ENTITY → RESPONSE DTO
+    // ==================================================
+
+    private ResponseSupplierDTO mapToResponse(
+            Supplier supplier
+    ) {
+
+        log.info(
+                "SERVICE - mapping supplier to response DTO..."
+        );
+
 
         ResponseSupplierDTO response =
                 modelMapper.map(
@@ -168,9 +552,20 @@ public class SupplierService implements SupplierServiceInterface {
                 );
 
 
-        log.info(
-                "SERVICE - getSupplierByPublicId completed successfully..."
-        );
+        // ----------------------------------------------
+        // Explicitly Handle Address
+        // ----------------------------------------------
+
+        if (supplier.getAddress() != null) {
+
+            response.setAddress(
+                    modelMapper.map(
+                            supplier.getAddress(),
+                            FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseSupplierAddressDTO.class
+                    )
+            );
+        }
+
 
         return response;
     }

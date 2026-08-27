@@ -2,14 +2,15 @@ package FinanceManangementSystem.demo.Payloads.RequestDTO;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class RequestSupplierDTO {
 
     @NotBlank(message = "Supplier name is required")
@@ -23,8 +24,8 @@ public class RequestSupplierDTO {
 
     @NotBlank(message = "Mobile number is required")
     @Pattern(
-            regexp = "^[6-9][0-9]{9}$",
-            message = "Mobile number must contain exactly 10 digits and start with 6-9"
+            regexp = "^[0-9]{10}$",
+            message = "Mobile number must contain exactly 10 digits"
     )
     private String mobileNumber;
 
@@ -37,13 +38,13 @@ public class RequestSupplierDTO {
 
 
     @Pattern(
-            regexp = "^$|^[6-9][0-9]{9}$",
-            message = "Alternate mobile number must contain exactly 10 digits and start with 6-9"
+            regexp = "^[0-9]{10}$",
+            message = "Alternate mobile number must contain exactly 10 digits"
     )
     private String alternateMobileNumber;
 
 
-    @Email(message = "Enter a valid email address")
+    @Email(message = "Invalid email format")
     @Size(
             max = 150,
             message = "Email cannot exceed 150 characters"
@@ -52,8 +53,8 @@ public class RequestSupplierDTO {
 
 
     @Pattern(
-            regexp = "^$|^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$",
-            message = "Enter a valid GST number"
+            regexp = "^[0-9A-Z]{15}$",
+            message = "Invalid GST number"
     )
     private String gstNumber;
 
@@ -62,22 +63,12 @@ public class RequestSupplierDTO {
             value = "0.00",
             message = "Opening balance cannot be negative"
     )
-    @Digits(
-            integer = 13,
-            fraction = 2,
-            message = "Opening balance can have maximum 13 integer digits and 2 decimal places"
-    )
     private BigDecimal openingBalance = BigDecimal.ZERO;
 
 
-    @NotNull(message = "Payment terms are required")
     @Min(
             value = 0,
             message = "Payment terms cannot be negative"
-    )
-    @Max(
-            value = 365,
-            message = "Payment terms cannot exceed 365 days"
     )
     private Integer paymentTerms = 30;
 
