@@ -1,7 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
 import FinanceManangementSystem.demo.Enums.DocumentType;
-import FinanceManangementSystem.demo.Enums.PaymentStatus;
+import FinanceManangementSystem.demo.Enums.PurchasePaymentStatus;
 import FinanceManangementSystem.demo.Enums.PurchaseStatus;
 import FinanceManangementSystem.demo.Model.Purchase;
 import FinanceManangementSystem.demo.Model.Supplier;
@@ -184,7 +184,7 @@ public class PurchaseService
 
 
         purchase.setPaymentStatus(
-                PaymentStatus.PENDING
+                PurchasePaymentStatus.PENDING
         );
 
 

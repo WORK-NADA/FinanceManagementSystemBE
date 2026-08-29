@@ -1,6 +1,6 @@
 package FinanceManangementSystem.demo.Model;
 
-import FinanceManangementSystem.demo.Enums.PaymentStatus;
+import FinanceManangementSystem.demo.Enums.PurchasePaymentStatus;
 import FinanceManangementSystem.demo.Enums.PurchaseStatus;
 import FinanceManangementSystem.demo.Enums.WeightUnit;
 import jakarta.persistence.*;
@@ -264,8 +264,8 @@ public class Purchase {
             nullable = false,
             length = 20
     )
-    private PaymentStatus paymentStatus =
-            PaymentStatus.PENDING;
+    private PurchasePaymentStatus paymentStatus =
+            PurchasePaymentStatus.PENDING;
 
 
     // =========================================================

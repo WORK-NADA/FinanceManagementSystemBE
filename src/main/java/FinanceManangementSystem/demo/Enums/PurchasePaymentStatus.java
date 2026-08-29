@@ -1,7 +1,8 @@
 package FinanceManangementSystem.demo.Enums;
 
-public enum PaymentStatus {
+public enum PurchasePaymentStatus {
     PENDING,
     PARTIALLY_PAID,
-    COMPLETED
+    PAID,
+    CANCELLED
 }

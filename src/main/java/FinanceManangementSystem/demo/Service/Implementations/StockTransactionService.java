@@ -220,6 +220,11 @@ public class StockTransactionService
         );
 
 
+        /*
+         * decreaseStock() automatically checks
+         * whether sufficient stock is available.
+         */
+
         decreaseStock(
                 stock,
                 quantity
@@ -237,6 +242,74 @@ public class StockTransactionService
 
         log.info(
                 "SERVICE - sale stock removed successfully..."
+        );
+    }
+
+
+    // =========================================================
+    // SALE CANCEL IN
+    // =========================================================
+
+    @Override
+    @Transactional
+    public void saleCancelStockIn(
+            String rawMaterial,
+            WeightUnit unit,
+            BigDecimal quantity,
+            String saleNumber
+    ) {
+
+        log.info(
+                "SERVICE - request came in saleCancelStockIn..."
+        );
+
+
+        validateQuantity(
+                quantity
+        );
+
+
+        Stock stock =
+                findStockForUpdate(
+                        rawMaterial,
+                        unit
+                );
+
+
+        validateActiveStock(
+                stock
+        );
+
+
+        /*
+         * Original sale removed stock.
+         *
+         * Cancellation reverses that operation.
+         *
+         * SALE_OUT
+         *     ↓
+         * SALE_CANCEL_IN
+         *
+         * Therefore stock is increased.
+         */
+
+        increaseStock(
+                stock,
+                quantity
+        );
+
+
+        createTransaction(
+                stock,
+                StockTransactionType.SALE_CANCEL_IN,
+                quantity,
+                saleNumber,
+                "Stock added through sale cancellation"
+        );
+
+
+        log.info(
+                "SERVICE - sale cancellation stock added successfully..."
         );
     }
 
@@ -969,16 +1042,20 @@ public class StockTransactionService
                 stock
         );
 
+
         transaction.setTransactionType(
                 transactionType
         );
+
 
         transaction.setQuantity(
                 quantity
         );
 
+
         /*
          * Unit is always taken from Stock.
+         *
          * This prevents a transaction from
          * having a different unit from Stock.
          */
@@ -987,13 +1064,16 @@ public class StockTransactionService
                 stock.getUnit()
         );
 
+
         transaction.setReferenceNumber(
                 trimmedReference
         );
 
+
         transaction.setTransactionDate(
                 LocalDateTime.now()
         );
+
 
         transaction.setRemarks(
                 remarks
@@ -1022,39 +1102,48 @@ public class StockTransactionService
                 transaction.getPublicId()
         );
 
+
         response.setStockPublicId(
                 transaction.getStock()
                         .getPublicId()
         );
+
 
         response.setRawMaterial(
                 transaction.getStock()
                         .getRawMaterial()
         );
 
+
         response.setTransactionType(
                 transaction.getTransactionType()
         );
+
 
         response.setQuantity(
                 transaction.getQuantity()
         );
 
+
         response.setUnit(
                 transaction.getUnit()
         );
+
 
         response.setReferenceNumber(
                 transaction.getReferenceNumber()
         );
 
+
         response.setTransactionDate(
                 transaction.getTransactionDate()
         );
 
+
         response.setRemarks(
                 transaction.getRemarks()
         );
+
 
         response.setCreatedAt(
                 transaction.getCreatedAt()

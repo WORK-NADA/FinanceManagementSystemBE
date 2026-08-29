@@ -1,11 +1,9 @@
 package FinanceManangementSystem.demo.Payloads.ResponseDTO;
 
-import FinanceManangementSystem.demo.Enums.PurchasePaymentStatus;
-import FinanceManangementSystem.demo.Enums.PurchaseStatus;
+import FinanceManangementSystem.demo.Enums.SalePaymentStatus;
+import FinanceManangementSystem.demo.Enums.SaleStatus;
 import FinanceManangementSystem.demo.Enums.WeightUnit;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -15,36 +13,29 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class ResponsePurchaseDTO {
+public class ResponseSaleDTO {
 
     // =========================================================
-    // PURCHASE
+    // SALE
     // =========================================================
 
     private UUID publicId;
 
-    private String purchaseNumber;
+    private String saleNumber;
 
 
     // =========================================================
-    // SUPPLIER
+    // CUSTOMER
     // =========================================================
 
-    private SupplierDetails supplier;
-
-
-    // =========================================================
-    // RAW MATERIAL
-    // =========================================================
-
-    private String rawMaterial;
+    private CustomerDetails customer;
 
 
     // =========================================================
-    // QUANTITY
+    // PRODUCT
     // =========================================================
+
+    private String product;
 
     private BigDecimal weight;
 
@@ -52,15 +43,10 @@ public class ResponsePurchaseDTO {
 
 
     // =========================================================
-    // RATE
+    // PRICE
     // =========================================================
 
     private BigDecimal ratePerUnit;
-
-
-    // =========================================================
-    // GST
-    // =========================================================
 
     private BigDecimal gstPercentage;
 
@@ -72,33 +58,44 @@ public class ResponsePurchaseDTO {
 
 
     // =========================================================
-    // SUPPLIER INVOICE
+    // CUSTOMER INVOICE
     // =========================================================
 
-    /*
-     * This field is optional.
-     *
-     * If supplier does not provide an invoice number,
-     * this value will be null.
-     */
-
-    private String supplierInvoiceNumber;
+    private String customerInvoiceNumber;
 
 
     // =========================================================
-    // PURCHASE DATE
+    // DATE
     // =========================================================
 
-    private LocalDate purchaseDate;
+    private LocalDate saleDate;
 
 
     // =========================================================
     // STATUS
     // =========================================================
 
-    private PurchaseStatus purchaseStatus;
+    private SaleStatus saleStatus;
 
-    private PurchasePaymentStatus paymentStatus;
+    private SalePaymentStatus paymentStatus;
+
+
+    // =========================================================
+    // PAYMENT SUMMARY
+    // =========================================================
+
+    /*
+     * Total amount already received
+     * against this sale.
+     */
+    private BigDecimal paidAmount;
+
+
+    /*
+     * Remaining amount that the customer
+     * still has to pay.
+     */
+    private BigDecimal remainingAmount;
 
 
     // =========================================================
@@ -111,18 +108,16 @@ public class ResponsePurchaseDTO {
 
 
     // =========================================================
-    // SUPPLIER DETAILS
+    // CUSTOMER DETAILS
     // =========================================================
 
     @Getter
     @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class SupplierDetails {
+    public static class CustomerDetails {
 
         private UUID publicId;
 
-        private String supplierName;
+        private String customerName;
 
         private String mobileNumber;
 

@@ -85,10 +85,9 @@ public interface StockTransactionServiceInterface {
 
 
     // =========================================================
-    // INTERNAL STOCK OPERATIONS
+    // PURCHASE STOCK OPERATIONS
     // =========================================================
 
-    // Purchase completed
     void purchaseStockIn(
             String rawMaterial,
             WeightUnit unit,
@@ -97,16 +96,14 @@ public interface StockTransactionServiceInterface {
     );
 
 
-    // Sale completed
-    void saleStockOut(
+    void purchaseCancelStockOut(
             String rawMaterial,
             WeightUnit unit,
             BigDecimal quantity,
-            String saleNumber
+            String purchaseNumber
     );
 
 
-    // Purchase return completed
     void purchaseReturnStockOut(
             String rawMaterial,
             WeightUnit unit,
@@ -115,21 +112,31 @@ public interface StockTransactionServiceInterface {
     );
 
 
-    // Sale return completed
-    void saleReturnStockIn(
-            String rawMaterial,
+    // =========================================================
+    // SALE STOCK OPERATIONS
+    // =========================================================
+
+    void saleStockOut(
+            String product,
             WeightUnit unit,
             BigDecimal quantity,
-            String returnNumber
+            String saleNumber
     );
 
 
-    // Purchase cancelled
-    void purchaseCancelStockOut(
-            String rawMaterial,
+    void saleCancelStockIn(
+            String product,
             WeightUnit unit,
             BigDecimal quantity,
-            String purchaseNumber
+            String saleNumber
+    );
+
+
+    void saleReturnStockIn(
+            String product,
+            WeightUnit unit,
+            BigDecimal quantity,
+            String returnNumber
     );
 
 
