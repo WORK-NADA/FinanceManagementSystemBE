@@ -1,6 +1,7 @@
 package FinanceManangementSystem.demo.Model;
 
 import FinanceManangementSystem.demo.Enums.PaymentStatus;
+import FinanceManangementSystem.demo.Enums.PurchaseStatus;
 import FinanceManangementSystem.demo.Enums.WeightUnit;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -22,47 +23,99 @@ import java.util.UUID;
 @Table(
         name = "purchases",
         indexes = {
-                @Index(name = "idx_purchase_supplier", columnList = "supplier_id"),
-                @Index(name = "idx_purchase_date", columnList = "purchase_date"),
-                @Index(name = "idx_purchase_invoice", columnList = "invoice_number")
+
+                // Supplier lookup
+                @Index(
+                        name = "idx_purchase_supplier",
+                        columnList = "supplier_id"
+                ),
+
+                // Purchase date filtering
+                @Index(
+                        name = "idx_purchase_date",
+                        columnList = "purchase_date"
+                ),
+
+                // Supplier invoice search
+                @Index(
+                        name = "idx_purchase_supplier_invoice",
+                        columnList = "supplier_invoice_number"
+                ),
+
+                // Purchase status filtering
+                @Index(
+                        name = "idx_purchase_status",
+                        columnList = "purchase_status"
+                ),
+
+                // Payment status filtering
+                @Index(
+                        name = "idx_purchase_payment_status",
+                        columnList = "payment_status"
+                ),
+
+                // Raw material lookup
+                @Index(
+                        name = "idx_purchase_raw_material",
+                        columnList = "raw_material"
+                )
         }
 )
 public class Purchase {
+
+    // =========================================================
+    // PRIMARY KEY
+    // =========================================================
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    // =========================================================
+    // PUBLIC ID
+    // =========================================================
+
+    @UuidGenerator
     @Column(
             name = "public_id",
             nullable = false,
             unique = true,
             updatable = false
     )
-    @UuidGenerator
     private UUID publicId;
 
-    // --------------------------------
-    // Supplier
-    // --------------------------------
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    // =========================================================
+    // SUPPLIER
+    // =========================================================
+
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = false
+    )
     @JoinColumn(
             name = "supplier_id",
             nullable = false
     )
     private Supplier supplier;
 
-    // --------------------------------
-    // Product / Raw Material
-    // --------------------------------
+
+    // =========================================================
+    // RAW MATERIAL
+    // =========================================================
+
+    @Column(
+            name = "raw_material",
+            nullable = false,
+            length = 150
+    )
+    private String rawMaterial;
 
 
-    private String rawMaterial = "Raw material";
-
-    // --------------------------------
-    // Quantity
-    // --------------------------------
+    // =========================================================
+    // QUANTITY
+    // =========================================================
 
     @Column(
             nullable = false,
@@ -71,6 +124,11 @@ public class Purchase {
     )
     private BigDecimal weight;
 
+
+    // =========================================================
+    // UNIT
+    // =========================================================
+
     @Enumerated(EnumType.STRING)
     @Column(
             nullable = false,
@@ -78,21 +136,23 @@ public class Purchase {
     )
     private WeightUnit unit = WeightUnit.KG;
 
-    // --------------------------------
-    // Rate
-    // --------------------------------
+
+    // =========================================================
+    // RATE
+    // =========================================================
 
     @Column(
-            name = "rate_per_kg",
+            name = "rate_per_unit",
             nullable = false,
             precision = 15,
             scale = 2
     )
     private BigDecimal ratePerUnit;
 
-    // --------------------------------
+
+    // =========================================================
     // GST
-    // --------------------------------
+    // =========================================================
 
     @Column(
             name = "gst_percentage",
@@ -100,15 +160,16 @@ public class Purchase {
             precision = 5,
             scale = 2
     )
-    private BigDecimal gstPercentage = new BigDecimal(18);
+    private BigDecimal gstPercentage = new BigDecimal("18.00");
+
 
     @Column(
-            name = "amount",
             nullable = false,
             precision = 15,
             scale = 2
     )
     private BigDecimal amount;
+
 
     @Column(
             name = "gst_amount",
@@ -118,6 +179,7 @@ public class Purchase {
     )
     private BigDecimal gstAmount;
 
+
     @Column(
             name = "total_amount",
             nullable = false,
@@ -126,9 +188,25 @@ public class Purchase {
     )
     private BigDecimal totalAmount;
 
-    // --------------------------------
-    // Invoice
-    // --------------------------------
+
+    // =========================================================
+    // PURCHASE NUMBER
+    // =========================================================
+
+    /*
+     * Internal database ID:
+     * Used only internally by JPA.
+     *
+     * Public ID:
+     * Used by APIs.
+     *
+     * Purchase Number:
+     * Business/document identifier.
+     *
+     * Purchase number should be generated by
+     * DocumentSequenceService and should NOT be
+     * accepted from the client request DTO.
+     */
 
     @Column(
             name = "purchase_number",
@@ -137,7 +215,12 @@ public class Purchase {
             length = 30,
             updatable = false
     )
-    private String purchaseNumber;      //purchase number should be auto generated.
+    private String purchaseNumber;
+
+
+    // =========================================================
+    // SUPPLIER INVOICE NUMBER
+    // =========================================================
 
     @Column(
             name = "supplier_invoice_number",
@@ -145,15 +228,35 @@ public class Purchase {
     )
     private String supplierInvoiceNumber;
 
+
+    // =========================================================
+    // PURCHASE DATE
+    // =========================================================
+
     @Column(
             name = "purchase_date",
             nullable = false
     )
     private LocalDate purchaseDate = LocalDate.now();
 
-    // --------------------------------
-    // Payment
-    // --------------------------------
+
+    // =========================================================
+    // PURCHASE STATUS
+    // =========================================================
+
+    @Enumerated(EnumType.STRING)
+    @Column(
+            name = "purchase_status",
+            nullable = false,
+            length = 20
+    )
+    private PurchaseStatus purchaseStatus =
+            PurchaseStatus.ACTIVE;
+
+
+    // =========================================================
+    // PAYMENT STATUS
+    // =========================================================
 
     @Enumerated(EnumType.STRING)
     @Column(
@@ -161,11 +264,13 @@ public class Purchase {
             nullable = false,
             length = 20
     )
-    private PaymentStatus paymentStatus = PaymentStatus.PENDING;
+    private PaymentStatus paymentStatus =
+            PaymentStatus.PENDING;
 
-    // --------------------------------
-    // Audit
-    // --------------------------------
+
+    // =========================================================
+    // AUDIT
+    // =========================================================
 
     @CreationTimestamp
     @Column(
@@ -174,7 +279,10 @@ public class Purchase {
     )
     private LocalDateTime createdAt;
 
+
     @UpdateTimestamp
-    @Column(nullable = false)
+    @Column(
+            nullable = false
+    )
     private LocalDateTime updatedAt;
 }

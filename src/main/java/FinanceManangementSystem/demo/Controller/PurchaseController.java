@@ -7,10 +7,13 @@ import FinanceManangementSystem.demo.Service.PurchaseServiceInterface;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -21,6 +24,10 @@ public class PurchaseController {
 
     private final PurchaseServiceInterface purchaseService;
 
+
+    // =========================================================
+    // ADD PURCHASE
+    // =========================================================
 
     @PostMapping("add")
     public ResponseEntity<APIResponse<ResponsePurchaseDTO>> addPurchase(
@@ -44,6 +51,7 @@ public class PurchaseController {
                 "CONTROLLER - purchase added successfully..."
         );
 
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(
@@ -54,6 +62,10 @@ public class PurchaseController {
                 );
     }
 
+
+    // =========================================================
+    // GET PURCHASE BY PUBLIC ID
+    // =========================================================
 
     @GetMapping("/{publicId}")
     public ResponseEntity<APIResponse<ResponsePurchaseDTO>>
@@ -80,12 +92,274 @@ public class PurchaseController {
                 "CONTROLLER - purchase fetched successfully..."
         );
 
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
                         new APIResponse<>(
                                 "Purchase fetched successfully...",
                                 response
+                        )
+                );
+    }
+
+
+    // =========================================================
+    // GET ALL PURCHASES
+    // =========================================================
+
+    @GetMapping("all")
+    public ResponseEntity<
+            APIResponse<List<ResponsePurchaseDTO>>
+            >
+    getAllPurchases() {
+
+        log.info(
+                "CONTROLLER - request came in getAllPurchases..."
+        );
+
+
+        log.info(
+                "CONTROLLER - calling purchase service..."
+        );
+
+        List<ResponsePurchaseDTO> response =
+                purchaseService.getAllPurchases();
+
+
+        log.info(
+                "CONTROLLER - purchases fetched successfully..."
+        );
+
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        new APIResponse<>(
+                                "Purchases fetched successfully...",
+                                response
+                        )
+                );
+    }
+
+
+    // =========================================================
+    // GET PURCHASES BY SUPPLIER
+    // =========================================================
+
+    @GetMapping("supplier/{supplierPublicId}")
+    public ResponseEntity<
+            APIResponse<List<ResponsePurchaseDTO>>
+            >
+    getPurchasesBySupplier(
+            @PathVariable UUID supplierPublicId
+    ) {
+
+        log.info(
+                "CONTROLLER - request came in getPurchasesBySupplier..."
+        );
+
+
+        log.info(
+                "CONTROLLER - calling purchase service..."
+        );
+
+        List<ResponsePurchaseDTO> response =
+                purchaseService.getPurchasesBySupplier(
+                        supplierPublicId
+                );
+
+
+        log.info(
+                "CONTROLLER - supplier purchases fetched successfully..."
+        );
+
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        new APIResponse<>(
+                                "Supplier purchases fetched successfully...",
+                                response
+                        )
+                );
+    }
+
+
+    // =========================================================
+    // GET PURCHASES BY DATE RANGE
+    // =========================================================
+
+    @GetMapping("date-range")
+    public ResponseEntity<
+            APIResponse<List<ResponsePurchaseDTO>>
+            >
+    getPurchasesByDateRange(
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate fromDate,
+
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate toDate
+    ) {
+
+        log.info(
+                "CONTROLLER - request came in getPurchasesByDateRange..."
+        );
+
+
+        log.info(
+                "CONTROLLER - calling purchase service..."
+        );
+
+        List<ResponsePurchaseDTO> response =
+                purchaseService.getPurchasesByDateRange(
+                        fromDate,
+                        toDate
+                );
+
+
+        log.info(
+                "CONTROLLER - purchases fetched successfully..."
+        );
+
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        new APIResponse<>(
+                                "Purchases fetched successfully...",
+                                response
+                        )
+                );
+    }
+
+
+    // =========================================================
+    // GET PURCHASES BY STATUS
+    // =========================================================
+
+    @GetMapping("status/{status}")
+    public ResponseEntity<
+            APIResponse<List<ResponsePurchaseDTO>>
+            >
+    getPurchasesByStatus(
+            @PathVariable String status
+    ) {
+
+        log.info(
+                "CONTROLLER - request came in getPurchasesByStatus..."
+        );
+
+
+        log.info(
+                "CONTROLLER - calling purchase service..."
+        );
+
+        List<ResponsePurchaseDTO> response =
+                purchaseService.getPurchasesByStatus(
+                        status
+                );
+
+
+        log.info(
+                "CONTROLLER - purchases fetched by status successfully..."
+        );
+
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        new APIResponse<>(
+                                "Purchases fetched by status successfully...",
+                                response
+                        )
+                );
+    }
+
+
+    // =========================================================
+    // UPDATE PURCHASE
+    // =========================================================
+
+    @PutMapping("/{publicId}")
+    public ResponseEntity<
+            APIResponse<ResponsePurchaseDTO>
+            >
+    updatePurchase(
+            @PathVariable UUID publicId,
+
+            @Valid @RequestBody RequestPurchaseDTO dto
+    ) {
+
+        log.info(
+                "CONTROLLER - request came in updatePurchase..."
+        );
+
+
+        log.info(
+                "CONTROLLER - calling purchase service..."
+        );
+
+        ResponsePurchaseDTO response =
+                purchaseService.updatePurchase(
+                        publicId,
+                        dto
+                );
+
+
+        log.info(
+                "CONTROLLER - purchase updated successfully..."
+        );
+
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        new APIResponse<>(
+                                "Purchase updated successfully...",
+                                response
+                        )
+                );
+    }
+
+
+    // =========================================================
+    // CANCEL PURCHASE
+    // =========================================================
+
+    @PatchMapping("/{publicId}/cancel")
+    public ResponseEntity<APIResponse<Void>>
+    cancelPurchase(
+            @PathVariable UUID publicId
+    ) {
+
+        log.info(
+                "CONTROLLER - request came in cancelPurchase..."
+        );
+
+
+        log.info(
+                "CONTROLLER - calling purchase service..."
+        );
+
+        purchaseService.cancelPurchase(
+                publicId
+        );
+
+
+        log.info(
+                "CONTROLLER - purchase cancelled successfully..."
+        );
+
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(
+                        new APIResponse<>(
+                                "Purchase cancelled successfully...",
+                                null
                         )
                 );
     }

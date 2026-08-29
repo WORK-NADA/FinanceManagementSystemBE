@@ -3,11 +3,80 @@ package FinanceManangementSystem.demo.Service;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestPurchaseDTO;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponsePurchaseDTO;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public interface PurchaseServiceInterface {
 
-    ResponsePurchaseDTO addPurchase(RequestPurchaseDTO dto);
+    // =========================================================
+    // CREATE PURCHASE
+    // =========================================================
 
-    ResponsePurchaseDTO getPurchaseByPublicId(UUID publicId);
+    ResponsePurchaseDTO addPurchase(
+            RequestPurchaseDTO dto
+    );
+
+
+    // =========================================================
+    // GET PURCHASE BY PUBLIC ID
+    // =========================================================
+
+    ResponsePurchaseDTO getPurchaseByPublicId(
+            UUID publicId
+    );
+
+
+    // =========================================================
+    // GET ALL PURCHASES
+    // =========================================================
+
+    List<ResponsePurchaseDTO> getAllPurchases();
+
+
+    // =========================================================
+    // GET PURCHASES BY SUPPLIER
+    // =========================================================
+
+    List<ResponsePurchaseDTO> getPurchasesBySupplier(
+            UUID supplierPublicId
+    );
+
+
+    // =========================================================
+    // GET PURCHASES BY DATE RANGE
+    // =========================================================
+
+    List<ResponsePurchaseDTO> getPurchasesByDateRange(
+            LocalDate fromDate,
+            LocalDate toDate
+    );
+
+
+    // =========================================================
+    // GET PURCHASES BY STATUS
+    // =========================================================
+
+    List<ResponsePurchaseDTO> getPurchasesByStatus(
+            String status
+    );
+
+
+    // =========================================================
+    // UPDATE PURCHASE
+    // =========================================================
+
+    ResponsePurchaseDTO updatePurchase(
+            UUID publicId,
+            RequestPurchaseDTO dto
+    );
+
+
+    // =========================================================
+    // CANCEL PURCHASE
+    // =========================================================
+
+    void cancelPurchase(
+            UUID publicId
+    );
 }

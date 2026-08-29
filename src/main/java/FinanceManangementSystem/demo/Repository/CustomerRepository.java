@@ -1,91 +1,95 @@
 package FinanceManangementSystem.demo.Repository;
 
-import FinanceManangementSystem.demo.Enums.PurchaseStatus;
-import FinanceManangementSystem.demo.Model.Purchase;
-import FinanceManangementSystem.demo.Model.Supplier;
+import FinanceManangementSystem.demo.Model.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface PurchaseRepository
-        extends JpaRepository<Purchase, Long> {
+public interface CustomerRepository
+        extends JpaRepository<Customer, Long> {
 
     // =========================================================
     // FIND BY PUBLIC ID
     // =========================================================
 
-    Optional<Purchase> findByPublicId(
+    Optional<Customer> findByPublicId(
             UUID publicId
     );
 
 
     // =========================================================
-    // FIND BY PURCHASE NUMBER
+    // FIND ACTIVE CUSTOMER BY PUBLIC ID
     // =========================================================
 
-    Optional<Purchase> findByPurchaseNumber(
-            String purchaseNumber
+    Optional<Customer> findByPublicIdAndIsActiveTrue(
+            UUID publicId
     );
 
 
     // =========================================================
-    // CHECK PURCHASE NUMBER
+    // FIND ALL ACTIVE CUSTOMERS
     // =========================================================
 
-    boolean existsByPurchaseNumber(
-            String purchaseNumber
+    List<Customer> findByIsActiveTrue();
+
+
+    // =========================================================
+    // CHECK MOBILE NUMBER
+    // =========================================================
+
+    boolean existsByMobileNumber(
+            String mobileNumber
     );
 
 
     // =========================================================
-    // FIND BY SUPPLIER
+    // CHECK MOBILE NUMBER DURING UPDATE
     // =========================================================
 
-    List<Purchase> findBySupplier(
-            Supplier supplier
+    boolean existsByMobileNumberAndPublicIdNot(
+            String mobileNumber,
+            UUID publicId
     );
 
 
     // =========================================================
-    // FIND BY PURCHASE STATUS
+    // CHECK EMAIL
     // =========================================================
 
-    List<Purchase> findByPurchaseStatus(
-            PurchaseStatus purchaseStatus
+    boolean existsByEmail(
+            String email
     );
 
 
     // =========================================================
-    // FIND BY PURCHASE DATE RANGE
+    // CHECK EMAIL DURING UPDATE
     // =========================================================
 
-    List<Purchase> findByPurchaseDateBetween(
-            LocalDate fromDate,
-            LocalDate toDate
+    boolean existsByEmailAndPublicIdNot(
+            String email,
+            UUID publicId
     );
 
 
     // =========================================================
-    // FIND BY SUPPLIER AND STATUS
+    // CHECK GST NUMBER
     // =========================================================
 
-    List<Purchase> findBySupplierAndPurchaseStatus(
-            Supplier supplier,
-            PurchaseStatus purchaseStatus
+    boolean existsByGstNumber(
+            String gstNumber
     );
 
 
     // =========================================================
-    // CHECK SUPPLIER INVOICE NUMBER
+    // CHECK GST NUMBER DURING UPDATE
     // =========================================================
 
-    boolean existsBySupplierInvoiceNumberAndSupplier(
-            String supplierInvoiceNumber,
-            Supplier supplier
+    boolean existsByGstNumberAndPublicIdNot(
+            String gstNumber,
+            UUID publicId
     );
 }
