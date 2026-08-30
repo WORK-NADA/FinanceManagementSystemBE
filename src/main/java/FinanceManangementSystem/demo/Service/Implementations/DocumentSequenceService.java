@@ -69,7 +69,7 @@ public class DocumentSequenceService implements SequenceServiceInterface {
         }
     }
 
-    private String getPrefix(
+    public String getPrefix(
             DocumentType documentType
     ) {
 

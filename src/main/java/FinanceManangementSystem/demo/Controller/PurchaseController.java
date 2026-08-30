@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
+import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 @Slf4j
@@ -110,9 +115,10 @@ public class PurchaseController {
 
     @GetMapping("all")
     public ResponseEntity<
-            APIResponse<List<ResponsePurchaseDTO>>
+            APIResponse<Page<ResponsePurchaseDTO>>
             >
-    getAllPurchases() {
+    getAllPurchases(@RequestParam(defaultValue = "0") int page,
+                    @RequestParam(defaultValue = "20") int size) {
 
         log.info(
                 "CONTROLLER - request came in getAllPurchases..."
@@ -123,8 +129,9 @@ public class PurchaseController {
                 "CONTROLLER - calling purchase service..."
         );
 
-        List<ResponsePurchaseDTO> response =
-                purchaseService.getAllPurchases();
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "purchaseDate"));
+
+        Page<ResponsePurchaseDTO> response = purchaseService.getAllPurchases(pageable);
 
 
         log.info(
@@ -136,8 +143,8 @@ public class PurchaseController {
                 .status(HttpStatus.OK)
                 .body(
                         new APIResponse<>(
-                                "Purchases fetched successfully...",
-                                response
+                                        "Purchases fetched successfully...",
+                                        response
                         )
                 );
     }
@@ -320,46 +327,6 @@ public class PurchaseController {
                         new APIResponse<>(
                                 "Purchase updated successfully...",
                                 response
-                        )
-                );
-    }
-
-
-    // =========================================================
-    // CANCEL PURCHASE
-    // =========================================================
-
-    @PatchMapping("/{publicId}/cancel")
-    public ResponseEntity<APIResponse<Void>>
-    cancelPurchase(
-            @PathVariable UUID publicId
-    ) {
-
-        log.info(
-                "CONTROLLER - request came in cancelPurchase..."
-        );
-
-
-        log.info(
-                "CONTROLLER - calling purchase service..."
-        );
-
-        purchaseService.cancelPurchase(
-                publicId
-        );
-
-
-        log.info(
-                "CONTROLLER - purchase cancelled successfully..."
-        );
-
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(
-                        new APIResponse<>(
-                                "Purchase cancelled successfully...",
-                                null
                         )
                 );
     }

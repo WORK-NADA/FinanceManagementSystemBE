@@ -1,5 +1,10 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.DuplicateResourceException;
+import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
+import FinanceManangementSystem.demo.Exceptions.InvalidStateException;
+import FinanceManangementSystem.demo.Exceptions.InsufficientStockException;
+import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 import FinanceManangementSystem.demo.Enums.DocumentType;
 import FinanceManangementSystem.demo.Enums.StockTransactionType;
 import FinanceManangementSystem.demo.Enums.WeightUnit;
@@ -55,7 +60,7 @@ public class StockTransactionService
                 dto.getTransactionType()
                         != StockTransactionType.ADJUSTMENT_OUT) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Only adjustment transactions are allowed"
             );
         }
@@ -72,7 +77,7 @@ public class StockTransactionService
                                 dto.getStockPublicId()
                         )
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new ResourceNotFoundException(
                                         "Stock not found"
                                 )
                         );
@@ -241,61 +246,6 @@ public class StockTransactionService
     }
 
 
-    // =========================================================
-    // PURCHASE RETURN OUT
-    // =========================================================
-
-    @Override
-    @Transactional
-    public void purchaseReturnStockOut(
-            String rawMaterial,
-            WeightUnit unit,
-            BigDecimal quantity,
-            String returnNumber
-    ) {
-
-        log.info(
-                "SERVICE - request came in purchaseReturnStockOut..."
-        );
-
-
-        validateQuantity(
-                quantity
-        );
-
-
-        Stock stock =
-                findStockForUpdate(
-                        rawMaterial,
-                        unit
-                );
-
-
-        validateActiveStock(
-                stock
-        );
-
-
-        decreaseStock(
-                stock,
-                quantity
-        );
-
-
-        createTransaction(
-                stock,
-                StockTransactionType.PURCHASE_RETURN_OUT,
-                quantity,
-                returnNumber,
-                "Stock removed through purchase return"
-        );
-
-
-        log.info(
-                "SERVICE - purchase return stock removed successfully..."
-        );
-    }
-
 
     // =========================================================
     // SALE RETURN IN
@@ -352,61 +302,6 @@ public class StockTransactionService
         );
     }
 
-
-    // =========================================================
-    // PURCHASE CANCEL OUT
-    // =========================================================
-
-    @Override
-    @Transactional
-    public void purchaseCancelStockOut(
-            String rawMaterial,
-            WeightUnit unit,
-            BigDecimal quantity,
-            String purchaseNumber
-    ) {
-
-        log.info(
-                "SERVICE - request came in purchaseCancelStockOut..."
-        );
-
-
-        validateQuantity(
-                quantity
-        );
-
-
-        Stock stock =
-                findStockForUpdate(
-                        rawMaterial,
-                        unit
-                );
-
-
-        validateActiveStock(
-                stock
-        );
-
-
-        decreaseStock(
-                stock,
-                quantity
-        );
-
-
-        createTransaction(
-                stock,
-                StockTransactionType.PURCHASE_CANCEL_OUT,
-                quantity,
-                purchaseNumber,
-                "Stock removed through purchase cancellation"
-        );
-
-
-        log.info(
-                "SERVICE - purchase cancellation stock removed successfully..."
-        );
-    }
 
 
     // =========================================================
@@ -570,23 +465,13 @@ public class StockTransactionService
 
     @Override
     @Transactional(readOnly = true)
-    public List<ResponseStockTransactionDTO> getAllTransactions() {
+    public org.springframework.data.domain.Page<ResponseStockTransactionDTO> getAllTransactions(org.springframework.data.domain.Pageable pageable) {
 
         log.info(
                 "SERVICE - request came in getAllTransactions..."
         );
 
-
-        return stockTransactionRepository
-                .findAll(
-                        Sort.by(
-                                Sort.Direction.DESC,
-                                "transactionDate"
-                        )
-                )
-                .stream()
-                .map(this::mapToResponse)
-                .toList();
+        return stockTransactionRepository.findAll(pageable).map(this::mapToResponse);
     }
 
 
@@ -772,7 +657,7 @@ public class StockTransactionService
         if (referenceNumber == null ||
                 referenceNumber.trim().isEmpty()) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Reference number is required"
             );
         }
@@ -800,7 +685,7 @@ public class StockTransactionService
         if (rawMaterial == null ||
                 rawMaterial.trim().isEmpty()) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Raw material is required"
             );
         }
@@ -808,7 +693,7 @@ public class StockTransactionService
 
         if (unit == null) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Unit is required"
             );
         }
@@ -820,7 +705,7 @@ public class StockTransactionService
                         unit
                 )
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new ResourceNotFoundException(
                                 "Stock not found"
                         )
                 );
@@ -860,7 +745,7 @@ public class StockTransactionService
         if (stock.getCurrentQuantity()
                 .compareTo(quantity) < 0) {
 
-            throw new RuntimeException(
+            throw new InsufficientStockException(
                     "Insufficient stock. Available: "
                             + stock.getCurrentQuantity()
                             + " "
@@ -897,7 +782,7 @@ public class StockTransactionService
                 stock.getIsActive()
         )) {
 
-            throw new RuntimeException(
+            throw new InvalidStateException(
                     "Stock is inactive"
             );
         }
@@ -917,7 +802,7 @@ public class StockTransactionService
                         BigDecimal.ZERO
                 ) <= 0) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Quantity must be greater than zero"
             );
         }
@@ -939,7 +824,7 @@ public class StockTransactionService
         if (referenceNumber == null ||
                 referenceNumber.trim().isEmpty()) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Reference number is required"
             );
         }
@@ -955,7 +840,7 @@ public class StockTransactionService
                         transactionType
                 )) {
 
-            throw new RuntimeException(
+            throw new DuplicateResourceException(
                     "Stock transaction already exists for this reference"
             );
         }

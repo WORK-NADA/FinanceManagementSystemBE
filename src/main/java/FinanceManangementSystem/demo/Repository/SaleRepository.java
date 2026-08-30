@@ -1,0 +1,91 @@
+package FinanceManangementSystem.demo.Repository;
+
+import FinanceManangementSystem.demo.Enums.PaymentStatus;
+import FinanceManangementSystem.demo.Model.Customer;
+import FinanceManangementSystem.demo.Model.Sale;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+@Repository
+public interface SaleRepository
+        extends JpaRepository<Sale, Long> {
+
+    // =========================================================
+    // FIND BY PUBLIC ID
+    // =========================================================
+
+    Optional<Sale> findByPublicId(
+            UUID publicId
+    );
+
+
+    // =========================================================
+    // FIND BY SALE NUMBER
+    // =========================================================
+
+    Optional<Sale> findBySaleNumber(
+            String saleNumber
+    );
+
+
+    // =========================================================
+    // CHECK SALE NUMBER
+    // =========================================================
+
+    boolean existsBySaleNumber(
+            String saleNumber
+    );
+
+
+    // =========================================================
+    // FIND BY CUSTOMER
+    // =========================================================
+
+    List<Sale> findByCustomer(
+            Customer customer
+    );
+
+
+    // =========================================================
+    // CHECK CUSTOMER INVOICE NUMBER
+    // =========================================================
+
+    boolean existsByCustomerInvoiceNumberAndCustomer(
+            String customerInvoiceNumber,
+            Customer customer
+    );
+
+
+    // =========================================================
+    // FIND BY SALE DATE RANGE
+    // =========================================================
+
+    List<Sale> findBySaleDateBetween(
+            LocalDate fromDate,
+            LocalDate toDate
+    );
+
+
+    // =========================================================
+    // FIND BY PAYMENT STATUSES (DASHBOARD)
+    // =========================================================
+
+    List<Sale> findByPaymentStatusIn(
+            List<PaymentStatus> statuses
+    );
+
+
+    // =========================================================
+    // FIND BY CUSTOMER AND PAYMENT STATUSES (DASHBOARD)
+    // =========================================================
+
+    List<Sale> findByCustomerAndPaymentStatusIn(
+            Customer customer,
+            List<PaymentStatus> statuses
+    );
+}

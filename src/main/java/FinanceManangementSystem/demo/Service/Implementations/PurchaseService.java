@@ -360,18 +360,15 @@ public class PurchaseService
 
     @Override
     @Transactional(readOnly = true)
-    public List<ResponsePurchaseDTO> getAllPurchases() {
+    public org.springframework.data.domain.Page<ResponsePurchaseDTO> getAllPurchases(org.springframework.data.domain.Pageable pageable) {
 
         log.info(
                 "SERVICE - request came in getAllPurchases..."
         );
 
-
         return purchaseRepo
-                .findAll()
-                .stream()
-                .map(this::mapToResponse)
-                .toList();
+                .findAll(pageable)
+                .map(this::mapToResponse);
     }
 
 
@@ -548,18 +545,6 @@ public class PurchaseService
                             );
                         });
 
-
-        // -----------------------------------------------------
-        // CHECK PURCHASE STATUS
-        // -----------------------------------------------------
-
-        if (purchase.getPurchaseStatus()
-                == PurchaseStatus.CANCELLED) {
-
-            throw new RuntimeException(
-                    "Cancelled purchase cannot be updated"
-            );
-        }
 
 
         // -----------------------------------------------------
@@ -797,103 +782,6 @@ public class PurchaseService
         );
     }
 
-
-    // =========================================================
-    // CANCEL PURCHASE
-    // =========================================================
-
-    @Override
-    @Transactional
-    public void cancelPurchase(
-            UUID publicId
-    ) {
-
-        log.info(
-                "SERVICE - request came in cancelPurchase..."
-        );
-
-
-        // -----------------------------------------------------
-        // FIND PURCHASE
-        // -----------------------------------------------------
-
-        Purchase purchase =
-                purchaseRepo
-                        .findByPublicId(
-                                publicId
-                        )
-                        .orElseThrow(() -> {
-
-                            log.info(
-                                    "SERVICE - purchase not found..."
-                            );
-
-                            return new RuntimeException(
-                                    "Purchase not found"
-                            );
-                        });
-
-
-        // -----------------------------------------------------
-        // CHECK STATUS
-        // -----------------------------------------------------
-
-        if (purchase.getPurchaseStatus()
-                == PurchaseStatus.CANCELLED) {
-
-            throw new RuntimeException(
-                    "Purchase is already cancelled"
-            );
-        }
-
-
-        // -----------------------------------------------------
-        // REVERSE STOCK
-        // -----------------------------------------------------
-
-        /*
-         * The purchase originally created:
-         *
-         * PURCHASE_IN
-         *
-         * Cancellation creates:
-         *
-         * PURCHASE_CANCEL_OUT
-         *
-         * The purchase number is used as the reference.
-         */
-
-        log.info(
-                "SERVICE - reversing purchase stock..."
-        );
-
-
-        stockTransactionService.purchaseCancelStockOut(
-                purchase.getRawMaterial(),
-                purchase.getUnit(),
-                purchase.getWeight(),
-                purchase.getPurchaseNumber()
-        );
-
-
-        // -----------------------------------------------------
-        // MARK PURCHASE AS CANCELLED
-        // -----------------------------------------------------
-
-        purchase.setPurchaseStatus(
-                PurchaseStatus.CANCELLED
-        );
-
-
-        purchaseRepo.save(
-                purchase
-        );
-
-
-        log.info(
-                "SERVICE - purchase cancelled and stock reversed successfully..."
-        );
-    }
 
 
     // =========================================================

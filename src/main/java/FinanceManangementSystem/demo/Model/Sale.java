@@ -73,15 +73,15 @@ public class Sale {
 
 
     // --------------------------------
-    // Finished Product
+    // Raw Material
     // --------------------------------
 
     @Column(
-            name = "product",
+            name = "raw_material",
             nullable = false,
-            length = 150
+            length = 100
     )
-    private String product;
+    private String rawMaterial;
 
 
     // --------------------------------

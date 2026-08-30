@@ -5,6 +5,8 @@ import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponsePurchaseDTO;
 
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 public interface PurchaseServiceInterface {
@@ -31,7 +33,7 @@ public interface PurchaseServiceInterface {
     // GET ALL PURCHASES
     // =========================================================
 
-    List<ResponsePurchaseDTO> getAllPurchases();
+        Page<ResponsePurchaseDTO> getAllPurchases(Pageable pageable);
 
 
     // =========================================================
@@ -69,14 +71,5 @@ public interface PurchaseServiceInterface {
     ResponsePurchaseDTO updatePurchase(
             UUID publicId,
             RequestPurchaseDTO dto
-    );
-
-
-    // =========================================================
-    // CANCEL PURCHASE
-    // =========================================================
-
-    void cancelPurchase(
-            UUID publicId
     );
 }

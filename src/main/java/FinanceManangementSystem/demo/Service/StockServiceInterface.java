@@ -56,6 +56,8 @@ public interface StockServiceInterface {
             String rawMaterial
     );
 
+    List<ResponseStockDTO> getLowStockList();
+
 
     // --------------------------------------------------
     // Update Stock Master Details

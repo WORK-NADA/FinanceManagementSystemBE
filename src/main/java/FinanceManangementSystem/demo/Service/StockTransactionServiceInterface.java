@@ -34,7 +34,7 @@ public interface StockTransactionServiceInterface {
     // GET ALL TRANSACTIONS
     // =========================================================
 
-    List<ResponseStockTransactionDTO> getAllTransactions();
+        org.springframework.data.domain.Page<ResponseStockTransactionDTO> getAllTransactions(org.springframework.data.domain.Pageable pageable);
 
 
     // =========================================================
@@ -106,14 +106,6 @@ public interface StockTransactionServiceInterface {
     );
 
 
-    // Purchase return completed
-    void purchaseReturnStockOut(
-            String rawMaterial,
-            WeightUnit unit,
-            BigDecimal quantity,
-            String returnNumber
-    );
-
 
     // Sale return completed
     void saleReturnStockIn(
@@ -123,14 +115,6 @@ public interface StockTransactionServiceInterface {
             String returnNumber
     );
 
-
-    // Purchase cancelled
-    void purchaseCancelStockOut(
-            String rawMaterial,
-            WeightUnit unit,
-            BigDecimal quantity,
-            String purchaseNumber
-    );
 
 
     // =========================================================

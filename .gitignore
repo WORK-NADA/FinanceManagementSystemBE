@@ -1,0 +1,6 @@
+# Ignore compiled classes and build output  
+target/  
+# Ignore IDE workspace settings  
+.idea/workspace.xml  
+# Ignore secret properties file  
+#src/main/resources/secrets.properties

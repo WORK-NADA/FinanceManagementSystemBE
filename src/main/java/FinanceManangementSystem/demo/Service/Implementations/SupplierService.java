@@ -1,5 +1,8 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.DuplicateResourceException;
+import FinanceManangementSystem.demo.Exceptions.InvalidStateException;
+import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 import FinanceManangementSystem.demo.Model.Supplier;
 import FinanceManangementSystem.demo.Model.SupplierAddress;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestSupplierDTO;
@@ -58,7 +61,7 @@ public class SupplierService implements SupplierServiceInterface {
                     "SERVICE - supplier mobile number already exists..."
             );
 
-            throw new RuntimeException(
+            throw new DuplicateResourceException(
                     "Supplier with this mobile number already exists"
             );
         }
@@ -78,7 +81,7 @@ public class SupplierService implements SupplierServiceInterface {
                     "SERVICE - supplier GST number already exists..."
             );
 
-            throw new RuntimeException(
+            throw new DuplicateResourceException(
                     "Supplier with this GST number already exists"
             );
         }
@@ -192,7 +195,7 @@ public class SupplierService implements SupplierServiceInterface {
                                     "SERVICE - supplier not found..."
                             );
 
-                            return new RuntimeException(
+                            return new ResourceNotFoundException(
                                     "Supplier not found"
                             );
                         });
@@ -283,7 +286,7 @@ public class SupplierService implements SupplierServiceInterface {
                     "SERVICE - supplier mobile number already exists..."
             );
 
-            throw new RuntimeException(
+            throw new DuplicateResourceException(
                     "Supplier with this mobile number already exists"
             );
         }
@@ -306,7 +309,7 @@ public class SupplierService implements SupplierServiceInterface {
                     "SERVICE - supplier email already exists..."
             );
 
-            throw new RuntimeException(
+            throw new DuplicateResourceException(
                     "Supplier with this email already exists"
             );
         }
@@ -329,7 +332,7 @@ public class SupplierService implements SupplierServiceInterface {
                     "SERVICE - supplier GST number already exists..."
             );
 
-            throw new RuntimeException(
+            throw new DuplicateResourceException(
                     "Supplier with this GST number already exists"
             );
         }
@@ -451,7 +454,7 @@ public class SupplierService implements SupplierServiceInterface {
                                     "SERVICE - supplier not found..."
                             );
 
-                            return new RuntimeException(
+                            return new ResourceNotFoundException(
                                     "Supplier not found"
                             );
                         });
@@ -463,7 +466,7 @@ public class SupplierService implements SupplierServiceInterface {
                     "SERVICE - supplier is already inactive..."
             );
 
-            throw new RuntimeException(
+            throw new InvalidStateException(
                     "Supplier is already inactive"
             );
         }
@@ -503,7 +506,7 @@ public class SupplierService implements SupplierServiceInterface {
                                     "SERVICE - supplier not found..."
                             );
 
-                            return new RuntimeException(
+                            return new ResourceNotFoundException(
                                     "Supplier not found"
                             );
                         });
@@ -515,7 +518,7 @@ public class SupplierService implements SupplierServiceInterface {
                     "SERVICE - supplier is already active..."
             );
 
-            throw new RuntimeException(
+            throw new InvalidStateException(
                     "Supplier is already active"
             );
         }

@@ -1,0 +1,56 @@
+package FinanceManangementSystem.demo.Repository;
+
+import FinanceManangementSystem.demo.Enums.ExpenseCategory;
+import FinanceManangementSystem.demo.Model.Expense;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+@Repository
+public interface ExpenseRepository
+        extends JpaRepository<Expense, Long> {
+
+    Optional<Expense> findByPublicId(
+            UUID publicId
+    );
+
+    Optional<Expense> findByPublicIdAndIsActiveTrue(
+            UUID publicId
+    );
+
+        List<Expense> findByIsActiveTrueOrderByExpenseDateDesc();
+
+        org.springframework.data.domain.Page<Expense> findByIsActiveTrueOrderByExpenseDateDesc(org.springframework.data.domain.Pageable pageable);
+
+    List<Expense> findByExpenseDateBetweenAndIsActiveTrueOrderByExpenseDateDesc(
+            LocalDate fromDate,
+            LocalDate toDate
+    );
+
+    List<Expense> findByCategoryAndIsActiveTrueOrderByExpenseDateDesc(
+            ExpenseCategory category
+    );
+
+    boolean existsByExpenseNumber(
+            String expenseNumber
+    );
+
+    @Query("SELECT COALESCE(SUM(e.amount), 0) FROM Expense e WHERE e.isActive = true AND e.expenseDate BETWEEN :fromDate AND :toDate")
+    BigDecimal sumTotalExpensesByDateRange(
+            @Param("fromDate") LocalDate fromDate,
+            @Param("toDate") LocalDate toDate
+    );
+
+    @Query("SELECT e.category, COALESCE(SUM(e.amount), 0) FROM Expense e WHERE e.isActive = true AND e.expenseDate BETWEEN :fromDate AND :toDate GROUP BY e.category")
+    List<Object[]> findCategoryWiseBreakdownByDateRange(
+            @Param("fromDate") LocalDate fromDate,
+            @Param("toDate") LocalDate toDate
+    );
+}

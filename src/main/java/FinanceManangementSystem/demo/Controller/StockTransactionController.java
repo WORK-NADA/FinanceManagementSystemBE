@@ -112,9 +112,10 @@ public class StockTransactionController {
 
     @GetMapping("all")
     public ResponseEntity<
-            APIResponse<List<ResponseStockTransactionDTO>>
+            APIResponse<org.springframework.data.domain.Page<ResponseStockTransactionDTO>>
             >
-    getAllTransactions() {
+    getAllTransactions(@RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "20") int size) {
 
         log.info(
                 "CONTROLLER - request came in getAllTransactions..."
@@ -124,9 +125,9 @@ public class StockTransactionController {
                 "CONTROLLER - calling stock transaction service..."
         );
 
-        List<ResponseStockTransactionDTO> response =
-                stockTransactionService
-                        .getAllTransactions();
+        var pageable = org.springframework.data.domain.PageRequest.of(page, size, org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "transactionDate"));
+
+        org.springframework.data.domain.Page<ResponseStockTransactionDTO> response = stockTransactionService.getAllTransactions(pageable);
 
         log.info(
                 "CONTROLLER - all stock transactions fetched successfully..."
