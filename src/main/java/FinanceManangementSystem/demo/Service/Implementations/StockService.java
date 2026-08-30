@@ -1,5 +1,9 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.DuplicateResourceException;
+import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
+import FinanceManangementSystem.demo.Exceptions.InvalidStateException;
+import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 import FinanceManangementSystem.demo.Model.Stock;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestMinimumStockLevelDTO;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestStockDTO;
@@ -53,7 +57,7 @@ public class StockService
                     "SERVICE - stock already exists..."
             );
 
-            throw new RuntimeException(
+            throw new DuplicateResourceException(
                     "Stock already exists for this raw material and unit"
             );
         }
@@ -200,6 +204,25 @@ public class StockService
                 .toList();
     }
 
+    // =========================================================
+    // GET LOW STOCK LIST
+    // =========================================================
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ResponseStockDTO> getLowStockList() {
+
+        log.info(
+                "SERVICE - request came in getLowStockList..."
+        );
+
+        return stockRepository
+                .findActiveStocksBelowMinimumLevel()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
 
     // =========================================================
     // SEARCH STOCK
@@ -219,7 +242,7 @@ public class StockService
         if (rawMaterial == null ||
                 rawMaterial.trim().isEmpty()) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Raw material is required"
             );
         }
@@ -267,7 +290,7 @@ public class StockService
                 stock.getIsActive()
         )) {
 
-            throw new RuntimeException(
+            throw new InvalidStateException(
                     "Cannot update inactive stock"
             );
         }
@@ -300,7 +323,7 @@ public class StockService
                                 )
         ) {
 
-            throw new RuntimeException(
+            throw new DuplicateResourceException(
                     "Stock already exists for this raw material and unit"
             );
         }
@@ -374,7 +397,7 @@ public class StockService
                                 publicId
                         )
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new ResourceNotFoundException(
                                         "Stock not found"
                                 )
                         );
@@ -384,7 +407,7 @@ public class StockService
                 stock.getIsActive()
         )) {
 
-            throw new RuntimeException(
+            throw new InvalidStateException(
                     "Cannot update minimum stock level for inactive stock"
             );
         }
@@ -443,7 +466,7 @@ public class StockService
                 stock.getIsActive()
         )) {
 
-            throw new RuntimeException(
+            throw new InvalidStateException(
                     "Stock is already active"
             );
         }
@@ -494,7 +517,7 @@ public class StockService
                 stock.getIsActive()
         )) {
 
-            throw new RuntimeException(
+            throw new InvalidStateException(
                     "Stock is already inactive"
             );
         }

@@ -6,6 +6,7 @@ import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestRefreshTokenDTO;
 import FinanceManangementSystem.demo.Repository.RefreshTokenRepository;
 import FinanceManangementSystem.demo.Security.JwtUtil;
 import FinanceManangementSystem.demo.Service.Implementations.RefreshTokenService;
+import FinanceManangementSystem.demo.APIResponse.APIResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,43 +23,31 @@ import java.util.Map;
 @AllArgsConstructor
 public class RefreshTokenController {
 
-    private final RefreshTokenService refreshTokenService;
+        private final RefreshTokenService refreshTokenService;
 
-    private final RefreshTokenRepository refreshTokenRepo;
+        private final RefreshTokenRepository refreshTokenRepo;
 
-    private final JwtUtil jwtUtil;
+        private final JwtUtil jwtUtil;
 
 
     @PostMapping("refresh")
-    public ResponseEntity<?> refresh(@RequestBody RequestRefreshTokenDTO request){
+    public ResponseEntity<APIResponse<java.util.Map<String,String>>> refresh(@RequestBody RequestRefreshTokenDTO request){
         log.info("CONTROLLER - request came in refresh token controller...");
 
-        RefreshToken refreshToken =
-                refreshTokenRepo
-                        .findByToken(
-                                request.getRefreshToken()
-                        )
-                        .orElseThrow(
-                                () -> new InvalidRefreshTokenException(
-                                        "Invalid Refresh Token..."
-                                )
-                        );
-
+        RefreshToken refreshToken = refreshTokenRepo.findByToken(request.getRefreshToken())
+                .orElseThrow(() -> new InvalidRefreshTokenException("Invalid Refresh Token..."));
 
         refreshTokenService.verifyToken(refreshToken);
         log.info("CONTROLLER - refresh token in not expired...");
 
-
-        String newAccessToken =
-                jwtUtil.generateToken(
-                        refreshToken.getUser()
-                );
+        String newAccessToken = jwtUtil.generateToken(refreshToken.getUser());
 
         log.info("CONTROLLER - new access token sent successfully...");
+
         return ResponseEntity.ok(
-                Map.of(
-                        "accessToken",
-                        newAccessToken
+                new APIResponse<>(
+                        "New access token",
+                        java.util.Map.of("accessToken", newAccessToken)
                 )
         );
     }

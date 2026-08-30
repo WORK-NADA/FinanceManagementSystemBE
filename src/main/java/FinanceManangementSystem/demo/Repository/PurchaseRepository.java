@@ -1,5 +1,6 @@
 package FinanceManangementSystem.demo.Repository;
 
+import FinanceManangementSystem.demo.Enums.PaymentStatus;
 import FinanceManangementSystem.demo.Enums.PurchaseStatus;
 import FinanceManangementSystem.demo.Model.Purchase;
 import FinanceManangementSystem.demo.Model.Supplier;
@@ -77,6 +78,25 @@ public interface PurchaseRepository
     List<Purchase> findBySupplierAndPurchaseStatus(
             Supplier supplier,
             PurchaseStatus purchaseStatus
+    );
+
+
+    // =========================================================
+    // FIND BY PAYMENT STATUSES (DASHBOARD)
+    // =========================================================
+
+    List<Purchase> findByPaymentStatusIn(
+            List<PaymentStatus> statuses
+    );
+
+
+    // =========================================================
+    // FIND BY SUPPLIER AND PAYMENT STATUSES (DASHBOARD)
+    // =========================================================
+
+    List<Purchase> findBySupplierAndPaymentStatusIn(
+            Supplier supplier,
+            List<PaymentStatus> statuses
     );
 
 

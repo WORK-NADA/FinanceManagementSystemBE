@@ -87,6 +87,28 @@ public interface StockRepository
             String rawMaterial
     );
 
+    // =========================================================
+    // FIND LOW STOCKS
+    // =========================================================
+
+    /**
+     * Find active stocks where the current quantity is less than or equal to the
+     * configured minimum stock level.
+     *
+     * NOTE: This method uses an explicit JPQL {@code @Query} because the
+     * predicate compares two entity fields ({@code currentQuantity} and
+     * {@code minimumStockLevel}). That comparison cannot be expressed using a
+     * Spring Data derived query method name, so we must keep the {@code @Query}
+     * here. Do NOT change this back to a derived method name.
+     */
+    @Query("""
+            SELECT s
+            FROM Stock s
+            WHERE s.isActive = true
+            AND s.currentQuantity <= s.minimumStockLevel
+            """)
+    List<Stock> findActiveStocksBelowMinimumLevel();
+
 
     // =========================================================
     // FIND STOCK WITH PESSIMISTIC WRITE LOCK

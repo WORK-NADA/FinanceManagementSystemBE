@@ -7,29 +7,29 @@ import java.util.List;
 
 public interface ReportServiceInterface {
 
-    Object getSalesReport(
+    List<ResponseSaleReportDTO> getSalesReport(
             LocalDate fromDate,
             LocalDate toDate
     );
 
-    Object getPurchaseReport(
+    List<ResponsePurchaseReportDTO> getPurchaseReport(
             LocalDate fromDate,
             LocalDate toDate
     );
 
-    Object getExpenseReport(
+    List<ResponseExpenseReportDTO> getExpenseReport(
             LocalDate fromDate,
             LocalDate toDate
     );
 
-    Object getProfitLossReport(
+    ResponseProfitLossReportDTO getProfitLossReport(
             LocalDate fromDate,
             LocalDate toDate
     );
 
-    Object getStockReport();
+    List<ResponseStockReportDTO> getStockReport();
 
-    Object getCustomerOutstandingReport();
+    List<ResponseCustomerOutstandingReportDTO> getCustomerOutstandingReport();
 
-    Object getSupplierOutstandingReport();
+    List<ResponseSupplierOutstandingReportDTO> getSupplierOutstandingReport();
 }

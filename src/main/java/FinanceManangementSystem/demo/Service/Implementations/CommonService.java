@@ -1,5 +1,6 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Repository.RefreshTokenRepository;
 import FinanceManangementSystem.demo.Repository.UserRepository;
@@ -49,7 +50,7 @@ public class CommonService implements CommonServiceInterface {
 
         Optional<User> checkUser = userRepo.findByEmail(dto.getEmail());
         if(checkUser.isEmpty()){
-            throw new RuntimeException("User not found...");
+            throw new ResourceNotFoundException("User not found...");
         }
 
         User user = checkUser.get();

@@ -180,6 +180,7 @@
 							<version>${lombok.version}</version>
 						</path>
 					</annotationProcessorPaths>
+					<release>17</release>
 				</configuration>
 			</plugin>
 

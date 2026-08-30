@@ -1,5 +1,6 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.DuplicateResourceException;
 import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Model.UserAddress;
 import FinanceManangementSystem.demo.Repository.UserRepository;
@@ -35,7 +36,7 @@ public class AdminService implements AdminServiceInterface {
         Optional<String> name = userRepo.findByEmailOrContact(dto.getEmail(),dto.getMobileNumber());
 
         if(name.isPresent()){
-            throw new RuntimeException("User already exists...");
+            throw new DuplicateResourceException("User already exists...");
         }
 
         User user = modelMapper.map(dto,User.class);

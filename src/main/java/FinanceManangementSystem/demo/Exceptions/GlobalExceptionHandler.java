@@ -1,8 +1,9 @@
 package FinanceManangementSystem.demo.Exceptions;
 
+import FinanceManangementSystem.demo.Payloads.ResponseDTO.ErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -15,10 +16,11 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     // Validation Exceptions
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationException(
+    public ResponseEntity<ErrorResponse> handleValidationException(
             MethodArgumentNotValidException ex) {
 
         Map<String, String> errors = new HashMap<>();
@@ -27,50 +29,85 @@ public class GlobalExceptionHandler {
             errors.put(error.getField(), error.getDefaultMessage());
         }
 
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        ErrorResponse resp = new ErrorResponse(
+                "VALIDATION_ERROR",
+                "Validation failed",
+                errors
+        );
+
+        return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Handles all typed application exceptions (ResourceNotFoundException, DuplicateResourceException, etc.)
+     * Each exception carries its own HTTP status code, error code, and message.
+     * This handler is more specific than the catch-all Exception.class handler below.
+     */
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<ErrorResponse> handleApplicationException(ApplicationException ex) {
+        ErrorResponse resp = new ErrorResponse(
+                ex.getErrorCode(),
+                ex.getMessage()
+        );
 
-    // General Exceptions
+        return new ResponseEntity<>(resp, ex.getHttpStatus());
+    }
+
+    /**
+     * Handles InvalidRefreshToken exceptions.
+     * Kept separate from ApplicationException handler for backward compatibility.
+     */
+    @ExceptionHandler(InvalidRefreshTokenException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidRefreshToken(InvalidRefreshTokenException ex){
+        ErrorResponse resp = new ErrorResponse(
+                "INVALID_REFRESH_TOKEN",
+                ex.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(resp);
+    }
+
+    /**
+     * Handles RefreshTokenExpired exceptions.
+     * Kept separate from ApplicationException handler for backward compatibility.
+     */
+    @ExceptionHandler(RefreshTokenExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleRefreshTokenExpired(RefreshTokenExpiredException ex) {
+
+        ErrorResponse resp = new ErrorResponse(
+                "REFRESH_TOKEN_EXPIRED",
+                ex.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(resp);
+    }
+
+    /**
+     * Handles all unexpected/unhandled exceptions that are not caught by more specific handlers.
+     * Spring exception handler matching is by most-specific-first, so this handler will only
+     * catch truly unexpected errors (NPEs, bugs, etc.) that are NOT instances of ApplicationException,
+     * MethodArgumentNotValidException, InvalidRefreshTokenException, or RefreshTokenExpiredException.
+     * 
+     * NOTE: In production, unexpected errors should be logged with full stack trace at ERROR level
+     * but the client response should NOT leak internal implementation details.
+     */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception ex) {
+    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
+        // Log the unexpected exception with full stack trace for debugging
+        log.error("Unhandled exception encountered", ex);
+
+        ErrorResponse resp = new ErrorResponse(
+                "INTERNAL_ERROR",
+                "An unexpected error occurred"
+        );
 
         return new ResponseEntity<>(
-                ex.getMessage(),
+                resp,
                 HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
-
-
-    //InvalidRefreshToken
-    @ExceptionHandler(InvalidRefreshTokenException.class)
-    public ResponseEntity<?> handleInvalidRefreshToken(InvalidRefreshTokenException ex){
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(
-                        Map.of(
-                                "code", "INVALID_REFRESH_TOKEN",
-                                "message", ex.getMessage()
-                        )
-                );
-    }
-
-
-    //RefreshTokenExpired
-    @ExceptionHandler(RefreshTokenExpiredException.class)
-    public ResponseEntity<?> handleRefreshTokenExpired(RefreshTokenExpiredException ex) {
-
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(
-                        Map.of(
-                                "code", "REFRESH_TOKEN_EXPIRED",
-                                "message", ex.getMessage()
-                        )
-                );
-    }
-
-
-
-
 }

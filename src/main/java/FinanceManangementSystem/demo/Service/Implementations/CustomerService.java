@@ -1,5 +1,8 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.DuplicateResourceException;
+import FinanceManangementSystem.demo.Exceptions.InvalidStateException;
+import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 import FinanceManangementSystem.demo.Model.Customer;
 import FinanceManangementSystem.demo.Model.CustomerAddress;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestCustomerDTO;
@@ -67,11 +70,11 @@ public class CustomerService
                 mobileNumber
         )) {
 
-            log.info(
+            log.warn(
                     "SERVICE - mobile number already exists..."
             );
 
-            throw new RuntimeException(
+            throw new DuplicateResourceException(
                     "Customer with this mobile number already exists"
             );
         }
@@ -84,11 +87,11 @@ public class CustomerService
         if (email != null
                 && customerRepo.existsByEmail(email)) {
 
-            log.info(
+            log.warn(
                     "SERVICE - email already exists..."
             );
 
-            throw new RuntimeException(
+            throw new DuplicateResourceException(
                     "Customer with this email already exists"
             );
         }
@@ -101,11 +104,11 @@ public class CustomerService
         if (gstNumber != null
                 && customerRepo.existsByGstNumber(gstNumber)) {
 
-            log.info(
+            log.warn(
                     "SERVICE - GST number already exists..."
             );
 
-            throw new RuntimeException(
+            throw new DuplicateResourceException(
                     "Customer with this GST number already exists"
             );
         }
@@ -242,7 +245,7 @@ public class CustomerService
                                     "SERVICE - customer not found..."
                             );
 
-                            return new RuntimeException(
+                            return new ResourceNotFoundException(
                                     "Customer not found"
                             );
                         });
@@ -345,7 +348,7 @@ public class CustomerService
                     "SERVICE - inactive customer cannot be updated..."
             );
 
-            throw new RuntimeException(
+            throw new InvalidStateException(
                     "Inactive customer cannot be updated"
             );
         }
@@ -383,7 +386,7 @@ public class CustomerService
                     "SERVICE - mobile number already exists for another customer..."
             );
 
-            throw new RuntimeException(
+            throw new DuplicateResourceException(
                     "Customer with this mobile number already exists"
             );
         }
@@ -404,7 +407,7 @@ public class CustomerService
                     "SERVICE - email already exists for another customer..."
             );
 
-            throw new RuntimeException(
+            throw new DuplicateResourceException(
                     "Customer with this email already exists"
             );
         }
@@ -425,7 +428,7 @@ public class CustomerService
                     "SERVICE - GST number already exists for another customer..."
             );
 
-            throw new RuntimeException(
+            throw new DuplicateResourceException(
                     "Customer with this GST number already exists"
             );
         }
@@ -548,7 +551,7 @@ public class CustomerService
                                     "SERVICE - customer not found..."
                             );
 
-                            return new RuntimeException(
+                            return new ResourceNotFoundException(
                                     "Customer not found"
                             );
                         });
@@ -566,7 +569,7 @@ public class CustomerService
                     "SERVICE - customer is already inactive..."
             );
 
-            throw new RuntimeException(
+            throw new InvalidStateException(
                     "Customer is already inactive"
             );
         }
@@ -640,7 +643,7 @@ public class CustomerService
                     "SERVICE - customer is already active..."
             );
 
-            throw new RuntimeException(
+            throw new InvalidStateException(
                     "Customer is already active"
             );
         }
