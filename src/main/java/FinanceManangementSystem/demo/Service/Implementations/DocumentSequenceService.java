@@ -2,6 +2,7 @@ package FinanceManangementSystem.demo.Service.Implementations;
 
 import FinanceManangementSystem.demo.Enums.DocumentType;
 import FinanceManangementSystem.demo.Model.DocumentSequence;
+import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Repository.DocumentSequenceRepository;
 import FinanceManangementSystem.demo.Service.SequenceServiceInterface;
 import lombok.RequiredArgsConstructor;
@@ -11,18 +12,23 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class DocumentSequenceService implements SequenceServiceInterface {
-
     private final DocumentSequenceRepository sequenceRepository;
 
+    private final CurrentUserService currentUserService;
+
     public String generateDocumentNumber(DocumentType documentType, int year) {
+        User currentUser = currentUserService.getCurrentUser();
+
         DocumentSequence sequence =
                 sequenceRepository
-                        .findByDocumentTypeAndYear(
+                        .findByUserAndDocumentTypeAndYear(
+                                currentUser,
                                 documentType,
                                 year
                         )
                         .orElseGet(() ->
                                 createSequence(
+                                        currentUser,
                                         documentType,
                                         year
                                 )
@@ -43,12 +49,13 @@ public class DocumentSequenceService implements SequenceServiceInterface {
         );
     }
 
-    public DocumentSequence createSequence(DocumentType documentType, int year) {
+    public DocumentSequence createSequence(User user, DocumentType documentType, int year) {
         try {
 
             DocumentSequence sequence =
                     new DocumentSequence();
 
+            sequence.setUser(user);
             sequence.setDocumentType(documentType);
             sequence.setYear(year);
             sequence.setCurrentNumber(0L);
@@ -57,7 +64,8 @@ public class DocumentSequenceService implements SequenceServiceInterface {
 
         } catch (DataIntegrityViolationException exception) {
             return sequenceRepository
-                    .findByDocumentTypeAndYear(
+                    .findByUserAndDocumentTypeAndYear(
+                            user,
                             documentType,
                             year
                     )

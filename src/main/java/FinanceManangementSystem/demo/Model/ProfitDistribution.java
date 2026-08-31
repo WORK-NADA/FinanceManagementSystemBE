@@ -19,9 +19,14 @@ import java.util.UUID;
 @Table(
         name = "profit_distributions",
         uniqueConstraints = {
+
+                // --------------------------------------------------
+                // One distribution per user per date range
+                // --------------------------------------------------
+
                 @UniqueConstraint(
-                        name = "uk_distribution_period",
-                        columnNames = {"from_date", "to_date"}
+                        name = "uk_distribution_user_period",
+                        columnNames = {"user_id", "from_date", "to_date"}
                 )
         }
 )
@@ -39,6 +44,20 @@ public class ProfitDistribution {
             updatable = false
     )
     private UUID publicId;
+
+
+    // =========================================================
+    // OWNER USER
+    // =========================================================
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "user_id",
+            nullable = false,
+            updatable = false
+    )
+    private User user;
+
 
     @Column(
             name = "from_date",

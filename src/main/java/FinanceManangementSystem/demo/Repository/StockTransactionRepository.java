@@ -3,6 +3,8 @@ package FinanceManangementSystem.demo.Repository;
 import FinanceManangementSystem.demo.Enums.StockTransactionType;
 import FinanceManangementSystem.demo.Model.Stock;
 import FinanceManangementSystem.demo.Model.StockTransaction;
+import FinanceManangementSystem.demo.Model.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -24,6 +26,25 @@ public interface StockTransactionRepository
             UUID publicId
     );
 
+    Optional<StockTransaction> findByUserAndPublicId(
+            User user,
+            UUID publicId
+    );
+
+
+    // =========================================================
+    // FIND ALL BY USER
+    // =========================================================
+
+    List<StockTransaction> findByUser(
+            User user
+    );
+
+    Page<StockTransaction> findByUser(
+            User user,
+            Pageable pageable
+    );
+
 
     // =========================================================
     // FIND TRANSACTIONS BY STOCK
@@ -41,6 +62,12 @@ public interface StockTransactionRepository
 
     List<StockTransaction>
     findByStockPublicIdOrderByTransactionDateDesc(
+            UUID stockPublicId
+    );
+
+    List<StockTransaction>
+    findByUserAndStockPublicIdOrderByTransactionDateDesc(
+            User user,
             UUID stockPublicId
     );
 
@@ -79,6 +106,13 @@ public interface StockTransactionRepository
             LocalDateTime toDate
     );
 
+    List<StockTransaction>
+    findByUserAndTransactionDateBetween(
+            User user,
+            LocalDateTime fromDate,
+            LocalDateTime toDate
+    );
+
 
     // =========================================================
     // FIND BY TRANSACTION TYPE
@@ -89,6 +123,12 @@ public interface StockTransactionRepository
             StockTransactionType transactionType
     );
 
+    List<StockTransaction>
+    findByUserAndTransactionType(
+            User user,
+            StockTransactionType transactionType
+    );
+
 
     // =========================================================
     // FIND BY REFERENCE NUMBER
@@ -96,6 +136,12 @@ public interface StockTransactionRepository
 
     List<StockTransaction>
     findByReferenceNumber(
+            String referenceNumber
+    );
+
+    List<StockTransaction>
+    findByUserAndReferenceNumber(
+            User user,
             String referenceNumber
     );
 
@@ -135,6 +181,12 @@ public interface StockTransactionRepository
 
     List<StockTransaction>
     findByOrderByTransactionDateDesc(
+            Pageable pageable
+    );
+
+    List<StockTransaction>
+    findByUserOrderByTransactionDateDesc(
+            User user,
             Pageable pageable
     );
 }

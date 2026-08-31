@@ -119,6 +119,7 @@ public class StockTransactionService
 
         StockTransaction transaction =
                 createTransaction(
+                        currentUser,
                         stock,
                         dto.getTransactionType(),
                         dto.getQuantity(),
@@ -179,7 +180,10 @@ public class StockTransactionService
         );
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
         createTransaction(
+                currentUser,
                 stock,
                 StockTransactionType.PURCHASE_IN,
                 quantity,
@@ -235,7 +239,10 @@ public class StockTransactionService
         );
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
         createTransaction(
+                currentUser,
                 stock,
                 StockTransactionType.SALE_OUT,
                 quantity,
@@ -292,7 +299,10 @@ public class StockTransactionService
         );
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
         createTransaction(
+                currentUser,
                 stock,
                 StockTransactionType.SALE_RETURN_IN,
                 quantity,
@@ -354,7 +364,10 @@ public class StockTransactionService
         );
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
         createTransaction(
+                currentUser,
                 stock,
                 StockTransactionType.ADJUSTMENT_IN,
                 quantity,
@@ -415,7 +428,10 @@ public class StockTransactionService
         );
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
         createTransaction(
+                currentUser,
                 stock,
                 StockTransactionType.ADJUSTMENT_OUT,
                 quantity,
@@ -447,12 +463,16 @@ public class StockTransactionService
 
         User currentUser = currentUserService.getCurrentUser();
 
-        StockTransaction transaction = stockTransactionRepository.findByPublicId(publicId)
-                .orElseThrow(() -> new RuntimeException("Stock transaction not found"));
+        StockTransaction transaction;
 
-        if (currentUser.getRole() != FinanceManangementSystem.demo.Enums.UserRole.ADMIN
-                && !transaction.getStock().getUser().equals(currentUser)) {
-            throw new RuntimeException("Stock transaction not found");
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            transaction = stockTransactionRepository
+                    .findByPublicId(publicId)
+                    .orElseThrow(() -> new RuntimeException("Stock transaction not found"));
+        } else {
+            transaction = stockTransactionRepository
+                    .findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> new RuntimeException("Stock transaction not found"));
         }
 
         return mapToResponse(transaction);
@@ -475,18 +495,11 @@ public class StockTransactionService
 
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             return stockTransactionRepository.findAll(pageable).map(this::mapToResponse);
+        } else {
+            return stockTransactionRepository
+                    .findByUser(currentUser, pageable)
+                    .map(this::mapToResponse);
         }
-
-        List<ResponseStockTransactionDTO> filtered = stockTransactionRepository.findAll(pageable)
-                .getContent()
-                .stream()
-                .filter(transaction -> transaction.getStock() != null
-                        && transaction.getStock().getUser() != null
-                        && transaction.getStock().getUser().equals(currentUser))
-                .map(this::mapToResponse)
-                .toList();
-
-        return new PageImpl<>(filtered, pageable, filtered.size());
     }
 
 
@@ -509,22 +522,27 @@ public class StockTransactionService
         User currentUser = currentUserService.getCurrentUser();
 
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+
             stockRepository.findByPublicId(stockPublicId)
                     .orElseThrow(() -> new RuntimeException("Stock not found"));
+
+            return stockTransactionRepository
+                    .findByStockPublicIdOrderByTransactionDateDesc(stockPublicId)
+                    .stream()
+                    .map(this::mapToResponse)
+                    .toList();
+
         } else {
+
             stockRepository.findByUserAndPublicId(currentUser, stockPublicId)
                     .orElseThrow(() -> new RuntimeException("Stock not found"));
-        }
 
-        return stockTransactionRepository
-                .findByStockPublicIdOrderByTransactionDateDesc(
-                        stockPublicId
-                )
-                .stream()
-                .filter(transaction -> currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN
-                        || transaction.getStock().getUser().equals(currentUser))
-                .map(this::mapToResponse)
-                .toList();
+            return stockTransactionRepository
+                    .findByUserAndStockPublicIdOrderByTransactionDateDesc(currentUser, stockPublicId)
+                    .stream()
+                    .map(this::mapToResponse)
+                    .toList();
+        }
     }
 
 
@@ -611,16 +629,19 @@ public class StockTransactionService
 
         User currentUser = currentUserService.getCurrentUser();
 
-        return stockTransactionRepository
-                .findByTransactionDateBetween(
-                        fromDate,
-                        toDate
-                )
-                .stream()
-                .filter(transaction -> currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN
-                        || transaction.getStock().getUser().equals(currentUser))
-                .map(this::mapToResponse)
-                .toList();
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            return stockTransactionRepository
+                    .findByTransactionDateBetween(fromDate, toDate)
+                    .stream()
+                    .map(this::mapToResponse)
+                    .toList();
+        } else {
+            return stockTransactionRepository
+                    .findByUserAndTransactionDateBetween(currentUser, fromDate, toDate)
+                    .stream()
+                    .map(this::mapToResponse)
+                    .toList();
+        }
     }
 
 
@@ -650,15 +671,19 @@ public class StockTransactionService
 
         User currentUser = currentUserService.getCurrentUser();
 
-        return stockTransactionRepository
-                .findByTransactionType(
-                        transactionType
-                )
-                .stream()
-                .filter(transaction -> currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN
-                        || transaction.getStock().getUser().equals(currentUser))
-                .map(this::mapToResponse)
-                .toList();
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            return stockTransactionRepository
+                    .findByTransactionType(transactionType)
+                    .stream()
+                    .map(this::mapToResponse)
+                    .toList();
+        } else {
+            return stockTransactionRepository
+                    .findByUserAndTransactionType(currentUser, transactionType)
+                    .stream()
+                    .map(this::mapToResponse)
+                    .toList();
+        }
     }
 
 
@@ -689,15 +714,19 @@ public class StockTransactionService
 
         User currentUser = currentUserService.getCurrentUser();
 
-        return stockTransactionRepository
-                .findByReferenceNumber(
-                        referenceNumber.trim()
-                )
-                .stream()
-                .filter(transaction -> currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN
-                        || transaction.getStock().getUser().equals(currentUser))
-                .map(this::mapToResponse)
-                .toList();
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            return stockTransactionRepository
+                    .findByReferenceNumber(referenceNumber.trim())
+                    .stream()
+                    .map(this::mapToResponse)
+                    .toList();
+        } else {
+            return stockTransactionRepository
+                    .findByUserAndReferenceNumber(currentUser, referenceNumber.trim())
+                    .stream()
+                    .map(this::mapToResponse)
+                    .toList();
+        }
     }
 
 
@@ -842,6 +871,7 @@ public class StockTransactionService
     // =========================================================
 
     private StockTransaction createTransaction(
+            User user,
             Stock stock,
             StockTransactionType transactionType,
             BigDecimal quantity,
@@ -877,6 +907,10 @@ public class StockTransactionService
         StockTransaction transaction =
                 new StockTransaction();
 
+
+        transaction.setUser(
+                user
+        );
 
         transaction.setStock(
                 stock

@@ -1,6 +1,7 @@
 package FinanceManangementSystem.demo.Service;
 
 import FinanceManangementSystem.demo.Enums.ExpenseCategory;
+import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestExpenseDTO;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseExpenseDTO;
 
@@ -41,6 +42,12 @@ public interface ExpenseServiceInterface {
     );
 
     BigDecimal getTotalExpenses(
+            LocalDate fromDate,
+            LocalDate toDate
+    );
+
+    BigDecimal getTotalExpenses(
+            User user,
             LocalDate fromDate,
             LocalDate toDate
     );

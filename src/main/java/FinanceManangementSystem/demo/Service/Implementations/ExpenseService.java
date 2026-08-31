@@ -376,6 +376,31 @@ public class ExpenseService
 
 
     // =========================================================
+    // GET TOTAL EXPENSES BY USER (PROFIT DISTRIBUTION SCOPING)
+    // =========================================================
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal getTotalExpenses(
+            User user,
+            LocalDate fromDate,
+            LocalDate toDate
+    ) {
+
+        log.info(
+                "SERVICE - request came in getTotalExpenses (user-scoped)..."
+        );
+
+        BigDecimal result = expenseRepo.sumTotalExpensesByUserAndDateRange(
+                user,
+                fromDate,
+                toDate
+        );
+        return result == null ? java.math.BigDecimal.ZERO : result;
+    }
+
+
+    // =========================================================
     // GET CATEGORY-WISE BREAKDOWN (DASHBOARD CHART)
     // =========================================================
 
