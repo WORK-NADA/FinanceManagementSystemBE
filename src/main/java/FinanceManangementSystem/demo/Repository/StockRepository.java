@@ -2,6 +2,7 @@ package FinanceManangementSystem.demo.Repository;
 
 import FinanceManangementSystem.demo.Enums.WeightUnit;
 import FinanceManangementSystem.demo.Model.Stock;
+import FinanceManangementSystem.demo.Model.User;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -25,6 +26,15 @@ public interface StockRepository
             UUID publicId
     );
 
+    Optional<Stock> findByUserAndPublicId(User user, UUID publicId);
+
+    Optional<Stock> findByUserAndRawMaterialIgnoreCaseAndUnit(User user, String rawMaterial, WeightUnit unit);
+
+    List<Stock> findByUser(User user);
+
+    List<Stock> findByUserAndIsActiveTrue(User user);
+
+    List<Stock> findByUserAndIsActiveFalse(User user);
 
     // =========================================================
     // FIND ACTIVE STOCK BY PUBLIC ID
@@ -50,6 +60,12 @@ public interface StockRepository
     // =========================================================
 
     boolean existsByRawMaterialIgnoreCaseAndUnit(
+            String rawMaterial,
+            WeightUnit unit
+    );
+
+    boolean existsByUserAndRawMaterialIgnoreCaseAndUnit(
+            User user,
             String rawMaterial,
             WeightUnit unit
     );
@@ -81,6 +97,12 @@ public interface StockRepository
     // =========================================================
     // ACTIVE STOCK SEARCH
     // =========================================================
+
+    List<Stock>
+    findByUserAndRawMaterialContainingIgnoreCaseAndIsActiveTrue(
+            User user,
+            String rawMaterial
+    );
 
     List<Stock>
     findByRawMaterialContainingIgnoreCaseAndIsActiveTrue(

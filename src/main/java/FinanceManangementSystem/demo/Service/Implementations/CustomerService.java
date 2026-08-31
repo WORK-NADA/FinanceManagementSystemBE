@@ -1,10 +1,12 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Enums.UserRole;
 import FinanceManangementSystem.demo.Exceptions.DuplicateResourceException;
 import FinanceManangementSystem.demo.Exceptions.InvalidStateException;
 import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 import FinanceManangementSystem.demo.Model.Customer;
 import FinanceManangementSystem.demo.Model.CustomerAddress;
+import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestCustomerDTO;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseCustomerDTO;
 import FinanceManangementSystem.demo.Repository.CustomerRepository;
@@ -25,6 +27,8 @@ public class CustomerService
         implements CustomerServiceInterface {
 
     private final CustomerRepository customerRepo;
+
+    private final CurrentUserService currentUserService;
 
     private final ModelMapper modelMapper;
 
@@ -118,9 +122,12 @@ public class CustomerService
         // CREATE CUSTOMER
         // -----------------------------------------------------
 
+        User currentUser = currentUserService.getCurrentUser();
+
         Customer customer =
                 new Customer();
 
+        customer.setUser(currentUser);
 
         customer.setCustomerName(
                 dto.getCustomerName().trim()
@@ -233,27 +240,25 @@ public class CustomerService
                 "SERVICE - request came in getCustomerByPublicId..."
         );
 
+        User currentUser = currentUserService.getCurrentUser();
 
-        Customer customer =
-                customerRepo
-                        .findByPublicId(
-                                publicId
-                        )
-                        .orElseThrow(() -> {
+        Customer customer;
 
-                            log.info(
-                                    "SERVICE - customer not found..."
-                            );
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            customer = customerRepo.findByPublicId(publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - customer not found...");
+                        return new ResourceNotFoundException("Customer not found");
+                    });
+        } else {
+            customer = customerRepo.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - customer not found for current user...");
+                        return new ResourceNotFoundException("Customer not found");
+                    });
+        }
 
-                            return new ResourceNotFoundException(
-                                    "Customer not found"
-                            );
-                        });
-
-
-        return mapToResponse(
-                customer
-        );
+        return mapToResponse(customer);
     }
 
 
@@ -270,8 +275,16 @@ public class CustomerService
         );
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            return customerRepo.findAll().stream()
+                    .map(this::mapToResponse)
+                    .toList();
+        }
+
         return customerRepo
-                .findAll()
+                .findByUser(currentUser)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -291,8 +304,16 @@ public class CustomerService
         );
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            return customerRepo.findByIsActiveTrue().stream()
+                    .map(this::mapToResponse)
+                    .toList();
+        }
+
         return customerRepo
-                .findByIsActiveTrue()
+                .findByUserAndIsActiveTrue(currentUser)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -319,21 +340,23 @@ public class CustomerService
         // FIND CUSTOMER
         // -----------------------------------------------------
 
-        Customer customer =
-                customerRepo
-                        .findByPublicId(
-                                publicId
-                        )
-                        .orElseThrow(() -> {
+        User currentUser = currentUserService.getCurrentUser();
 
-                            log.info(
-                                    "SERVICE - customer not found..."
-                            );
+        Customer customer;
 
-                            return new RuntimeException(
-                                    "Customer not found"
-                            );
-                        });
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            customer = customerRepo.findByPublicId(publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - customer not found...");
+                        return new RuntimeException("Customer not found");
+                    });
+        } else {
+            customer = customerRepo.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - customer not found for current user...");
+                        return new RuntimeException("Customer not found");
+                    });
+        }
 
 
         // -----------------------------------------------------
@@ -540,21 +563,23 @@ public class CustomerService
         // FIND CUSTOMER
         // -----------------------------------------------------
 
-        Customer customer =
-                customerRepo
-                        .findByPublicId(
-                                publicId
-                        )
-                        .orElseThrow(() -> {
+        User currentUser = currentUserService.getCurrentUser();
 
-                            log.info(
-                                    "SERVICE - customer not found..."
-                            );
+        Customer customer;
 
-                            return new ResourceNotFoundException(
-                                    "Customer not found"
-                            );
-                        });
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            customer = customerRepo.findByPublicId(publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - customer not found...");
+                        return new ResourceNotFoundException("Customer not found");
+                    });
+        } else {
+            customer = customerRepo.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - customer not found for current user...");
+                        return new ResourceNotFoundException("Customer not found");
+                    });
+        }
 
 
         // -----------------------------------------------------
@@ -614,21 +639,23 @@ public class CustomerService
         // FIND CUSTOMER
         // -----------------------------------------------------
 
-        Customer customer =
-                customerRepo
-                        .findByPublicId(
-                                publicId
-                        )
-                        .orElseThrow(() -> {
+        User currentUser = currentUserService.getCurrentUser();
 
-                            log.info(
-                                    "SERVICE - customer not found..."
-                            );
+        Customer customer;
 
-                            return new RuntimeException(
-                                    "Customer not found"
-                            );
-                        });
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            customer = customerRepo.findByPublicId(publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - customer not found...");
+                        return new RuntimeException("Customer not found");
+                    });
+        } else {
+            customer = customerRepo.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - customer not found for current user...");
+                        return new RuntimeException("Customer not found");
+                    });
+        }
 
 
         // -----------------------------------------------------

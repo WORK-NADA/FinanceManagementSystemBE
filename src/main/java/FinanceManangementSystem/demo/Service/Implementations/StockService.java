@@ -5,6 +5,7 @@ import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
 import FinanceManangementSystem.demo.Exceptions.InvalidStateException;
 import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 import FinanceManangementSystem.demo.Model.Stock;
+import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestMinimumStockLevelDTO;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestStockDTO;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseStockDTO;
@@ -27,6 +28,8 @@ public class StockService
 
     private final StockRepository stockRepository;
 
+    private final CurrentUserService currentUserService;
+
 
     // =========================================================
     // ADD STOCK
@@ -43,12 +46,15 @@ public class StockService
         );
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
         String rawMaterial =
                 dto.getRawMaterial().trim();
 
 
         if (stockRepository
-                .existsByRawMaterialIgnoreCaseAndUnit(
+                .existsByUserAndRawMaterialIgnoreCaseAndUnit(
+                        currentUser,
                         rawMaterial,
                         dto.getUnit()
                 )) {
@@ -66,6 +72,7 @@ public class StockService
         Stock stock =
                 new Stock();
 
+        stock.setUser(currentUser);
 
         stock.setRawMaterial(
                 rawMaterial
@@ -155,8 +162,10 @@ public class StockService
         );
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
         return stockRepository
-                .findByIsActiveTrue()
+                .findByUserAndIsActiveTrue(currentUser)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -176,8 +185,10 @@ public class StockService
         );
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
         return stockRepository
-                .findByIsActiveFalse()
+                .findByUserAndIsActiveFalse(currentUser)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -197,8 +208,10 @@ public class StockService
         );
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
         return stockRepository
-                .findAll()
+                .findByUser(currentUser)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -216,9 +229,13 @@ public class StockService
                 "SERVICE - request came in getLowStockList..."
         );
 
+        User currentUser = currentUserService.getCurrentUser();
+
         return stockRepository
-                .findActiveStocksBelowMinimumLevel()
+                .findByUser(currentUser)
                 .stream()
+                .filter(stock -> Boolean.TRUE.equals(stock.getIsActive()))
+                .filter(stock -> stock.getCurrentQuantity().compareTo(stock.getMinimumStockLevel()) <= 0)
                 .map(this::mapToResponse)
                 .toList();
     }
@@ -248,8 +265,11 @@ public class StockService
         }
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
         return stockRepository
-                .findByRawMaterialContainingIgnoreCaseAndIsActiveTrue(
+                .findByUserAndRawMaterialContainingIgnoreCaseAndIsActiveTrue(
+                        currentUser,
                         rawMaterial.trim()
                 )
                 .stream()
@@ -391,17 +411,17 @@ public class StockService
         );
 
 
-        Stock stock =
-                stockRepository
-                        .findStockForUpdateByPublicId(
-                                publicId
-                        )
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "Stock not found"
-                                )
-                        );
+        User currentUser = currentUserService.getCurrentUser();
 
+        Stock stock;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            stock = stockRepository.findByPublicId(publicId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Stock not found"));
+        } else {
+            stock = stockRepository.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Stock not found"));
+        }
 
         if (!Boolean.TRUE.equals(
                 stock.getIsActive()
@@ -450,17 +470,17 @@ public class StockService
         );
 
 
-        Stock stock =
-                stockRepository
-                        .findStockForUpdateByPublicId(
-                                publicId
-                        )
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Stock not found"
-                                )
-                        );
+        User currentUser = currentUserService.getCurrentUser();
 
+        Stock stock;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            stock = stockRepository.findByPublicId(publicId)
+                    .orElseThrow(() -> new RuntimeException("Stock not found"));
+        } else {
+            stock = stockRepository.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> new RuntimeException("Stock not found"));
+        }
 
         if (Boolean.TRUE.equals(
                 stock.getIsActive()
@@ -545,8 +565,11 @@ public class StockService
             UUID publicId
     ) {
 
+        User currentUser = currentUserService.getCurrentUser();
+
         return stockRepository
-                .findByPublicId(
+                .findByUserAndPublicId(
+                        currentUser,
                         publicId
                 )
                 .orElseThrow(() ->

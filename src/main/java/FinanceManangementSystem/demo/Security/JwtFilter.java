@@ -27,9 +27,9 @@ public class JwtFilter extends OncePerRequestFilter {
     private CustomUserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+    protected void doFilterInternal(@org.springframework.lang.NonNull HttpServletRequest request,
+                                    @org.springframework.lang.NonNull HttpServletResponse response,
+                                    @org.springframework.lang.NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
         log.debug("JwtFilter - JWT Filter invoked for {} {}", request.getMethod(), request.getRequestURI());

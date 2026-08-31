@@ -58,6 +58,14 @@ public class Sale {
 
 
     // --------------------------------
+    // OWNER USER
+    // --------------------------------
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    private User user;
+
+    // --------------------------------
     // Customer
     // --------------------------------
 

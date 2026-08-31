@@ -3,8 +3,10 @@ package FinanceManangementSystem.demo.Service.Implementations;
 import FinanceManangementSystem.demo.Enums.DocumentType;
 import FinanceManangementSystem.demo.Enums.PaymentStatus;
 import FinanceManangementSystem.demo.Enums.PurchaseStatus;
+import FinanceManangementSystem.demo.Enums.UserRole;
 import FinanceManangementSystem.demo.Model.Purchase;
 import FinanceManangementSystem.demo.Model.Supplier;
+import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestPurchaseDTO;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponsePurchaseDTO;
 import FinanceManangementSystem.demo.Repository.PurchaseRepository;
@@ -33,6 +35,8 @@ public class PurchaseService
     private final PurchaseRepository purchaseRepo;
 
     private final SupplierRepository supplierRepo;
+
+    private final CurrentUserService currentUserService;
 
     private final DocumentSequenceService documentSequenceService;
 
@@ -123,9 +127,12 @@ public class PurchaseService
         // CREATE PURCHASE
         // -----------------------------------------------------
 
+        User currentUser = currentUserService.getCurrentUser();
+
         Purchase purchase =
                 new Purchase();
 
+        purchase.setUser(currentUser);
 
         purchase.setSupplier(
                 supplier
@@ -331,26 +338,25 @@ public class PurchaseService
         );
 
 
-        Purchase purchase =
-                purchaseRepo
-                        .findByPublicId(
-                                publicId
-                        )
-                        .orElseThrow(() -> {
+        User currentUser = currentUserService.getCurrentUser();
 
-                            log.info(
-                                    "SERVICE - purchase not found..."
-                            );
+        Purchase purchase;
 
-                            return new RuntimeException(
-                                    "Purchase not found"
-                            );
-                        });
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            purchase = purchaseRepo.findByPublicId(publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - purchase not found...");
+                        return new RuntimeException("Purchase not found");
+                    });
+        } else {
+            purchase = purchaseRepo.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - purchase not found for current user...");
+                        return new RuntimeException("Purchase not found");
+                    });
+        }
 
-
-        return mapToResponse(
-                purchase
-        );
+        return mapToResponse(purchase);
     }
 
 
@@ -366,9 +372,9 @@ public class PurchaseService
                 "SERVICE - request came in getAllPurchases..."
         );
 
-        return purchaseRepo
-                .findAll(pageable)
-                .map(this::mapToResponse);
+        User currentUser = currentUserService.getCurrentUser();
+
+        return purchaseRepo.findByUser(currentUser, pageable).map(this::mapToResponse);
     }
 
 
@@ -387,28 +393,26 @@ public class PurchaseService
         );
 
 
-        Supplier supplier =
-                supplierRepo
-                        .findByPublicId(
-                                supplierPublicId
-                        )
-                        .orElseThrow(() -> {
+        User currentUser = currentUserService.getCurrentUser();
 
-                            log.info(
-                                    "SERVICE - supplier not found..."
-                            );
+        Supplier supplier;
 
-                            return new RuntimeException(
-                                    "Supplier not found"
-                            );
-                        });
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            supplier = supplierRepo.findByPublicId(supplierPublicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - supplier not found...");
+                        return new RuntimeException("Supplier not found");
+                    });
+        } else {
+            supplier = supplierRepo.findByUserAndPublicId(currentUser, supplierPublicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - supplier not found for current user...");
+                        return new RuntimeException("Supplier not found");
+                    });
+        }
 
-
-        return purchaseRepo
-                .findBySupplier(
-                        supplier
-                )
-                .stream()
+        return purchaseRepo.findByUser(currentUser).stream()
+                .filter(p -> p.getSupplier() != null && p.getSupplier().getPublicId().equals(supplier.getPublicId()))
                 .map(this::mapToResponse)
                 .toList();
     }
@@ -447,8 +451,11 @@ public class PurchaseService
         }
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
         return purchaseRepo
-                .findByPurchaseDateBetween(
+                .findByUserAndPurchaseDateBetween(
+                        currentUser,
                         fromDate,
                         toDate
                 )
@@ -499,8 +506,17 @@ public class PurchaseService
         }
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            return purchaseRepo.findByPurchaseStatus(purchaseStatus).stream()
+                    .map(this::mapToResponse)
+                    .toList();
+        }
+
         return purchaseRepo
-                .findByPurchaseStatus(
+                .findByUserAndPurchaseStatus(
+                        currentUser,
                         purchaseStatus
                 )
                 .stream()
@@ -529,21 +545,23 @@ public class PurchaseService
         // FIND PURCHASE
         // -----------------------------------------------------
 
-        Purchase purchase =
-                purchaseRepo
-                        .findByPublicId(
-                                publicId
-                        )
-                        .orElseThrow(() -> {
+        User currentUser = currentUserService.getCurrentUser();
 
-                            log.info(
-                                    "SERVICE - purchase not found..."
-                            );
+        Purchase purchase;
 
-                            return new RuntimeException(
-                                    "Purchase not found"
-                            );
-                        });
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            purchase = purchaseRepo.findByPublicId(publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - purchase not found...");
+                        return new RuntimeException("Purchase not found");
+                    });
+        } else {
+            purchase = purchaseRepo.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - purchase not found for current user...");
+                        return new RuntimeException("Purchase not found");
+                    });
+        }
 
 
 
@@ -597,16 +615,18 @@ public class PurchaseService
         // FIND ACTIVE SUPPLIER
         // -----------------------------------------------------
 
-        Supplier supplier =
-                supplierRepo
-                        .findByPublicIdAndIsActiveTrue(
-                                dto.getSupplierPublicId()
-                        )
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Active supplier not found"
-                                )
-                        );
+        Supplier supplier;
+
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            supplier = supplierRepo.findByPublicIdAndIsActiveTrue(dto.getSupplierPublicId())
+                    .orElseThrow(() -> new RuntimeException("Active supplier not found"));
+        } else {
+            supplier = supplierRepo.findByUserAndPublicIdAndIsActiveTrue(
+                            currentUser,
+                            dto.getSupplierPublicId()
+                    )
+                    .orElseThrow(() -> new RuntimeException("Active supplier not found"));
+        }
 
 
         // -----------------------------------------------------

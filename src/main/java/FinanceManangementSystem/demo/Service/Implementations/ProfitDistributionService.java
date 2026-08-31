@@ -80,12 +80,12 @@ public class ProfitDistributionService implements ProfitDistributionServiceInter
         BigDecimal totalRevenue = saleRepo.findBySaleDateBetween(from, to)
                 .stream()
                 .map(s -> s.getTotalAmount() == null ? BigDecimal.ZERO : s.getTotalAmount())
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(BigDecimal.ZERO, (acc, value) -> acc.add(value == null ? BigDecimal.ZERO : value));
 
         BigDecimal totalPurchaseCost = purchaseRepo.findByPurchaseDateBetween(from, to)
                 .stream()
                 .map(p -> p.getTotalAmount() == null ? BigDecimal.ZERO : p.getTotalAmount())
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(BigDecimal.ZERO, (acc, value) -> acc.add(value == null ? BigDecimal.ZERO : value));
 
         BigDecimal totalExpenses = expenseService.getTotalExpenses(from, to);
         if (totalExpenses == null) totalExpenses = BigDecimal.ZERO;

@@ -39,18 +39,23 @@ import java.util.UUID;
                 @Index(
                         name = "idx_stock_active",
                         columnList = "is_active"
+                ),
+                @Index(
+                        name = "idx_stock_user",
+                        columnList = "user_id"
                 )
         },
 
         uniqueConstraints = {
 
                 // --------------------------------------------------
-                // One Stock Master Per Raw Material + Unit
+                // One Stock Master Per User + Raw Material + Unit
                 // --------------------------------------------------
 
                 @UniqueConstraint(
-                        name = "uk_stock_raw_material_unit",
+                        name = "uk_stock_user_raw_material_unit",
                         columnNames = {
+                                "user_id",
                                 "raw_material",
                                 "unit"
                         }
@@ -142,6 +147,19 @@ public class Stock {
             nullable = false
     )
     private Boolean isActive = true;
+
+
+    // =========================================================
+    // OWNER USER
+    // =========================================================
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "user_id",
+            nullable = false,
+            updatable = false
+    )
+    private User user;
 
 
     // =========================================================

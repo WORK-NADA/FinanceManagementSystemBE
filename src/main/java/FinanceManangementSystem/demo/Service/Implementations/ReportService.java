@@ -1,9 +1,9 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Model.Expense;
 import FinanceManangementSystem.demo.Model.Purchase;
 import FinanceManangementSystem.demo.Model.Sale;
-import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponsePurchaseDTO;
-import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseSaleDTO;
+import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseSaleReportDTO;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponsePurchaseReportDTO;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseExpenseReportDTO;
@@ -15,8 +15,6 @@ import FinanceManangementSystem.demo.Repository.ExpenseRepository;
 import FinanceManangementSystem.demo.Repository.PurchaseRepository;
 import FinanceManangementSystem.demo.Repository.SaleRepository;
 import FinanceManangementSystem.demo.Repository.StockRepository;
-import FinanceManangementSystem.demo.Repository.SupplierRepository;
-import FinanceManangementSystem.demo.Repository.CustomerRepository;
 import FinanceManangementSystem.demo.Service.ReportServiceInterface;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,14 +23,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReportService implements ReportServiceInterface {
+
+    private final CurrentUserService currentUserService;
 
     private final SaleRepository saleRepo;
 
@@ -42,15 +40,12 @@ public class ReportService implements ReportServiceInterface {
 
     private final StockRepository stockRepo;
 
-    private final CustomerRepository customerRepo;
-
-    private final SupplierRepository supplierRepo;
-
     @Override
     @Transactional(readOnly = true)
     public List<ResponseSaleReportDTO> getSalesReport(LocalDate fromDate, LocalDate toDate) {
         log.info("SERVICE - request came in getSalesReport...");
-        List<Sale> sales = saleRepo.findBySaleDateBetween(fromDate, toDate);
+        User currentUser = currentUserService.getCurrentUser();
+        List<Sale> sales = saleRepo.findByUserAndSaleDateBetween(currentUser, fromDate, toDate);
 
         return sales.stream().map(s -> {
             ResponseSaleReportDTO dto = new ResponseSaleReportDTO();
@@ -67,7 +62,8 @@ public class ReportService implements ReportServiceInterface {
     @Transactional(readOnly = true)
     public java.util.List<ResponsePurchaseReportDTO> getPurchaseReport(LocalDate fromDate, LocalDate toDate) {
         log.info("SERVICE - request came in getPurchaseReport...");
-        List<Purchase> purchases = purchaseRepo.findByPurchaseDateBetween(fromDate, toDate);
+        User currentUser = currentUserService.getCurrentUser();
+        List<Purchase> purchases = purchaseRepo.findByUserAndPurchaseDateBetween(currentUser, fromDate, toDate);
 
         return purchases.stream().map(p -> {
             ResponsePurchaseReportDTO dto = new ResponsePurchaseReportDTO();
@@ -84,7 +80,8 @@ public class ReportService implements ReportServiceInterface {
     @Transactional(readOnly = true)
     public java.util.List<ResponseExpenseReportDTO> getExpenseReport(LocalDate fromDate, LocalDate toDate) {
         log.info("SERVICE - request came in getExpenseReport...");
-        return expenseRepo.findByExpenseDateBetweenAndIsActiveTrueOrderByExpenseDateDesc(fromDate, toDate)
+        User currentUser = currentUserService.getCurrentUser();
+        return expenseRepo.findByUserAndExpenseDateBetweenAndIsActiveTrueOrderByExpenseDateDesc(currentUser, fromDate, toDate)
                 .stream()
                 .map(e -> {
                     ResponseExpenseReportDTO dto = new ResponseExpenseReportDTO();
@@ -101,17 +98,22 @@ public class ReportService implements ReportServiceInterface {
     public ResponseProfitLossReportDTO getProfitLossReport(LocalDate fromDate, LocalDate toDate) {
         log.info("SERVICE - request came in getProfitLossReport...");
 
-        BigDecimal totalRevenue = saleRepo.findBySaleDateBetween(fromDate, toDate)
+        User currentUser = currentUserService.getCurrentUser();
+
+        BigDecimal totalRevenue = saleRepo.findByUserAndSaleDateBetween(currentUser, fromDate, toDate)
                 .stream()
                 .map(s -> s.getTotalAmount() == null ? BigDecimal.ZERO : s.getTotalAmount())
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(BigDecimal.ZERO, (acc, value) -> acc.add(value == null ? BigDecimal.ZERO : value));
 
-        BigDecimal totalPurchase = purchaseRepo.findByPurchaseDateBetween(fromDate, toDate)
+        BigDecimal totalPurchase = purchaseRepo.findByUserAndPurchaseDateBetween(currentUser, fromDate, toDate)
                 .stream()
                 .map(p -> p.getTotalAmount() == null ? BigDecimal.ZERO : p.getTotalAmount())
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(BigDecimal.ZERO, (acc, value) -> acc.add(value == null ? BigDecimal.ZERO : value));
 
-        BigDecimal totalExpenses = expenseRepo.sumTotalExpensesByDateRange(fromDate, toDate);
+        BigDecimal totalExpenses = expenseRepo.findByUserAndExpenseDateBetweenAndIsActiveTrueOrderByExpenseDateDesc(currentUser, fromDate, toDate)
+                .stream()
+                .map(e -> e.getAmount() == null ? BigDecimal.ZERO : e.getAmount())
+                .reduce(BigDecimal.ZERO, (acc, value) -> acc.add(value == null ? BigDecimal.ZERO : value));
         if (totalExpenses == null) totalExpenses = BigDecimal.ZERO;
 
         BigDecimal netProfit = totalRevenue.subtract(totalPurchase).subtract(totalExpenses);
@@ -129,7 +131,8 @@ public class ReportService implements ReportServiceInterface {
     @Transactional(readOnly = true)
     public java.util.List<ResponseStockReportDTO> getStockReport() {
         log.info("SERVICE - request came in getStockReport...");
-        return stockRepo.findAll()
+        User currentUser = currentUserService.getCurrentUser();
+        return stockRepo.findByUser(currentUser)
                 .stream()
                 .map(s -> {
                     ResponseStockReportDTO dto = new ResponseStockReportDTO();
@@ -146,8 +149,9 @@ public class ReportService implements ReportServiceInterface {
     @Transactional(readOnly = true)
     public java.util.List<ResponseCustomerOutstandingReportDTO> getCustomerOutstandingReport() {
         log.info("SERVICE - request came in getCustomerOutstandingReport...");
+        User currentUser = currentUserService.getCurrentUser();
         // Outstanding sales: PENDING or PARTIALLY_PAID
-        return saleRepo.findByPaymentStatusIn(List.of(
+        return saleRepo.findByUserAndPaymentStatusIn(currentUser, List.of(
                 FinanceManangementSystem.demo.Enums.PaymentStatus.PENDING,
                 FinanceManangementSystem.demo.Enums.PaymentStatus.PARTIALLY_PAID
         )).stream().map(s -> {
@@ -163,7 +167,8 @@ public class ReportService implements ReportServiceInterface {
     @Transactional(readOnly = true)
     public java.util.List<ResponseSupplierOutstandingReportDTO> getSupplierOutstandingReport() {
         log.info("SERVICE - request came in getSupplierOutstandingReport...");
-        return purchaseRepo.findByPaymentStatusIn(List.of(
+        User currentUser = currentUserService.getCurrentUser();
+        return purchaseRepo.findByUserAndPaymentStatusIn(currentUser, List.of(
                 FinanceManangementSystem.demo.Enums.PaymentStatus.PENDING,
                 FinanceManangementSystem.demo.Enums.PaymentStatus.PARTIALLY_PAID
         )).stream().map(p -> {

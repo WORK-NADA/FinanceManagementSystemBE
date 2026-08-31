@@ -1,6 +1,7 @@
 package FinanceManangementSystem.demo.Repository;
 
 import FinanceManangementSystem.demo.Model.Customer;
+import FinanceManangementSystem.demo.Model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,6 +20,14 @@ public interface CustomerRepository
     Optional<Customer> findByPublicId(
             UUID publicId
     );
+
+    Optional<Customer> findByUserAndPublicId(User user, UUID publicId);
+
+    Optional<Customer> findByUserAndPublicIdAndIsActiveTrue(User user, UUID publicId);
+
+    List<Customer> findByUser(User user);
+
+    List<Customer> findByUserAndIsActiveTrue(User user);
 
 
     // =========================================================

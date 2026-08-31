@@ -3,6 +3,9 @@ package FinanceManangementSystem.demo.Repository;
 import FinanceManangementSystem.demo.Enums.PaymentStatus;
 import FinanceManangementSystem.demo.Model.Customer;
 import FinanceManangementSystem.demo.Model.Sale;
+import FinanceManangementSystem.demo.Model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -23,6 +26,15 @@ public interface SaleRepository
             UUID publicId
     );
 
+    Optional<Sale> findByUserAndPublicId(User user, UUID publicId);
+
+    List<Sale> findByUser(User user);
+
+    Page<Sale> findByUser(User user, Pageable pageable);
+
+    List<Sale> findByUserAndSaleDateBetween(User user, LocalDate fromDate, LocalDate toDate);
+
+    List<Sale> findByUserAndPaymentStatusIn(User user, List<PaymentStatus> statuses);
 
     // =========================================================
     // FIND BY SALE NUMBER

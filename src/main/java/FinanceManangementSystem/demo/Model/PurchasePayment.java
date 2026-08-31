@@ -45,6 +45,10 @@ public class PurchasePayment {
     )
     private UUID publicId;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    private User user;
+
     @ManyToOne(
             fetch = FetchType.LAZY,
             optional = false

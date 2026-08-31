@@ -1,7 +1,6 @@
 package FinanceManangementSystem.demo.Exceptions;
 
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ErrorResponse;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -50,7 +49,9 @@ public class GlobalExceptionHandler {
                 ex.getMessage()
         );
 
-        return new ResponseEntity<>(resp, ex.getHttpStatus());
+        return ResponseEntity
+                .status(ex.getHttpStatus())
+                .body(resp);
     }
 
     /**
