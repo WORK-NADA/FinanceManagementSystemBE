@@ -23,6 +23,24 @@ import java.util.UUID;
                 @Index(
                         name = "idx_supplier_active",
                         columnList = "is_active"
+                ),
+                @Index(
+                        name = "idx_supplier_user",
+                        columnList = "user_id"
+                )
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_supplier_user_mobile",
+                        columnNames = {"user_id", "mobile_number"}
+                ),
+                @UniqueConstraint(
+                        name = "uk_supplier_user_gst",
+                        columnNames = {"user_id", "gst_number"}
+                ),
+                @UniqueConstraint(
+                        name = "uk_supplier_user_email",
+                        columnNames = {"user_id", "email"}
                 )
         }
 )
@@ -46,7 +64,7 @@ public class Supplier {
     @Column(nullable = false, length = 150)
     private String supplierName;
 
-    @Column(nullable = false,unique = true, length = 15)
+    @Column(nullable = false, length = 15)
     private String mobileNumber;
 
     @Column(length = 100)
@@ -58,7 +76,7 @@ public class Supplier {
     @Column(length = 150)
     private String email;
 
-    @Column(unique = true,length = 15)
+    @Column(length = 15)
     private String gstNumber;
 
     @OneToOne(
@@ -76,6 +94,14 @@ public class Supplier {
     private BigDecimal openingBalance = BigDecimal.ZERO;
 
     private Integer paymentTerms = 30;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "user_id",
+            nullable = false,
+            updatable = false
+    )
+    private User user;
 
     @Column(nullable = false)
     private Boolean isActive = true;

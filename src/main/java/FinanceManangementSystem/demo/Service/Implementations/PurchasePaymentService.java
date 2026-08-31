@@ -5,6 +5,7 @@ import FinanceManangementSystem.demo.Enums.PaymentStatus;
 import FinanceManangementSystem.demo.Model.Purchase;
 import FinanceManangementSystem.demo.Model.PurchasePayment;
 import FinanceManangementSystem.demo.Model.Supplier;
+import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestPurchasePaymentDTO;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponsePurchasePaymentDTO;
 import FinanceManangementSystem.demo.Repository.PurchasePaymentRepository;
@@ -14,6 +15,8 @@ import FinanceManangementSystem.demo.Service.PurchasePaymentServiceInterface;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +33,8 @@ public class PurchasePaymentService
     private final PurchasePaymentRepository purchasePaymentRepo;
 
     private final PurchaseRepository purchaseRepo;
+
+    private final CurrentUserService currentUserService;
 
     private final SupplierRepository supplierRepo;
 
@@ -57,9 +62,12 @@ public class PurchasePaymentService
         // FIND PURCHASE
         // -----------------------------------------------------
 
+        User currentUser = currentUserService.getCurrentUser();
+
         Purchase purchase =
                 purchaseRepo
-                        .findByPublicId(
+                        .findByUserAndPublicId(
+                                currentUser,
                                 dto.getPurchasePublicId()
                         )
                         .orElseThrow(() -> {
@@ -134,6 +142,8 @@ public class PurchasePaymentService
 
         PurchasePayment payment =
                 new PurchasePayment();
+
+        payment.setUser(currentUser);
 
         payment.setPurchase(
                 purchase
@@ -220,14 +230,17 @@ public class PurchasePaymentService
                 "SERVICE - request came in getPaymentByPublicId..."
         );
 
-        PurchasePayment payment =
-                purchasePaymentRepo
-                        .findByPublicId(
-                                publicId
-                        )
-                        .orElseThrow(() -> new RuntimeException(
-                                "Purchase payment not found"
-                        ));
+        User currentUser = currentUserService.getCurrentUser();
+
+        PurchasePayment payment;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            payment = purchasePaymentRepo.findByPublicId(publicId)
+                    .orElseThrow(() -> new RuntimeException("Purchase payment not found"));
+        } else {
+            payment = purchasePaymentRepo.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> new RuntimeException("Purchase payment not found"));
+        }
 
         Purchase purchase =
                 payment.getPurchase();
@@ -260,14 +273,17 @@ public class PurchasePaymentService
                 "SERVICE - request came in getPaymentsByPurchase..."
         );
 
-        Purchase purchase =
-                purchaseRepo
-                        .findByPublicId(
-                                purchasePublicId
-                        )
-                        .orElseThrow(() -> new RuntimeException(
-                                "Purchase not found"
-                        ));
+        User currentUser = currentUserService.getCurrentUser();
+
+        Purchase purchase;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            purchase = purchaseRepo.findByPublicId(purchasePublicId)
+                    .orElseThrow(() -> new RuntimeException("Purchase not found"));
+        } else {
+            purchase = purchaseRepo.findByUserAndPublicId(currentUser, purchasePublicId)
+                    .orElseThrow(() -> new RuntimeException("Purchase not found"));
+        }
 
         BigDecimal paidAmount =
                 purchasePaymentRepo
@@ -299,16 +315,28 @@ public class PurchasePaymentService
                 "SERVICE - request came in getPaymentsBySupplier..."
         );
 
-        supplierRepo
-                .findByPublicIdAndIsActiveTrue(
-                        supplierPublicId
-                )
-                .orElseThrow(() -> new RuntimeException(
-                        "Active supplier not found"
-                ));
+        User currentUser = currentUserService.getCurrentUser();
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            supplierRepo.findByPublicIdAndIsActiveTrue(supplierPublicId)
+                    .orElseThrow(() -> new RuntimeException("Active supplier not found"));
+            return purchasePaymentRepo
+                    .findByPurchase_Supplier_PublicIdOrderByPaymentDateDesc(supplierPublicId)
+                    .stream()
+                    .map(payment -> {
+                        Purchase purchase = payment.getPurchase();
+                        BigDecimal paidAmount = purchasePaymentRepo.sumPaidAmountByPurchase(purchase);
+                        return mapToResponse(payment, purchase, paidAmount);
+                    })
+                    .toList();
+        }
+
+        supplierRepo.findByUserAndPublicIdAndIsActiveTrue(currentUser, supplierPublicId)
+                .orElseThrow(() -> new RuntimeException("Active supplier not found"));
 
         return purchasePaymentRepo
-                .findByPurchase_Supplier_PublicIdOrderByPaymentDateDesc(
+                .findByUserAndPurchase_Supplier_PublicIdOrderByPaymentDateDesc(
+                        currentUser,
                         supplierPublicId
                 )
                 .stream()
@@ -335,14 +363,17 @@ public class PurchasePaymentService
                 "SERVICE - request came in getPurchasePaymentSummary..."
         );
 
-        Purchase purchase =
-                purchaseRepo
-                        .findByPublicId(
-                                purchasePublicId
-                        )
-                        .orElseThrow(() -> new RuntimeException(
-                                "Purchase not found"
-                        ));
+        User currentUser = currentUserService.getCurrentUser();
+
+        Purchase purchase;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            purchase = purchaseRepo.findByPublicId(purchasePublicId)
+                    .orElseThrow(() -> new RuntimeException("Purchase not found"));
+        } else {
+            purchase = purchaseRepo.findByUserAndPublicId(currentUser, purchasePublicId)
+                    .orElseThrow(() -> new RuntimeException("Purchase not found"));
+        }
 
         return buildPurchaseDetails(
                 purchase
@@ -362,14 +393,21 @@ public class PurchasePaymentService
                 "SERVICE - request came in getAllPendingPayments..."
         );
 
-        List<Purchase> pendingPurchases =
-                purchaseRepo
-                        .findByPaymentStatusIn(
-                                List.of(
-                                        PaymentStatus.PENDING,
-                                        PaymentStatus.PARTIALLY_PAID
-                                )
-                        );
+        User currentUser = currentUserService.getCurrentUser();
+
+        List<Purchase> pendingPurchases;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            pendingPurchases = purchaseRepo.findByPaymentStatusIn(List.of(
+                    PaymentStatus.PENDING,
+                    PaymentStatus.PARTIALLY_PAID
+            ));
+        } else {
+            pendingPurchases = purchaseRepo.findByUserAndPaymentStatusIn(currentUser, List.of(
+                    PaymentStatus.PENDING,
+                    PaymentStatus.PARTIALLY_PAID
+            ));
+        }
 
         return pendingPurchases
                 .stream()
@@ -379,16 +417,33 @@ public class PurchasePaymentService
 
         @Override
         @Transactional(readOnly = true)
-        public org.springframework.data.domain.Page<ResponsePurchasePaymentDTO> getAllPayments(org.springframework.data.domain.Pageable pageable) {
+        public Page<ResponsePurchasePaymentDTO> getAllPayments(@org.springframework.lang.NonNull org.springframework.data.domain.Pageable pageable) {
 
                 log.info("SERVICE - request came in getAllPayments...");
 
-                return purchasePaymentRepo.findAll(pageable)
+                User currentUser = currentUserService.getCurrentUser();
+
+                if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+                        return purchasePaymentRepo.findAll(pageable)
+                                        .map(payment -> {
+                                                Purchase purchase = payment.getPurchase();
+                                                java.math.BigDecimal paidAmount = purchasePaymentRepo.sumPaidAmountByPurchase(purchase);
+                                                return mapToResponse(payment, purchase, paidAmount);
+                                        });
+                }
+
+                List<ResponsePurchasePaymentDTO> filtered = purchasePaymentRepo.findAll(pageable)
+                                .getContent()
+                                .stream()
+                                .filter(payment -> payment.getUser() != null && payment.getUser().equals(currentUser))
                                 .map(payment -> {
                                         Purchase purchase = payment.getPurchase();
                                         java.math.BigDecimal paidAmount = purchasePaymentRepo.sumPaidAmountByPurchase(purchase);
                                         return mapToResponse(payment, purchase, paidAmount);
-                                });
+                                })
+                                .toList();
+
+                return new PageImpl<>(filtered, pageable, filtered.size());
         }
 
 
@@ -406,24 +461,27 @@ public class PurchasePaymentService
                 "SERVICE - request came in getPendingPaymentsBySupplier..."
         );
 
-        Supplier supplier =
-                supplierRepo
-                        .findByPublicIdAndIsActiveTrue(
-                                supplierPublicId
-                        )
-                        .orElseThrow(() -> new RuntimeException(
-                                "Active supplier not found"
-                        ));
+        User currentUser = currentUserService.getCurrentUser();
 
-        List<Purchase> pendingPurchases =
-                purchaseRepo
-                        .findBySupplierAndPaymentStatusIn(
-                                supplier,
-                                List.of(
-                                        PaymentStatus.PENDING,
-                                        PaymentStatus.PARTIALLY_PAID
-                                )
-                        );
+        Supplier supplier;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            supplier = supplierRepo.findByPublicIdAndIsActiveTrue(supplierPublicId)
+                    .orElseThrow(() -> new RuntimeException("Active supplier not found"));
+            List<Purchase> pendingPurchases = purchaseRepo.findBySupplierAndPaymentStatusIn(supplier, List.of(
+                    PaymentStatus.PENDING,
+                    PaymentStatus.PARTIALLY_PAID
+            ));
+            return pendingPurchases.stream().map(this::buildPurchaseDetails).toList();
+        }
+
+        supplier = supplierRepo.findByUserAndPublicIdAndIsActiveTrue(currentUser, supplierPublicId)
+                .orElseThrow(() -> new RuntimeException("Active supplier not found"));
+
+        List<Purchase> pendingPurchases = purchaseRepo.findByUser(currentUser).stream()
+                .filter(p -> p.getSupplier() != null && p.getSupplier().getPublicId().equals(supplier.getPublicId()))
+                .filter(p -> p.getPaymentStatus() == PaymentStatus.PENDING || p.getPaymentStatus() == PaymentStatus.PARTIALLY_PAID)
+                .toList();
 
         return pendingPurchases
                 .stream()
@@ -444,14 +502,21 @@ public class PurchasePaymentService
                 "SERVICE - request came in getTotalOutstandingAmount..."
         );
 
-        List<Purchase> pendingPurchases =
-                purchaseRepo
-                        .findByPaymentStatusIn(
-                                List.of(
-                                        PaymentStatus.PENDING,
-                                        PaymentStatus.PARTIALLY_PAID
-                                )
-                        );
+        User currentUser = currentUserService.getCurrentUser();
+
+        List<Purchase> pendingPurchases;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            pendingPurchases = purchaseRepo.findByPaymentStatusIn(List.of(
+                    PaymentStatus.PENDING,
+                    PaymentStatus.PARTIALLY_PAID
+            ));
+        } else {
+            pendingPurchases = purchaseRepo.findByUserAndPaymentStatusIn(currentUser, List.of(
+                    PaymentStatus.PENDING,
+                    PaymentStatus.PARTIALLY_PAID
+            ));
+        }
 
         return pendingPurchases
                 .stream()

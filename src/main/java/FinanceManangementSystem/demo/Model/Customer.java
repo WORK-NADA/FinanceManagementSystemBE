@@ -43,6 +43,25 @@ import java.util.UUID;
                 @Index(
                         name = "idx_customer_active",
                         columnList = "is_active"
+                ),
+
+                @Index(
+                        name = "idx_customer_user",
+                        columnList = "user_id"
+                )
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_customer_user_mobile",
+                        columnNames = {"user_id", "mobile_number"}
+                ),
+                @UniqueConstraint(
+                        name = "uk_customer_user_email",
+                        columnNames = {"user_id", "email"}
+                ),
+                @UniqueConstraint(
+                        name = "uk_customer_user_gst",
+                        columnNames = {"user_id", "gst_number"}
                 )
         }
 )
@@ -96,7 +115,6 @@ public class Customer {
     @Column(
             name = "mobile_number",
             nullable = false,
-            unique = true,
             length = 15
     )
     private String mobileNumber;
@@ -118,7 +136,6 @@ public class Customer {
 
     @Column(
             name = "email",
-            unique = true,
             length = 150
     )
     private String email;
@@ -130,7 +147,6 @@ public class Customer {
 
     @Column(
             name = "gst_number",
-            unique = true,
             length = 15
     )
     private String gstNumber;
@@ -146,6 +162,18 @@ public class Customer {
             orphanRemoval = true
     )
     private CustomerAddress address;
+
+    // =========================================================
+    // OWNER USER
+    // =========================================================
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "user_id",
+            nullable = false,
+            updatable = false
+    )
+    private User user;
 
 
     // =========================================================

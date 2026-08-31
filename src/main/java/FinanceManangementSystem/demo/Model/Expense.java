@@ -33,6 +33,10 @@ import java.util.UUID;
                 @Index(
                         name = "idx_expense_active",
                         columnList = "is_active"
+                ),
+                @Index(
+                        name = "idx_expense_user",
+                        columnList = "user_id"
                 )
         }
 )
@@ -108,6 +112,18 @@ public class Expense {
             nullable = false
     )
     private Boolean isActive = true;
+
+    // =========================================================
+    // OWNER USER
+    // =========================================================
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "user_id",
+            nullable = false,
+            updatable = false
+    )
+    private User user;
 
     @CreationTimestamp
     @Column(

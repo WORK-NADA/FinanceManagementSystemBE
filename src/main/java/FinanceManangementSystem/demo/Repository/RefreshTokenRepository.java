@@ -1,7 +1,6 @@
 package FinanceManangementSystem.demo.Repository;
 
 import FinanceManangementSystem.demo.Model.RefreshToken;
-import FinanceManangementSystem.demo.Model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

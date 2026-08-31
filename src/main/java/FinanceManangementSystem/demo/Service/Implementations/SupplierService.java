@@ -1,10 +1,12 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Enums.UserRole;
 import FinanceManangementSystem.demo.Exceptions.DuplicateResourceException;
 import FinanceManangementSystem.demo.Exceptions.InvalidStateException;
 import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 import FinanceManangementSystem.demo.Model.Supplier;
 import FinanceManangementSystem.demo.Model.SupplierAddress;
+import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestSupplierDTO;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseSupplierDTO;
 import FinanceManangementSystem.demo.Repository.SupplierRepository;
@@ -26,6 +28,8 @@ import java.util.stream.Collectors;
 public class SupplierService implements SupplierServiceInterface {
 
     private final SupplierRepository supplierRepo;
+
+    private final CurrentUserService currentUserService;
 
     private final ModelMapper modelMapper;
 
@@ -95,11 +99,15 @@ public class SupplierService implements SupplierServiceInterface {
                 "SERVICE - mapping supplier DTO to entity..."
         );
 
+        User currentUser = currentUserService.getCurrentUser();
+
         Supplier supplier =
                 modelMapper.map(
                         dto,
                         Supplier.class
                 );
+
+        supplier.setUser(currentUser);
 
 
         // ----------------------------------------------
@@ -223,8 +231,12 @@ public class SupplierService implements SupplierServiceInterface {
         );
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
         List<Supplier> suppliers =
-                supplierRepo.findAll();
+                currentUser.getRole() == UserRole.ADMIN
+                        ? supplierRepo.findAll()
+                        : supplierRepo.findByUser(currentUser);
 
 
         log.info(
@@ -258,18 +270,23 @@ public class SupplierService implements SupplierServiceInterface {
         // Find Supplier
         // ----------------------------------------------
 
-        Supplier supplier =
-                supplierRepo.findByPublicId(publicId)
-                        .orElseThrow(() -> {
+        User currentUser = currentUserService.getCurrentUser();
 
-                            log.info(
-                                    "SERVICE - supplier not found..."
-                            );
+        Supplier supplier;
 
-                            return new RuntimeException(
-                                    "Supplier not found"
-                            );
-                        });
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            supplier = supplierRepo.findByPublicId(publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - supplier not found...");
+                        return new RuntimeException("Supplier not found");
+                    });
+        } else {
+            supplier = supplierRepo.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - supplier not found for current user...");
+                        return new RuntimeException("Supplier not found");
+                    });
+        }
 
 
         // ----------------------------------------------

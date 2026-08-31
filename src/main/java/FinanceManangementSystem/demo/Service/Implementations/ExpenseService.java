@@ -3,6 +3,7 @@ package FinanceManangementSystem.demo.Service.Implementations;
 import FinanceManangementSystem.demo.Enums.DocumentType;
 import FinanceManangementSystem.demo.Enums.ExpenseCategory;
 import FinanceManangementSystem.demo.Model.Expense;
+import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestExpenseDTO;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseExpenseDTO;
 import FinanceManangementSystem.demo.Repository.ExpenseRepository;
@@ -28,6 +29,8 @@ public class ExpenseService
 
     private final ExpenseRepository expenseRepo;
 
+    private final CurrentUserService currentUserService;
+
     private final DocumentSequenceService documentSequenceService;
 
     private final ModelMapper modelMapper;
@@ -47,6 +50,8 @@ public class ExpenseService
                 "SERVICE - request came in addExpense..."
         );
 
+        User currentUser = currentUserService.getCurrentUser();
+
         int year =
                 dto.getExpenseDate()
                         .getYear();
@@ -59,6 +64,8 @@ public class ExpenseService
                         );
 
         Expense expense = new Expense();
+
+        expense.setUser(currentUser);
 
         expense.setCategory(
                 dto.getCategory()
@@ -121,9 +128,12 @@ public class ExpenseService
                 "SERVICE - request came in getExpenseByPublicId..."
         );
 
+        User currentUser = currentUserService.getCurrentUser();
+
         Expense expense =
                 expenseRepo
-                        .findByPublicId(
+                        .findByUserAndPublicId(
+                                currentUser,
                                 publicId
                         )
                         .orElseThrow(() -> {
@@ -155,8 +165,10 @@ public class ExpenseService
                 "SERVICE - request came in getAllExpenses..."
         );
 
+        User currentUser = currentUserService.getCurrentUser();
+
         return expenseRepo
-                .findByIsActiveTrueOrderByExpenseDateDesc(pageable)
+                .findByUserAndIsActiveTrueOrderByExpenseDateDesc(currentUser, pageable)
                 .map(this::mapToResponse);
     }
 
@@ -176,9 +188,12 @@ public class ExpenseService
                 "SERVICE - request came in updateExpense..."
         );
 
+        User currentUser = currentUserService.getCurrentUser();
+
         Expense expense =
                 expenseRepo
-                        .findByPublicIdAndIsActiveTrue(
+                        .findByUserAndPublicIdAndIsActiveTrue(
+                                currentUser,
                                 publicId
                         )
                         .orElseThrow(() -> {
@@ -245,9 +260,12 @@ public class ExpenseService
                 "SERVICE - request came in deleteExpense..."
         );
 
+        User currentUser = currentUserService.getCurrentUser();
+
         Expense expense =
                 expenseRepo
-                        .findByPublicId(
+                        .findByUserAndPublicId(
+                                currentUser,
                                 publicId
                         )
                         .orElseThrow(() -> new RuntimeException(
@@ -294,8 +312,11 @@ public class ExpenseService
                 "SERVICE - request came in getExpensesByDateRange..."
         );
 
+        User currentUser = currentUserService.getCurrentUser();
+
         return expenseRepo
-                .findByExpenseDateBetweenAndIsActiveTrueOrderByExpenseDateDesc(
+                .findByUserAndExpenseDateBetweenAndIsActiveTrueOrderByExpenseDateDesc(
+                        currentUser,
                         fromDate,
                         toDate
                 )
@@ -319,8 +340,11 @@ public class ExpenseService
                 "SERVICE - request came in getExpensesByCategory..."
         );
 
+        User currentUser = currentUserService.getCurrentUser();
+
         return expenseRepo
-                .findByCategoryAndIsActiveTrueOrderByExpenseDateDesc(
+                .findByUserAndCategoryAndIsActiveTrueOrderByExpenseDateDesc(
+                        currentUser,
                         category
                 )
                 .stream()

@@ -5,6 +5,7 @@ import FinanceManangementSystem.demo.Enums.PaymentStatus;
 import FinanceManangementSystem.demo.Model.Customer;
 import FinanceManangementSystem.demo.Model.Sale;
 import FinanceManangementSystem.demo.Model.SalePayment;
+import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestSalePaymentDTO;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseSalePaymentDTO;
 import FinanceManangementSystem.demo.Repository.CustomerRepository;
@@ -14,6 +15,8 @@ import FinanceManangementSystem.demo.Service.SalePaymentServiceInterface;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +33,8 @@ public class SalePaymentService
     private final SalePaymentRepository salePaymentRepo;
 
     private final SaleRepository saleRepo;
+
+    private final CurrentUserService currentUserService;
 
     private final CustomerRepository customerRepo;
 
@@ -57,9 +62,12 @@ public class SalePaymentService
         // FIND SALE
         // -----------------------------------------------------
 
+        User currentUser = currentUserService.getCurrentUser();
+
         Sale sale =
                 saleRepo
-                        .findByPublicId(
+                        .findByUserAndPublicId(
+                                currentUser,
                                 dto.getSalePublicId()
                         )
                         .orElseThrow(() -> {
@@ -134,6 +142,8 @@ public class SalePaymentService
 
         SalePayment payment =
                 new SalePayment();
+
+        payment.setUser(currentUser);
 
         payment.setSale(
                 sale
@@ -220,14 +230,17 @@ public class SalePaymentService
                 "SERVICE - request came in getPaymentByPublicId for sale..."
         );
 
-        SalePayment payment =
-                salePaymentRepo
-                        .findByPublicId(
-                                publicId
-                        )
-                        .orElseThrow(() -> new RuntimeException(
-                                "Sale payment not found"
-                        ));
+        User currentUser = currentUserService.getCurrentUser();
+
+        SalePayment payment;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            payment = salePaymentRepo.findByPublicId(publicId)
+                    .orElseThrow(() -> new RuntimeException("Sale payment not found"));
+        } else {
+            payment = salePaymentRepo.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> new RuntimeException("Sale payment not found"));
+        }
 
         Sale sale =
                 payment.getSale();
@@ -260,14 +273,17 @@ public class SalePaymentService
                 "SERVICE - request came in getPaymentsBySale..."
         );
 
-        Sale sale =
-                saleRepo
-                        .findByPublicId(
-                                salePublicId
-                        )
-                        .orElseThrow(() -> new RuntimeException(
-                                "Sale not found"
-                        ));
+        User currentUser = currentUserService.getCurrentUser();
+
+        Sale sale;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            sale = saleRepo.findByPublicId(salePublicId)
+                    .orElseThrow(() -> new RuntimeException("Sale not found"));
+        } else {
+            sale = saleRepo.findByUserAndPublicId(currentUser, salePublicId)
+                    .orElseThrow(() -> new RuntimeException("Sale not found"));
+        }
 
         BigDecimal receivedAmount =
                 salePaymentRepo
@@ -299,16 +315,28 @@ public class SalePaymentService
                 "SERVICE - request came in getPaymentsByCustomer..."
         );
 
-        customerRepo
-                .findByPublicIdAndIsActiveTrue(
-                        customerPublicId
-                )
-                .orElseThrow(() -> new RuntimeException(
-                        "Active customer not found"
-                ));
+        User currentUser = currentUserService.getCurrentUser();
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            customerRepo.findByPublicIdAndIsActiveTrue(customerPublicId)
+                    .orElseThrow(() -> new RuntimeException("Active customer not found"));
+            return salePaymentRepo
+                    .findBySale_Customer_PublicIdOrderByPaymentDateDesc(customerPublicId)
+                    .stream()
+                    .map(payment -> {
+                        Sale sale = payment.getSale();
+                        BigDecimal receivedAmount = salePaymentRepo.sumReceivedAmountBySale(sale);
+                        return mapToResponse(payment, sale, receivedAmount);
+                    })
+                    .toList();
+        }
+
+        customerRepo.findByUserAndPublicIdAndIsActiveTrue(currentUser, customerPublicId)
+                .orElseThrow(() -> new RuntimeException("Active customer not found"));
 
         return salePaymentRepo
-                .findBySale_Customer_PublicIdOrderByPaymentDateDesc(
+                .findByUserAndSale_Customer_PublicIdOrderByPaymentDateDesc(
+                        currentUser,
                         customerPublicId
                 )
                 .stream()
@@ -335,14 +363,17 @@ public class SalePaymentService
                 "SERVICE - request came in getSalePaymentSummary..."
         );
 
-        Sale sale =
-                saleRepo
-                        .findByPublicId(
-                                salePublicId
-                        )
-                        .orElseThrow(() -> new RuntimeException(
-                                "Sale not found"
-                        ));
+        User currentUser = currentUserService.getCurrentUser();
+
+        Sale sale;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            sale = saleRepo.findByPublicId(salePublicId)
+                    .orElseThrow(() -> new RuntimeException("Sale not found"));
+        } else {
+            sale = saleRepo.findByUserAndPublicId(currentUser, salePublicId)
+                    .orElseThrow(() -> new RuntimeException("Sale not found"));
+        }
 
         return buildSaleDetails(
                 sale
@@ -362,14 +393,21 @@ public class SalePaymentService
                 "SERVICE - request came in getAllPendingPayments for sales..."
         );
 
-        List<Sale> pendingSales =
-                saleRepo
-                        .findByPaymentStatusIn(
-                                List.of(
-                                        PaymentStatus.PENDING,
-                                        PaymentStatus.PARTIALLY_PAID
-                                )
-                        );
+        User currentUser = currentUserService.getCurrentUser();
+
+        List<Sale> pendingSales;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            pendingSales = saleRepo.findByPaymentStatusIn(List.of(
+                    PaymentStatus.PENDING,
+                    PaymentStatus.PARTIALLY_PAID
+            ));
+        } else {
+            pendingSales = saleRepo.findByUserAndPaymentStatusIn(currentUser, List.of(
+                    PaymentStatus.PENDING,
+                    PaymentStatus.PARTIALLY_PAID
+            ));
+        }
 
         return pendingSales
                 .stream()
@@ -392,24 +430,27 @@ public class SalePaymentService
                 "SERVICE - request came in getPendingPaymentsByCustomer..."
         );
 
-        Customer customer =
-                customerRepo
-                        .findByPublicIdAndIsActiveTrue(
-                                customerPublicId
-                        )
-                        .orElseThrow(() -> new RuntimeException(
-                                "Active customer not found"
-                        ));
+        User currentUser = currentUserService.getCurrentUser();
 
-        List<Sale> pendingSales =
-                saleRepo
-                        .findByCustomerAndPaymentStatusIn(
-                                customer,
-                                List.of(
-                                        PaymentStatus.PENDING,
-                                        PaymentStatus.PARTIALLY_PAID
-                                )
-                        );
+        Customer customer;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            customer = customerRepo.findByPublicIdAndIsActiveTrue(customerPublicId)
+                    .orElseThrow(() -> new RuntimeException("Active customer not found"));
+            List<Sale> pendingSales = saleRepo.findByCustomerAndPaymentStatusIn(customer, List.of(
+                    PaymentStatus.PENDING,
+                    PaymentStatus.PARTIALLY_PAID
+            ));
+            return pendingSales.stream().map(this::buildSaleDetails).toList();
+        }
+
+        customer = customerRepo.findByUserAndPublicIdAndIsActiveTrue(currentUser, customerPublicId)
+                .orElseThrow(() -> new RuntimeException("Active customer not found"));
+
+        List<Sale> pendingSales = saleRepo.findByUser(currentUser).stream()
+                .filter(s -> s.getCustomer() != null && s.getCustomer().getPublicId().equals(customer.getPublicId()))
+                .filter(s -> s.getPaymentStatus() == PaymentStatus.PENDING || s.getPaymentStatus() == PaymentStatus.PARTIALLY_PAID)
+                .toList();
 
         return pendingSales
                 .stream()
@@ -419,16 +460,33 @@ public class SalePaymentService
 
         @Override
         @Transactional(readOnly = true)
-        public org.springframework.data.domain.Page<ResponseSalePaymentDTO> getAllPayments(org.springframework.data.domain.Pageable pageable) {
+        public Page<ResponseSalePaymentDTO> getAllPayments(@org.springframework.lang.NonNull org.springframework.data.domain.Pageable pageable) {
 
                 log.info("SERVICE - request came in getAllPayments for sales...");
 
-                return salePaymentRepo.findAll(pageable)
+                User currentUser = currentUserService.getCurrentUser();
+
+                if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+                        return salePaymentRepo.findAll(pageable)
+                                        .map(payment -> {
+                                                Sale sale = payment.getSale();
+                                                java.math.BigDecimal receivedAmount = salePaymentRepo.sumReceivedAmountBySale(sale);
+                                                return mapToResponse(payment, sale, receivedAmount);
+                                        });
+                }
+
+                List<ResponseSalePaymentDTO> filtered = salePaymentRepo.findAll(pageable)
+                                .getContent()
+                                .stream()
+                                .filter(payment -> payment.getUser() != null && payment.getUser().equals(currentUser))
                                 .map(payment -> {
                                         Sale sale = payment.getSale();
                                         java.math.BigDecimal receivedAmount = salePaymentRepo.sumReceivedAmountBySale(sale);
                                         return mapToResponse(payment, sale, receivedAmount);
-                                });
+                                })
+                                .toList();
+
+                return new PageImpl<>(filtered, pageable, filtered.size());
         }
 
 
@@ -444,14 +502,21 @@ public class SalePaymentService
                 "SERVICE - request came in getTotalReceivableAmount..."
         );
 
-        List<Sale> pendingSales =
-                saleRepo
-                        .findByPaymentStatusIn(
-                                List.of(
-                                        PaymentStatus.PENDING,
-                                        PaymentStatus.PARTIALLY_PAID
-                                )
-                        );
+        User currentUser = currentUserService.getCurrentUser();
+
+        List<Sale> pendingSales;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            pendingSales = saleRepo.findByPaymentStatusIn(List.of(
+                    PaymentStatus.PENDING,
+                    PaymentStatus.PARTIALLY_PAID
+            ));
+        } else {
+            pendingSales = saleRepo.findByUserAndPaymentStatusIn(currentUser, List.of(
+                    PaymentStatus.PENDING,
+                    PaymentStatus.PARTIALLY_PAID
+            ));
+        }
 
         return pendingSales
                 .stream()

@@ -1,6 +1,7 @@
 package FinanceManangementSystem.demo.Repository;
 
 import FinanceManangementSystem.demo.Model.Supplier;
+import FinanceManangementSystem.demo.Model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +18,14 @@ public interface SupplierRepository
     // --------------------------------------------------
 
     Optional<Supplier> findByPublicId(UUID publicId);
+
+    Optional<Supplier> findByUserAndPublicId(User user, UUID publicId);
+
+    List<Supplier> findByUser(User user);
+
+    List<Supplier> findByUserAndIsActiveTrue(User user);
+
+    Optional<Supplier> findByUserAndPublicIdAndIsActiveTrue(User user, UUID publicId);
 
 
     // --------------------------------------------------

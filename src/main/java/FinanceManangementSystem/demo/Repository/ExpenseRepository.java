@@ -2,6 +2,7 @@ package FinanceManangementSystem.demo.Repository;
 
 import FinanceManangementSystem.demo.Enums.ExpenseCategory;
 import FinanceManangementSystem.demo.Model.Expense;
+import FinanceManangementSystem.demo.Model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,6 +22,14 @@ public interface ExpenseRepository
             UUID publicId
     );
 
+    Optional<Expense> findByUserAndPublicId(User user, UUID publicId);
+
+    Optional<Expense> findByUserAndPublicIdAndIsActiveTrue(User user, UUID publicId);
+
+    List<Expense> findByUserAndIsActiveTrueOrderByExpenseDateDesc(User user);
+
+    org.springframework.data.domain.Page<Expense> findByUserAndIsActiveTrueOrderByExpenseDateDesc(User user, org.springframework.data.domain.Pageable pageable);
+
     Optional<Expense> findByPublicIdAndIsActiveTrue(
             UUID publicId
     );
@@ -32,6 +41,17 @@ public interface ExpenseRepository
     List<Expense> findByExpenseDateBetweenAndIsActiveTrueOrderByExpenseDateDesc(
             LocalDate fromDate,
             LocalDate toDate
+    );
+
+    List<Expense> findByUserAndExpenseDateBetweenAndIsActiveTrueOrderByExpenseDateDesc(
+            User user,
+            LocalDate fromDate,
+            LocalDate toDate
+    );
+
+    List<Expense> findByUserAndCategoryAndIsActiveTrueOrderByExpenseDateDesc(
+            User user,
+            ExpenseCategory category
     );
 
     List<Expense> findByCategoryAndIsActiveTrueOrderByExpenseDateDesc(

@@ -2,6 +2,7 @@ package FinanceManangementSystem.demo.Repository;
 
 import FinanceManangementSystem.demo.Model.Purchase;
 import FinanceManangementSystem.demo.Model.PurchasePayment;
+import FinanceManangementSystem.demo.Model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +20,12 @@ public interface PurchasePaymentRepository
     Optional<PurchasePayment> findByPublicId(
             UUID publicId
     );
+
+    Optional<PurchasePayment> findByUserAndPublicId(User user, UUID publicId);
+
+    List<PurchasePayment> findByUserAndPurchaseOrderByPaymentDateDesc(User user, Purchase purchase);
+
+    List<PurchasePayment> findByUserAndPurchase_Supplier_PublicIdOrderByPaymentDateDesc(User user, UUID supplierPublicId);
 
     List<PurchasePayment> findByPurchaseOrderByPaymentDateDesc(
             Purchase purchase

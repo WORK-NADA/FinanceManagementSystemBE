@@ -23,6 +23,16 @@ import java.util.UUID;
                 @Index(
                         name = "idx_partner_active",
                         columnList = "is_active"
+                ),
+                @Index(
+                        name = "idx_partner_user",
+                        columnList = "user_id"
+                )
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_partner_user_mobile",
+                        columnNames = {"user_id", "mobile_number"}
                 )
         }
 )
@@ -51,7 +61,6 @@ public class Partner {
     @Column(
             name = "mobile_number",
             nullable = false,
-            unique = true,
             length = 15
     )
     private String mobileNumber;
@@ -81,6 +90,18 @@ public class Partner {
             nullable = false
     )
     private Boolean isActive = true;
+
+    // =========================================================
+    // OWNER USER
+    // =========================================================
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "user_id",
+            nullable = false,
+            updatable = false
+    )
+    private User user;
 
     @CreationTimestamp
     @Column(

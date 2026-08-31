@@ -4,6 +4,9 @@ import FinanceManangementSystem.demo.Enums.PaymentStatus;
 import FinanceManangementSystem.demo.Enums.PurchaseStatus;
 import FinanceManangementSystem.demo.Model.Purchase;
 import FinanceManangementSystem.demo.Model.Supplier;
+import FinanceManangementSystem.demo.Model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -24,6 +27,17 @@ public interface PurchaseRepository
             UUID publicId
     );
 
+    Optional<Purchase> findByUserAndPublicId(User user, UUID publicId);
+
+    List<Purchase> findByUser(User user);
+
+    Page<Purchase> findByUser(User user, Pageable pageable);
+
+    List<Purchase> findByUserAndPurchaseDateBetween(User user, LocalDate fromDate, LocalDate toDate);
+
+    List<Purchase> findByUserAndPurchaseStatus(User user, PurchaseStatus purchaseStatus);
+
+    List<Purchase> findByUserAndPaymentStatusIn(User user, List<PaymentStatus> statuses);
 
     // =========================================================
     // FIND BY PURCHASE NUMBER

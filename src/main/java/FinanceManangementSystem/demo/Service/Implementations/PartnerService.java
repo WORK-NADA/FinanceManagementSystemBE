@@ -1,6 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
 import FinanceManangementSystem.demo.Model.Partner;
+import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestPartnerDTO;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponsePartnerDTO;
 import FinanceManangementSystem.demo.Repository.PartnerProfitShareRepository;
@@ -26,6 +27,8 @@ public class PartnerService implements PartnerServiceInterface {
 
     private final PartnerProfitShareRepository partnerProfitShareRepo;
 
+    private final CurrentUserService currentUserService;
+
     private final ModelMapper modelMapper;
 
 
@@ -35,12 +38,14 @@ public class PartnerService implements PartnerServiceInterface {
 
         log.info("SERVICE - request came in addPartner...");
 
+        User currentUser = currentUserService.getCurrentUser();
+
         if (partnerRepo.existsByMobileNumber(dto.getMobileNumber())) {
             log.info("SERVICE - partner mobile number already exists...");
             throw new RuntimeException("Partner with this mobile number already exists");
         }
 
-        BigDecimal currentSum = partnerRepo.sumActiveSharePercentage();
+        BigDecimal currentSum = partnerRepo.sumActiveSharePercentage(currentUser);
 
         if (currentSum == null) currentSum = BigDecimal.ZERO;
 
@@ -50,6 +55,7 @@ public class PartnerService implements PartnerServiceInterface {
         }
 
         Partner partner = modelMapper.map(dto, Partner.class);
+        partner.setUser(currentUser);
 
         partner = partnerRepo.save(partner);
 
@@ -61,7 +67,9 @@ public class PartnerService implements PartnerServiceInterface {
     public ResponsePartnerDTO getPartnerByPublicId(UUID publicId) {
         log.info("SERVICE - request came in getPartnerByPublicId...");
 
-        Partner partner = partnerRepo.findByPublicId(publicId)
+        User currentUser = currentUserService.getCurrentUser();
+
+        Partner partner = partnerRepo.findByUserAndPublicId(currentUser, publicId)
                 .orElseThrow(() -> new RuntimeException("Partner not found"));
 
         return mapToResponse(partner);
@@ -72,7 +80,9 @@ public class PartnerService implements PartnerServiceInterface {
     public List<ResponsePartnerDTO> getAllPartners() {
         log.info("SERVICE - request came in getAllPartners...");
 
-        List<Partner> partners = partnerRepo.findAll();
+        User currentUser = currentUserService.getCurrentUser();
+
+        List<Partner> partners = partnerRepo.findByUser(currentUser);
 
         return partners.stream()
                 .map(this::mapToResponse)
@@ -84,7 +94,9 @@ public class PartnerService implements PartnerServiceInterface {
     public List<ResponsePartnerDTO> getAllActivePartners() {
         log.info("SERVICE - request came in getAllActivePartners...");
 
-        List<Partner> partners = partnerRepo.findByIsActiveTrue();
+        User currentUser = currentUserService.getCurrentUser();
+
+        List<Partner> partners = partnerRepo.findByUserAndIsActiveTrue(currentUser);
 
         return partners.stream()
                 .map(this::mapToResponse)
@@ -96,7 +108,9 @@ public class PartnerService implements PartnerServiceInterface {
     public ResponsePartnerDTO updatePartner(UUID publicId, RequestPartnerDTO dto) {
         log.info("SERVICE - request came in updatePartner...");
 
-        Partner partner = partnerRepo.findByPublicId(publicId)
+        User currentUser = currentUserService.getCurrentUser();
+
+        Partner partner = partnerRepo.findByUserAndPublicId(currentUser, publicId)
                 .orElseThrow(() -> new RuntimeException("Partner not found"));
 
         if (!partner.getMobileNumber().equals(dto.getMobileNumber())
@@ -129,7 +143,9 @@ public class PartnerService implements PartnerServiceInterface {
     public void deactivatePartner(UUID publicId) {
         log.info("SERVICE - request came in deactivatePartner...");
 
-        Partner partner = partnerRepo.findByPublicIdAndIsActiveTrue(publicId)
+        User currentUser = currentUserService.getCurrentUser();
+
+        Partner partner = partnerRepo.findByUserAndPublicIdAndIsActiveTrue(currentUser, publicId)
                 .orElseThrow(() -> new RuntimeException("Partner not found or already inactive"));
 
         partner.setIsActive(false);
@@ -141,7 +157,9 @@ public class PartnerService implements PartnerServiceInterface {
     public void reactivatePartner(UUID publicId) {
         log.info("SERVICE - request came in reactivatePartner...");
 
-        Partner partner = partnerRepo.findByPublicId(publicId)
+        User currentUser = currentUserService.getCurrentUser();
+
+        Partner partner = partnerRepo.findByUserAndPublicId(currentUser, publicId)
                 .orElseThrow(() -> new RuntimeException("Partner not found"));
 
         partner.setIsActive(true);

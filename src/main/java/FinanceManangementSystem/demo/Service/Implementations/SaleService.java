@@ -2,8 +2,10 @@ package FinanceManangementSystem.demo.Service.Implementations;
 
 import FinanceManangementSystem.demo.Enums.DocumentType;
 import FinanceManangementSystem.demo.Enums.PaymentStatus;
+import FinanceManangementSystem.demo.Enums.UserRole;
 import FinanceManangementSystem.demo.Model.Customer;
 import FinanceManangementSystem.demo.Model.Sale;
+import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestSaleDTO;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseSaleDTO;
 import FinanceManangementSystem.demo.Repository.CustomerRepository;
@@ -18,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -32,6 +32,8 @@ public class SaleService
     private final SaleRepository saleRepo;
 
     private final CustomerRepository customerRepo;
+
+    private final CurrentUserService currentUserService;
 
     private final DocumentSequenceService documentSequenceService;
 
@@ -114,7 +116,11 @@ public class SaleService
         // CREATE SALE
         // -----------------------------------------------------
 
+        User currentUser = currentUserService.getCurrentUser();
+
         Sale sale = new Sale();
+
+        sale.setUser(currentUser);
 
         sale.setCustomer(
                 customer
@@ -293,25 +299,25 @@ public class SaleService
                 "SERVICE - request came in getSaleByPublicId..."
         );
 
-        Sale sale =
-                saleRepo
-                        .findByPublicId(
-                                publicId
-                        )
-                        .orElseThrow(() -> {
+        User currentUser = currentUserService.getCurrentUser();
 
-                            log.info(
-                                    "SERVICE - sale not found..."
-                            );
+        Sale sale;
 
-                            return new RuntimeException(
-                                    "Sale not found"
-                            );
-                        });
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            sale = saleRepo.findByPublicId(publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - sale not found...");
+                        return new RuntimeException("Sale not found");
+                    });
+        } else {
+            sale = saleRepo.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - sale not found for current user...");
+                        return new RuntimeException("Sale not found");
+                    });
+        }
 
-        return mapToResponse(
-                sale
-        );
+        return mapToResponse(sale);
     }
 
 
@@ -327,7 +333,9 @@ public class SaleService
                 "SERVICE - request came in getAllSales..."
         );
 
-        return saleRepo.findAll(pageable).map(this::mapToResponse);
+        User currentUser = currentUserService.getCurrentUser();
+
+        return saleRepo.findByUser(currentUser, pageable).map(this::mapToResponse);
     }
 
 
@@ -351,21 +359,23 @@ public class SaleService
         // FIND SALE
         // -----------------------------------------------------
 
-        Sale sale =
-                saleRepo
-                        .findByPublicId(
-                                publicId
-                        )
-                        .orElseThrow(() -> {
+        User currentUser = currentUserService.getCurrentUser();
 
-                            log.info(
-                                    "SERVICE - sale not found..."
-                            );
+        Sale sale;
 
-                            return new RuntimeException(
-                                    "Sale not found"
-                            );
-                        });
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            sale = saleRepo.findByPublicId(publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - sale not found...");
+                        return new RuntimeException("Sale not found");
+                    });
+        } else {
+            sale = saleRepo.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - sale not found for current user...");
+                        return new RuntimeException("Sale not found");
+                    });
+        }
 
 
         // -----------------------------------------------------
@@ -414,7 +424,8 @@ public class SaleService
 
             Customer newCustomer =
                     customerRepo
-                            .findByPublicIdAndIsActiveTrue(
+                            .findByUserAndPublicIdAndIsActiveTrue(
+                                    currentUser,
                                     dto.getCustomerPublicId()
                             )
                             .orElseThrow(() -> new RuntimeException(

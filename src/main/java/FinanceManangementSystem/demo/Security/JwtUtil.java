@@ -2,7 +2,6 @@ package FinanceManangementSystem.demo.Security;
 
 import FinanceManangementSystem.demo.Model.User;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
