@@ -68,6 +68,13 @@ public interface ExpenseRepository
             @Param("toDate") LocalDate toDate
     );
 
+    @Query("SELECT COALESCE(SUM(e.amount), 0) FROM Expense e WHERE e.user = :user AND e.isActive = true AND e.expenseDate BETWEEN :fromDate AND :toDate")
+    BigDecimal sumTotalExpensesByUserAndDateRange(
+            @Param("user") User user,
+            @Param("fromDate") LocalDate fromDate,
+            @Param("toDate") LocalDate toDate
+    );
+
     @Query("SELECT e.category, COALESCE(SUM(e.amount), 0) FROM Expense e WHERE e.isActive = true AND e.expenseDate BETWEEN :fromDate AND :toDate GROUP BY e.category")
     List<Object[]> findCategoryWiseBreakdownByDateRange(
             @Param("fromDate") LocalDate fromDate,

@@ -61,6 +61,15 @@ import java.util.UUID;
                 @Index(
                         name = "idx_stock_transaction_date",
                         columnList = "transaction_date"
+                ),
+
+                // --------------------------------------------------
+                // Owner User
+                // --------------------------------------------------
+
+                @Index(
+                        name = "idx_stock_transaction_user",
+                        columnList = "user_id"
                 )
         },
 
@@ -102,6 +111,19 @@ public class StockTransaction {
             updatable = false
     )
     private UUID publicId;
+
+
+    // =========================================================
+    // OWNER USER
+    // =========================================================
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "user_id",
+            nullable = false,
+            updatable = false
+    )
+    private User user;
 
 
     // =========================================================

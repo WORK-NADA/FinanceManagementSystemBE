@@ -3,6 +3,7 @@ package FinanceManangementSystem.demo.Service.Implementations;
 import FinanceManangementSystem.demo.Model.Partner;
 import FinanceManangementSystem.demo.Model.PartnerProfitShare;
 import FinanceManangementSystem.demo.Model.ProfitDistribution;
+import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestProfitDistributionDTO;
 import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseProfitDistributionDTO;
 import FinanceManangementSystem.demo.Repository.PartnerProfitShareRepository;
@@ -44,6 +45,8 @@ public class ProfitDistributionService implements ProfitDistributionServiceInter
 
     private final PartnerProfitShareRepository shareRepo;
 
+    private final CurrentUserService currentUserService;
+
     private final ModelMapper modelMapper;
 
 
@@ -59,17 +62,19 @@ public class ProfitDistributionService implements ProfitDistributionServiceInter
             throw new RuntimeException("fromDate must be before or equal to toDate");
         }
 
-        if (distributionRepo.existsByFromDateAndToDate(from, to)) {
+        User currentUser = currentUserService.getCurrentUser();
+
+        if (distributionRepo.existsByUserAndFromDateAndToDate(currentUser, from, to)) {
             throw new RuntimeException("Profit already distributed for this period");
         }
 
-        List<Partner> activePartners = partnerRepo.findByIsActiveTrue();
+        List<Partner> activePartners = partnerRepo.findByUserAndIsActiveTrue(currentUser);
 
         if (activePartners.isEmpty()) {
             throw new RuntimeException("No active partners to distribute profit");
         }
 
-        BigDecimal activeSum = partnerRepo.sumActiveSharePercentage();
+        BigDecimal activeSum = partnerRepo.sumActiveSharePercentage(currentUser);
         if (activeSum == null) activeSum = BigDecimal.ZERO;
 
         if (activeSum.compareTo(new BigDecimal("100.00")) != 0) {
@@ -77,17 +82,17 @@ public class ProfitDistributionService implements ProfitDistributionServiceInter
         }
 
         // Compute totals
-        BigDecimal totalRevenue = saleRepo.findBySaleDateBetween(from, to)
+        BigDecimal totalRevenue = saleRepo.findByUserAndSaleDateBetween(currentUser, from, to)
                 .stream()
                 .map(s -> s.getTotalAmount() == null ? BigDecimal.ZERO : s.getTotalAmount())
                 .reduce(BigDecimal.ZERO, (acc, value) -> acc.add(value == null ? BigDecimal.ZERO : value));
 
-        BigDecimal totalPurchaseCost = purchaseRepo.findByPurchaseDateBetween(from, to)
+        BigDecimal totalPurchaseCost = purchaseRepo.findByUserAndPurchaseDateBetween(currentUser, from, to)
                 .stream()
                 .map(p -> p.getTotalAmount() == null ? BigDecimal.ZERO : p.getTotalAmount())
                 .reduce(BigDecimal.ZERO, (acc, value) -> acc.add(value == null ? BigDecimal.ZERO : value));
 
-        BigDecimal totalExpenses = expenseService.getTotalExpenses(from, to);
+        BigDecimal totalExpenses = expenseService.getTotalExpenses(currentUser, from, to);
         if (totalExpenses == null) totalExpenses = BigDecimal.ZERO;
 
         BigDecimal netProfit = totalRevenue.subtract(totalPurchaseCost).subtract(totalExpenses);
@@ -98,6 +103,7 @@ public class ProfitDistributionService implements ProfitDistributionServiceInter
 
         // Persist distribution record
         ProfitDistribution dist = new ProfitDistribution();
+        dist.setUser(currentUser);
         dist.setFromDate(from);
         dist.setToDate(to);
         dist.setTotalRevenue(totalRevenue);
@@ -175,8 +181,16 @@ public class ProfitDistributionService implements ProfitDistributionServiceInter
     @Override
     @Transactional(readOnly = true)
     public ResponseProfitDistributionDTO getDistributionByPublicId(UUID publicId) {
-        ProfitDistribution dist = distributionRepo.findByPublicId(publicId)
-                .orElseThrow(() -> new RuntimeException("Distribution not found"));
+        User currentUser = currentUserService.getCurrentUser();
+
+        ProfitDistribution dist;
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            dist = distributionRepo.findByPublicId(publicId)
+                    .orElseThrow(() -> new RuntimeException("Distribution not found"));
+        } else {
+            dist = distributionRepo.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> new RuntimeException("Distribution not found"));
+        }
 
         ResponseProfitDistributionDTO resp = modelMapper.map(dist, ResponseProfitDistributionDTO.class);
 
@@ -199,7 +213,14 @@ public class ProfitDistributionService implements ProfitDistributionServiceInter
     @Override
     @Transactional(readOnly = true)
     public List<ResponseProfitDistributionDTO> getAllDistributions() {
-        List<ProfitDistribution> dists = distributionRepo.findAllByOrderByToDateDesc();
+        User currentUser = currentUserService.getCurrentUser();
+
+        List<ProfitDistribution> dists;
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            dists = distributionRepo.findAllByOrderByToDateDesc();
+        } else {
+            dists = distributionRepo.findByUserOrderByToDateDesc(currentUser);
+        }
 
         return dists.stream().map(dist -> {
             ResponseProfitDistributionDTO resp = modelMapper.map(dist, ResponseProfitDistributionDTO.class);
@@ -220,8 +241,16 @@ public class ProfitDistributionService implements ProfitDistributionServiceInter
     @Override
     @Transactional(readOnly = true)
     public List<ResponseProfitDistributionDTO.PartnerShareDetails> getShareHistoryByPartner(UUID partnerPublicId) {
-        return shareRepo.findByPartner_PublicIdOrderByCreatedAtDesc(partnerPublicId)
-                .stream()
+        User currentUser = currentUserService.getCurrentUser();
+        List<PartnerProfitShare> shares;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            shares = shareRepo.findByPartner_PublicIdOrderByCreatedAtDesc(partnerPublicId);
+        } else {
+            shares = shareRepo.findByPartner_PublicIdAndDistribution_UserOrderByCreatedAtDesc(partnerPublicId, currentUser);
+        }
+
+        return shares.stream()
                 .map(s -> {
                     ResponseProfitDistributionDTO.PartnerShareDetails pd = new ResponseProfitDistributionDTO.PartnerShareDetails();
                     pd.setPartnerPublicId(s.getPartner().getPublicId());
@@ -235,8 +264,16 @@ public class ProfitDistributionService implements ProfitDistributionServiceInter
     @Override
     @Transactional(readOnly = true)
     public ResponseProfitDistributionDTO getLatestDistribution() {
-        ProfitDistribution dist = distributionRepo.findFirstByOrderByToDateDesc()
-                .orElseThrow(() -> new RuntimeException("No distributions found"));
+        User currentUser = currentUserService.getCurrentUser();
+        ProfitDistribution dist;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            dist = distributionRepo.findFirstByOrderByToDateDesc()
+                    .orElseThrow(() -> new RuntimeException("No distributions found"));
+        } else {
+            dist = distributionRepo.findFirstByUserOrderByToDateDesc(currentUser)
+                    .orElseThrow(() -> new RuntimeException("No distributions found"));
+        }
 
         return getDistributionByPublicId(dist.getPublicId());
     }
@@ -244,7 +281,14 @@ public class ProfitDistributionService implements ProfitDistributionServiceInter
     @Override
     @Transactional(readOnly = true)
     public BigDecimal getLifetimeEarningsByPartner(UUID partnerPublicId) {
-        BigDecimal sum = shareRepo.sumLifetimeEarningsByPartner(partnerPublicId);
+        User currentUser = currentUserService.getCurrentUser();
+        BigDecimal sum;
+
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            sum = shareRepo.sumLifetimeEarningsByPartner(partnerPublicId);
+        } else {
+            sum = shareRepo.sumLifetimeEarningsByPartnerAndUser(partnerPublicId, currentUser);
+        }
         return sum == null ? BigDecimal.ZERO : sum;
     }
 }

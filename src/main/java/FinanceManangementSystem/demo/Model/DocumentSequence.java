@@ -12,8 +12,8 @@ import lombok.*;
         name = "document_sequences",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_document_type_year",
-                        columnNames = {"document_type", "year"}
+                        name = "uk_seq_user_type_year",
+                        columnNames = {"user_id", "document_type", "year"}
                 )
         }
 )
@@ -22,6 +22,18 @@ public class DocumentSequence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    // =========================================================
+    // OWNER USER
+    // =========================================================
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "user_id",
+            nullable = false,
+            updatable = false
+    )
+    private User user;
 
     @Enumerated(EnumType.STRING)
     @Column(

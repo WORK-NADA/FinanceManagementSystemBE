@@ -12,7 +12,8 @@ public interface DocumentSequenceRepository
         extends JpaRepository<DocumentSequence, Long> {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    Optional<DocumentSequence> findByDocumentTypeAndYear(
+    Optional<DocumentSequence> findByUserAndDocumentTypeAndYear(
+            FinanceManangementSystem.demo.Model.User user,
             DocumentType documentType,
             Integer year
     );
