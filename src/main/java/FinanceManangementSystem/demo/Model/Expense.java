@@ -38,6 +38,12 @@ import java.util.UUID;
                         name = "idx_expense_user",
                         columnList = "user_id"
                 )
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_expense_user_number",
+                        columnNames = {"user_id", "expense_number"}
+                )
         }
 )
 public class Expense {
@@ -88,7 +94,6 @@ public class Expense {
     @Column(
             name = "expense_number",
             nullable = false,
-            unique = true,
             length = 30,
             updatable = false
     )

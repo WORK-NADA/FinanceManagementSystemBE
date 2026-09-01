@@ -1,0 +1,18 @@
+======================================================================
+ API TEST SUITE RUN: 20260901_173010
+======================================================================
+ Server: http://localhost:8080
+======================================================================
+
+[SETUP] Ensuring test client accounts exist...
+Logging in as ADMIN to acquire token...
+Admin token acquired successfully.
+Registering CLIENT 1 (testclient1@example.com)...
+Registering CLIENT 2 (testclient2@example.com)...
+Done! You can now log into the frontend with:
+Email: testclient1@example.com | testclient2@example.com
+Password: TestPass@123
+[SETUP] Done.
+
+[SETUP] Logging in as ADMIN, CLIENT1, CLIENT2...
+[SETUP] ERROR: Could not get CLIENT1 token.

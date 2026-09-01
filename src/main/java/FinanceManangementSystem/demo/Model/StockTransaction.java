@@ -80,8 +80,9 @@ import java.util.UUID;
                 // --------------------------------------------------
 
                 @UniqueConstraint(
-                        name = "uk_stock_reference_type",
+                        name = "uk_stock_reference_type_user",
                         columnNames = {
+                                "user_id",
                                 "reference_number",
                                 "transaction_type"
                         }

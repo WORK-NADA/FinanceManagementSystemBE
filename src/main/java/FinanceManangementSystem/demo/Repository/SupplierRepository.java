@@ -29,10 +29,15 @@ public interface SupplierRepository
 
 
     // --------------------------------------------------
-    // Check Duplicate Mobile Number
+    // Check Duplicate Mobile Number (global — kept for potential admin use)
     // --------------------------------------------------
 
     boolean existsByMobileNumber(String mobileNumber);
+
+    // Per-user duplicate check (used by addSupplier / updateSupplier)
+    boolean existsByUserAndMobileNumber(User user, String mobileNumber);
+
+    boolean existsByUserAndMobileNumberAndPublicIdNot(User user, String mobileNumber, UUID publicId);
 
 
     // --------------------------------------------------
@@ -41,12 +46,23 @@ public interface SupplierRepository
 
     boolean existsByGstNumber(String gstNumber);
 
+    // Per-user GST duplicate check
+    boolean existsByUserAndGstNumber(User user, String gstNumber);
+
+    boolean existsByUserAndGstNumberAndPublicIdNot(User user, String gstNumber, UUID publicId);
+
 
     // --------------------------------------------------
     // Check Duplicate Email
     // --------------------------------------------------
 
     boolean existsByEmail(String email);
+
+    // Per-user email duplicate check
+    boolean existsByUserAndEmail(User user, String email);
+
+    boolean existsByUserAndEmailAndPublicIdNot(User user, String email, UUID publicId);
+
 
 
     // --------------------------------------------------

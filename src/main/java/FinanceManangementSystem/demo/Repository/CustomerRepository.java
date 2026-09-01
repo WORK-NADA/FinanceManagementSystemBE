@@ -47,13 +47,15 @@ public interface CustomerRepository
 
 
     // =========================================================
-    // CHECK MOBILE NUMBER
+    // CHECK MOBILE NUMBER (global, used internally)
     // =========================================================
 
     boolean existsByMobileNumber(
             String mobileNumber
     );
 
+    // Per-user duplicate check
+    boolean existsByUserAndMobileNumber(User user, String mobileNumber);
 
     // =========================================================
     // CHECK MOBILE NUMBER DURING UPDATE
@@ -64,6 +66,8 @@ public interface CustomerRepository
             UUID publicId
     );
 
+    boolean existsByUserAndMobileNumberAndPublicIdNot(User user, String mobileNumber, UUID publicId);
+
 
     // =========================================================
     // CHECK EMAIL
@@ -72,6 +76,8 @@ public interface CustomerRepository
     boolean existsByEmail(
             String email
     );
+
+    boolean existsByUserAndEmail(User user, String email);
 
 
     // =========================================================
@@ -83,6 +89,8 @@ public interface CustomerRepository
             UUID publicId
     );
 
+    boolean existsByUserAndEmailAndPublicIdNot(User user, String email, UUID publicId);
+
 
     // =========================================================
     // CHECK GST NUMBER
@@ -91,6 +99,8 @@ public interface CustomerRepository
     boolean existsByGstNumber(
             String gstNumber
     );
+
+    boolean existsByUserAndGstNumber(User user, String gstNumber);
 
 
     // =========================================================
@@ -101,4 +111,6 @@ public interface CustomerRepository
             String gstNumber,
             UUID publicId
     );
+
+    boolean existsByUserAndGstNumberAndPublicIdNot(User user, String gstNumber, UUID publicId);
 }

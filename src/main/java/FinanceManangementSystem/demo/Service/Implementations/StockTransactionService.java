@@ -1,10 +1,11 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
+
 import FinanceManangementSystem.demo.Exceptions.DuplicateResourceException;
 import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
 import FinanceManangementSystem.demo.Exceptions.InvalidStateException;
 import FinanceManangementSystem.demo.Exceptions.InsufficientStockException;
-import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 import FinanceManangementSystem.demo.Enums.DocumentType;
 import FinanceManangementSystem.demo.Enums.StockTransactionType;
 import FinanceManangementSystem.demo.Enums.WeightUnit;
@@ -468,11 +469,11 @@ public class StockTransactionService
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             transaction = stockTransactionRepository
                     .findByPublicId(publicId)
-                    .orElseThrow(() -> new InvalidRequestException("Stock transaction not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Stock transaction not found"));
         } else {
             transaction = stockTransactionRepository
                     .findByUserAndPublicId(currentUser, publicId)
-                    .orElseThrow(() -> new InvalidRequestException("Stock transaction not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Stock transaction not found"));
         }
 
         return mapToResponse(transaction);
@@ -524,7 +525,7 @@ public class StockTransactionService
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
 
             stockRepository.findByPublicId(stockPublicId)
-                    .orElseThrow(() -> new InvalidRequestException("Stock not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Stock not found"));
 
             return stockTransactionRepository
                     .findByStockPublicIdOrderByTransactionDateDesc(stockPublicId)
@@ -535,7 +536,7 @@ public class StockTransactionService
         } else {
 
             stockRepository.findByUserAndPublicId(currentUser, stockPublicId)
-                    .orElseThrow(() -> new InvalidRequestException("Stock not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Stock not found"));
 
             return stockTransactionRepository
                     .findByUserAndStockPublicIdOrderByTransactionDateDesc(currentUser, stockPublicId)
@@ -568,10 +569,10 @@ public class StockTransactionService
 
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             stock = stockRepository.findByPublicId(stockPublicId)
-                    .orElseThrow(() -> new InvalidRequestException("Stock not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Stock not found"));
         } else {
             stock = stockRepository.findByUserAndPublicId(currentUser, stockPublicId)
-                    .orElseThrow(() -> new InvalidRequestException("Stock not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Stock not found"));
         }
 
         if (transactionType == null) {

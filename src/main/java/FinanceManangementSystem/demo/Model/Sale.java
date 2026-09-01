@@ -34,6 +34,12 @@ import java.util.UUID;
                         name = "idx_sale_invoice",
                         columnList = "customer_invoice_number"
                 )
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_sale_user_number",
+                        columnNames = {"user_id", "sale_number"}
+                )
         }
 )
 public class Sale {
@@ -173,7 +179,6 @@ public class Sale {
     @Column(
             name = "sale_number",
             nullable = false,
-            unique = true,
             length = 30,
             updatable = false
     )

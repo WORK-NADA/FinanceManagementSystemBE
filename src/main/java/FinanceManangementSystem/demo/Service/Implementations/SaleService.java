@@ -1,6 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
 import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
+import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 
 import FinanceManangementSystem.demo.Enums.DocumentType;
 import FinanceManangementSystem.demo.Enums.PaymentStatus;
@@ -309,13 +310,13 @@ public class SaleService
             sale = saleRepo.findByPublicId(publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - sale not found...");
-                        return new InvalidRequestException("Sale not found");
+                        return new ResourceNotFoundException("Sale not found");
                     });
         } else {
             sale = saleRepo.findByUserAndPublicId(currentUser, publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - sale not found for current user...");
-                        return new InvalidRequestException("Sale not found");
+                        return new ResourceNotFoundException("Sale not found");
                     });
         }
 
@@ -369,13 +370,13 @@ public class SaleService
             sale = saleRepo.findByPublicId(publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - sale not found...");
-                        return new InvalidRequestException("Sale not found");
+                        return new ResourceNotFoundException("Sale not found");
                     });
         } else {
             sale = saleRepo.findByUserAndPublicId(currentUser, publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - sale not found for current user...");
-                        return new InvalidRequestException("Sale not found");
+                        return new ResourceNotFoundException("Sale not found");
                     });
         }
 

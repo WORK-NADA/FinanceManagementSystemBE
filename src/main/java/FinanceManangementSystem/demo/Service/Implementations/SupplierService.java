@@ -1,9 +1,11 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
+
+
 import FinanceManangementSystem.demo.Enums.UserRole;
 import FinanceManangementSystem.demo.Exceptions.DuplicateResourceException;
 import FinanceManangementSystem.demo.Exceptions.InvalidStateException;
-import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 import FinanceManangementSystem.demo.Model.Supplier;
 import FinanceManangementSystem.demo.Model.SupplierAddress;
 import FinanceManangementSystem.demo.Model.User;
@@ -57,7 +59,10 @@ public class SupplierService implements SupplierServiceInterface {
                 "SERVICE - checking supplier mobile number..."
         );
 
-        if (supplierRepo.existsByMobileNumber(
+        User currentUser = currentUserService.getCurrentUser();
+
+        if (supplierRepo.existsByUserAndMobileNumber(
+                currentUser,
                 dto.getMobileNumber()
         )) {
 
@@ -77,7 +82,8 @@ public class SupplierService implements SupplierServiceInterface {
 
         if (dto.getGstNumber() != null
                 && !dto.getGstNumber().isBlank()
-                && supplierRepo.existsByGstNumber(
+                && supplierRepo.existsByUserAndGstNumber(
+                currentUser,
                 dto.getGstNumber()
         )) {
 
@@ -98,8 +104,6 @@ public class SupplierService implements SupplierServiceInterface {
         log.info(
                 "SERVICE - mapping supplier DTO to entity..."
         );
-
-        User currentUser = currentUserService.getCurrentUser();
 
         Supplier supplier =
                 modelMapper.map(
@@ -278,13 +282,13 @@ public class SupplierService implements SupplierServiceInterface {
             supplier = supplierRepo.findByPublicId(publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - supplier not found...");
-                        return new RuntimeException("Supplier not found");
+                        return new ResourceNotFoundException("Supplier not found");
                     });
         } else {
             supplier = supplierRepo.findByUserAndPublicId(currentUser, publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - supplier not found for current user...");
-                        return new RuntimeException("Supplier not found");
+                        return new ResourceNotFoundException("Supplier not found");
                     });
         }
 

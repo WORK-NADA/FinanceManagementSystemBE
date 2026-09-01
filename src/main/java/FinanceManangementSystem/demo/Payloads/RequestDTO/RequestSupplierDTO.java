@@ -24,8 +24,8 @@ public class RequestSupplierDTO {
 
     @NotBlank(message = "Mobile number is required")
     @Pattern(
-            regexp = "^[0-9]{10}$",
-            message = "Mobile number must contain exactly 10 digits"
+            regexp = "^[6-9][0-9]{9}$",
+            message = "Mobile number must be a valid 10-digit Indian mobile number"
     )
     private String mobileNumber;
 
@@ -38,8 +38,8 @@ public class RequestSupplierDTO {
 
 
     @Pattern(
-            regexp = "^[0-9]{10}$",
-            message = "Alternate mobile number must contain exactly 10 digits"
+            regexp = "^[6-9][0-9]{9}$",
+            message = "Alternate mobile number must be a valid 10-digit Indian mobile number"
     )
     private String alternateMobileNumber;
 
