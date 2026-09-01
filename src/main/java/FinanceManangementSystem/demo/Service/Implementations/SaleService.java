@@ -1,5 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
+
 import FinanceManangementSystem.demo.Enums.DocumentType;
 import FinanceManangementSystem.demo.Enums.PaymentStatus;
 import FinanceManangementSystem.demo.Enums.UserRole;
@@ -76,7 +78,7 @@ public class SaleService
                                     "SERVICE - active customer not found..."
                             );
 
-                            return new RuntimeException(
+                            return new InvalidRequestException(
                                     "Active customer not found"
                             );
                         });
@@ -105,7 +107,7 @@ public class SaleService
                         "SERVICE - customer invoice number already exists..."
                 );
 
-                throw new RuntimeException(
+                throw new InvalidRequestException(
                         "Sale with this customer invoice number already exists"
                 );
             }
@@ -307,13 +309,13 @@ public class SaleService
             sale = saleRepo.findByPublicId(publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - sale not found...");
-                        return new RuntimeException("Sale not found");
+                        return new InvalidRequestException("Sale not found");
                     });
         } else {
             sale = saleRepo.findByUserAndPublicId(currentUser, publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - sale not found for current user...");
-                        return new RuntimeException("Sale not found");
+                        return new InvalidRequestException("Sale not found");
                     });
         }
 
@@ -367,13 +369,13 @@ public class SaleService
             sale = saleRepo.findByPublicId(publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - sale not found...");
-                        return new RuntimeException("Sale not found");
+                        return new InvalidRequestException("Sale not found");
                     });
         } else {
             sale = saleRepo.findByUserAndPublicId(currentUser, publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - sale not found for current user...");
-                        return new RuntimeException("Sale not found");
+                        return new InvalidRequestException("Sale not found");
                     });
         }
 
@@ -387,21 +389,21 @@ public class SaleService
                         dto.getRawMaterial().trim()
                 )) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Raw material cannot be updated after sale creation. Stock ledger already updated."
             );
         }
 
         if (sale.getUnit() != dto.getUnit()) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Weight unit cannot be updated after sale creation. Stock ledger already updated."
             );
         }
 
         if (sale.getWeight().compareTo(dto.getWeight()) != 0) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Weight cannot be updated after sale creation. Stock ledger already updated."
             );
         }
@@ -428,7 +430,7 @@ public class SaleService
                                     currentUser,
                                     dto.getCustomerPublicId()
                             )
-                            .orElseThrow(() -> new RuntimeException(
+                            .orElseThrow(() -> new InvalidRequestException(
                                     "Active customer not found"
                             ));
 
@@ -469,7 +471,7 @@ public class SaleService
 
                 if (exists) {
 
-                    throw new RuntimeException(
+                    throw new InvalidRequestException(
                             "Sale with this customer invoice number already exists"
                     );
                 }

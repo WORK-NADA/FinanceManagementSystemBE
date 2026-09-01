@@ -23,7 +23,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("expense")
 @RequiredArgsConstructor
-@CrossOrigin
 public class ExpenseController {
 
     private final ExpenseServiceInterface expenseService;
@@ -148,8 +147,8 @@ public class ExpenseController {
     @GetMapping("/date-range")
     public ResponseEntity<APIResponse<List<ResponseExpenseDTO>>>
     getExpensesByDateRange(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate
     ) {
 
         log.info(
@@ -303,8 +302,8 @@ public class ExpenseController {
     @GetMapping("/dashboard/total")
     public ResponseEntity<APIResponse<BigDecimal>>
     getTotalExpenses(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate
     ) {
 
         log.info(
@@ -343,8 +342,8 @@ public class ExpenseController {
     @GetMapping("/dashboard/category-breakdown")
     public ResponseEntity<APIResponse<Map<ExpenseCategory, BigDecimal>>>
     getCategoryWiseBreakdown(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate
     ) {
 
         log.info(

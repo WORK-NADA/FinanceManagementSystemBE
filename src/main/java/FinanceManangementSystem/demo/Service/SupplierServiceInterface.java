@@ -27,7 +27,7 @@ public interface SupplierServiceInterface {
             UUID publicId
     );
 
-    void activateSupplier(
+    void reactivateSupplier(
             UUID publicId
     );
 }

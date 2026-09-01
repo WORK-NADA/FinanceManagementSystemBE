@@ -1,5 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
+
 import FinanceManangementSystem.demo.Enums.DocumentType;
 import FinanceManangementSystem.demo.Enums.PaymentStatus;
 import FinanceManangementSystem.demo.Model.Customer;
@@ -76,7 +78,7 @@ public class SalePaymentService
                                     "SERVICE - sale not found..."
                             );
 
-                            return new RuntimeException(
+                            return new InvalidRequestException(
                                     "Sale not found"
                             );
                         });
@@ -114,7 +116,7 @@ public class SalePaymentService
                                     BigDecimal.ZERO
                             );
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Payment amount exceeds remaining pending amount of " + currentPending
             );
         }
@@ -236,10 +238,10 @@ public class SalePaymentService
 
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             payment = salePaymentRepo.findByPublicId(publicId)
-                    .orElseThrow(() -> new RuntimeException("Sale payment not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Sale payment not found"));
         } else {
             payment = salePaymentRepo.findByUserAndPublicId(currentUser, publicId)
-                    .orElseThrow(() -> new RuntimeException("Sale payment not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Sale payment not found"));
         }
 
         Sale sale =
@@ -279,10 +281,10 @@ public class SalePaymentService
 
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             sale = saleRepo.findByPublicId(salePublicId)
-                    .orElseThrow(() -> new RuntimeException("Sale not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Sale not found"));
         } else {
             sale = saleRepo.findByUserAndPublicId(currentUser, salePublicId)
-                    .orElseThrow(() -> new RuntimeException("Sale not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Sale not found"));
         }
 
         BigDecimal receivedAmount =
@@ -319,7 +321,7 @@ public class SalePaymentService
 
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             customerRepo.findByPublicIdAndIsActiveTrue(customerPublicId)
-                    .orElseThrow(() -> new RuntimeException("Active customer not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Active customer not found"));
             return salePaymentRepo
                     .findBySale_Customer_PublicIdOrderByPaymentDateDesc(customerPublicId)
                     .stream()
@@ -332,7 +334,7 @@ public class SalePaymentService
         }
 
         customerRepo.findByUserAndPublicIdAndIsActiveTrue(currentUser, customerPublicId)
-                .orElseThrow(() -> new RuntimeException("Active customer not found"));
+                .orElseThrow(() -> new InvalidRequestException("Active customer not found"));
 
         return salePaymentRepo
                 .findByUserAndSale_Customer_PublicIdOrderByPaymentDateDesc(
@@ -369,10 +371,10 @@ public class SalePaymentService
 
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             sale = saleRepo.findByPublicId(salePublicId)
-                    .orElseThrow(() -> new RuntimeException("Sale not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Sale not found"));
         } else {
             sale = saleRepo.findByUserAndPublicId(currentUser, salePublicId)
-                    .orElseThrow(() -> new RuntimeException("Sale not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Sale not found"));
         }
 
         return buildSaleDetails(
@@ -436,7 +438,7 @@ public class SalePaymentService
 
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             customer = customerRepo.findByPublicIdAndIsActiveTrue(customerPublicId)
-                    .orElseThrow(() -> new RuntimeException("Active customer not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Active customer not found"));
             List<Sale> pendingSales = saleRepo.findByCustomerAndPaymentStatusIn(customer, List.of(
                     PaymentStatus.PENDING,
                     PaymentStatus.PARTIALLY_PAID
@@ -445,7 +447,7 @@ public class SalePaymentService
         }
 
         customer = customerRepo.findByUserAndPublicIdAndIsActiveTrue(currentUser, customerPublicId)
-                .orElseThrow(() -> new RuntimeException("Active customer not found"));
+                .orElseThrow(() -> new InvalidRequestException("Active customer not found"));
 
         List<Sale> pendingSales = saleRepo.findByUser(currentUser).stream()
                 .filter(s -> s.getCustomer() != null && s.getCustomer().getPublicId().equals(customer.getPublicId()))

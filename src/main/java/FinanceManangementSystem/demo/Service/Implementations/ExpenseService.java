@@ -1,5 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
+
 import FinanceManangementSystem.demo.Enums.DocumentType;
 import FinanceManangementSystem.demo.Enums.ExpenseCategory;
 import FinanceManangementSystem.demo.Model.Expense;
@@ -142,7 +144,7 @@ public class ExpenseService
                                     "SERVICE - expense not found..."
                             );
 
-                            return new RuntimeException(
+                            return new InvalidRequestException(
                                     "Expense not found"
                             );
                         });
@@ -202,7 +204,7 @@ public class ExpenseService
                                     "SERVICE - inactive or non-existent expense cannot be updated..."
                             );
 
-                            return new RuntimeException(
+                            return new InvalidRequestException(
                                     "Inactive expense cannot be updated"
                             );
                         });
@@ -268,7 +270,7 @@ public class ExpenseService
                                 currentUser,
                                 publicId
                         )
-                        .orElseThrow(() -> new RuntimeException(
+                        .orElseThrow(() -> new InvalidRequestException(
                                 "Expense not found"
                         ));
 
@@ -278,7 +280,7 @@ public class ExpenseService
                     "SERVICE - expense is already inactive..."
             );
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Expense is already inactive"
             );
         }
@@ -311,6 +313,9 @@ public class ExpenseService
         log.info(
                 "SERVICE - request came in getExpensesByDateRange..."
         );
+
+        if (fromDate == null) fromDate = LocalDate.now().withDayOfMonth(1);
+        if (toDate == null) toDate = LocalDate.now();
 
         User currentUser = currentUserService.getCurrentUser();
 
@@ -368,6 +373,9 @@ public class ExpenseService
                 "SERVICE - request came in getTotalExpenses..."
         );
 
+        if (fromDate == null) fromDate = LocalDate.now().withDayOfMonth(1);
+        if (toDate == null) toDate = LocalDate.now();
+
         return expenseRepo.sumTotalExpensesByDateRange(
                 fromDate,
                 toDate
@@ -414,6 +422,9 @@ public class ExpenseService
         log.info(
                 "SERVICE - request came in getCategoryWiseBreakdown..."
         );
+
+        if (fromDate == null) fromDate = LocalDate.now().withDayOfMonth(1);
+        if (toDate == null) toDate = LocalDate.now();
 
         Map<ExpenseCategory, BigDecimal> breakdown =
                 new EnumMap<>(ExpenseCategory.class);

@@ -501,17 +501,17 @@ public class SupplierService implements SupplierServiceInterface {
 
 
     // ==================================================
-    // ACTIVATE SUPPLIER
+    // REACTIVATE SUPPLIER
     // ==================================================
 
     @Override
     @Transactional
-    public void activateSupplier(
+    public void reactivateSupplier(
             UUID publicId
     ) {
 
         log.info(
-                "SERVICE - request came in activateSupplier..."
+                "SERVICE - request came in reactivateSupplier..."
         );
 
 

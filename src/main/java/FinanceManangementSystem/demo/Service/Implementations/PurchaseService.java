@@ -1,5 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
+
 import FinanceManangementSystem.demo.Enums.DocumentType;
 import FinanceManangementSystem.demo.Enums.PaymentStatus;
 import FinanceManangementSystem.demo.Enums.PurchaseStatus;
@@ -80,7 +82,7 @@ public class PurchaseService
                                     "SERVICE - active supplier not found..."
                             );
 
-                            return new RuntimeException(
+                            return new InvalidRequestException(
                                     "Active supplier not found"
                             );
                         });
@@ -116,7 +118,7 @@ public class PurchaseService
                         "SERVICE - supplier invoice number already exists..."
                 );
 
-                throw new RuntimeException(
+                throw new InvalidRequestException(
                         "Purchase with this supplier invoice number already exists"
                 );
             }
@@ -346,13 +348,13 @@ public class PurchaseService
             purchase = purchaseRepo.findByPublicId(publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - purchase not found...");
-                        return new RuntimeException("Purchase not found");
+                        return new InvalidRequestException("Purchase not found");
                     });
         } else {
             purchase = purchaseRepo.findByUserAndPublicId(currentUser, publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - purchase not found for current user...");
-                        return new RuntimeException("Purchase not found");
+                        return new InvalidRequestException("Purchase not found");
                     });
         }
 
@@ -401,13 +403,13 @@ public class PurchaseService
             supplier = supplierRepo.findByPublicId(supplierPublicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - supplier not found...");
-                        return new RuntimeException("Supplier not found");
+                        return new InvalidRequestException("Supplier not found");
                     });
         } else {
             supplier = supplierRepo.findByUserAndPublicId(currentUser, supplierPublicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - supplier not found for current user...");
-                        return new RuntimeException("Supplier not found");
+                        return new InvalidRequestException("Supplier not found");
                     });
         }
 
@@ -437,7 +439,7 @@ public class PurchaseService
         if (fromDate == null ||
                 toDate == null) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "From date and to date are required"
             );
         }
@@ -445,7 +447,7 @@ public class PurchaseService
 
         if (fromDate.isAfter(toDate)) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "From date cannot be after to date"
             );
         }
@@ -483,7 +485,7 @@ public class PurchaseService
         if (status == null ||
                 status.isBlank()) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Purchase status is required"
             );
         }
@@ -500,7 +502,7 @@ public class PurchaseService
 
         } catch (IllegalArgumentException exception) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Invalid purchase status"
             );
         }
@@ -553,13 +555,13 @@ public class PurchaseService
             purchase = purchaseRepo.findByPublicId(publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - purchase not found...");
-                        return new RuntimeException("Purchase not found");
+                        return new InvalidRequestException("Purchase not found");
                     });
         } else {
             purchase = purchaseRepo.findByUserAndPublicId(currentUser, publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - purchase not found for current user...");
-                        return new RuntimeException("Purchase not found");
+                        return new InvalidRequestException("Purchase not found");
                     });
         }
 
@@ -585,7 +587,7 @@ public class PurchaseService
                         dto.getRawMaterial().trim()
                 )) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Raw material cannot be changed after purchase creation"
             );
         }
@@ -596,7 +598,7 @@ public class PurchaseService
                         dto.getWeight()
                 ) != 0) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Purchase quantity cannot be changed after purchase creation"
             );
         }
@@ -605,7 +607,7 @@ public class PurchaseService
         if (purchase.getUnit()
                 != dto.getUnit()) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Purchase unit cannot be changed after purchase creation"
             );
         }
@@ -619,13 +621,13 @@ public class PurchaseService
 
         if (currentUser.getRole() == UserRole.ADMIN) {
             supplier = supplierRepo.findByPublicIdAndIsActiveTrue(dto.getSupplierPublicId())
-                    .orElseThrow(() -> new RuntimeException("Active supplier not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Active supplier not found"));
         } else {
             supplier = supplierRepo.findByUserAndPublicIdAndIsActiveTrue(
                             currentUser,
                             dto.getSupplierPublicId()
                     )
-                    .orElseThrow(() -> new RuntimeException("Active supplier not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Active supplier not found"));
         }
 
 
@@ -682,7 +684,7 @@ public class PurchaseService
                         supplier
                 )) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Purchase with this supplier invoice number already exists"
             );
         }
