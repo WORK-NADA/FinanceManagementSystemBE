@@ -32010,3 +32010,53 @@ io.jsonwebtoken.MalformedJwtException: JWT strings must contain exactly 2 period
 2026-09-01T22:15:10.895+05:30  INFO 16388 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2026-09-01T22:15:10.995+05:30  INFO 16388 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2026-09-01T22:15:11.018+05:30  INFO 16388 --- [FinanceManagementSystem] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-09-01T22:16:06.278+05:30  INFO 10356 --- [FinanceManagementSystem] [main] F.demo.DemoApplication                   : Starting DemoApplication using Java 17.0.20.1 with PID 10356 (F:\Urvi Gondaliya\FinanceManagementSystem(Backend)\target\classes started by Lenovo in F:\Urvi Gondaliya\FinanceManagementSystem(Backend))
+2026-09-01T22:16:06.291+05:30  INFO 10356 --- [FinanceManagementSystem] [main] F.demo.DemoApplication                   : No active profile set, falling back to 1 default profile: "default"
+2026-09-01T22:16:08.960+05:30  INFO 10356 --- [FinanceManagementSystem] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-01T22:16:09.300+05:30  INFO 10356 --- [FinanceManagementSystem] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 271 ms. Found 17 JPA repository interfaces.
+2026-09-01T22:16:11.519+05:30  INFO 10356 --- [FinanceManagementSystem] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-09-01T22:16:11.571+05:30  INFO 10356 --- [FinanceManagementSystem] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-01T22:16:11.575+05:30  INFO 10356 --- [FinanceManagementSystem] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.55]
+2026-09-01T22:16:11.815+05:30  INFO 10356 --- [FinanceManagementSystem] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-09-01T22:16:11.816+05:30  INFO 10356 --- [FinanceManagementSystem] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 5023 ms
+2026-09-01T22:16:12.387+05:30  INFO 10356 --- [FinanceManagementSystem] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-09-01T22:16:13.246+05:30  INFO 10356 --- [FinanceManagementSystem] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.53.Final
+2026-09-01T22:16:13.337+05:30  INFO 10356 --- [FinanceManagementSystem] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-09-01T22:16:13.965+05:30  INFO 10356 --- [FinanceManagementSystem] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-01T22:16:14.035+05:30  INFO 10356 --- [FinanceManagementSystem] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-09-01T22:16:15.696+05:30  INFO 10356 --- [FinanceManagementSystem] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@3cb04dd
+2026-09-01T22:16:15.705+05:30  INFO 10356 --- [FinanceManagementSystem] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-09-01T22:16:16.719+05:30  INFO 10356 --- [FinanceManagementSystem] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.40
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-01T22:16:25.995+05:30  INFO 10356 --- [FinanceManagementSystem] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-01T22:16:26.217+05:30 DEBUG 10356 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : alter table document_sequences modify column document_type enum ('CUSTOMER_RECEIPT','EXPENSE','PURCHASE','PURCHASE_PAYMENT','SALE','STOCK_ADJUSTMENT') not null
+2026-09-01T22:16:26.433+05:30 DEBUG 10356 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : alter table expenses modify column category enum ('ELECTRICITY','MAINTENANCE','MISCELLANEOUS','OFFICE_SUPPLIES','RENT','SALARY','TRANSPORT') not null
+2026-09-01T22:16:26.514+05:30 DEBUG 10356 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : alter table expenses modify column payment_mode enum ('BANK_TRANSFER','CASH','CHEQUE','UPI') not null
+2026-09-01T22:16:26.578+05:30 DEBUG 10356 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : alter table purchase_payments modify column payment_mode enum ('BANK_TRANSFER','CASH','CHEQUE','UPI') not null
+2026-09-01T22:16:26.613+05:30 DEBUG 10356 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : alter table purchases modify column payment_status enum ('COMPLETED','PARTIALLY_PAID','PENDING') not null
+2026-09-01T22:16:26.670+05:30 DEBUG 10356 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : alter table purchases modify column purchase_status enum ('ACTIVE') not null
+2026-09-01T22:16:26.791+05:30 DEBUG 10356 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : alter table purchases modify column unit enum ('G','KG','TON') not null
+2026-09-01T22:16:26.823+05:30 DEBUG 10356 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : alter table sale_payments modify column payment_mode enum ('BANK_TRANSFER','CASH','CHEQUE','UPI') not null
+2026-09-01T22:16:26.852+05:30 DEBUG 10356 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : alter table sales modify column payment_status enum ('COMPLETED','PARTIALLY_PAID','PENDING') not null
+2026-09-01T22:16:26.916+05:30 DEBUG 10356 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : alter table sales modify column unit enum ('G','KG','TON') not null
+2026-09-01T22:16:27.022+05:30 DEBUG 10356 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : alter table stock_transactions modify column transaction_type enum ('ADJUSTMENT_IN','ADJUSTMENT_OUT','PURCHASE_IN','SALE_OUT','SALE_RETURN_IN') not null
+2026-09-01T22:16:27.059+05:30 DEBUG 10356 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : alter table stock_transactions modify column unit enum ('G','KG','TON') not null
+2026-09-01T22:16:27.189+05:30 DEBUG 10356 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : alter table stocks modify column unit enum ('G','KG','TON') not null
+2026-09-01T22:16:28.048+05:30  INFO 10356 --- [FinanceManagementSystem] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-01T22:16:33.434+05:30  INFO 10356 --- [FinanceManagementSystem] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-01T22:16:36.332+05:30  INFO 10356 --- [FinanceManagementSystem] [main] F.demo.Security.SecurityConfig           : SecurityConfig - Initializing BCryptPasswordEncoder bean.
+2026-09-01T22:16:36.461+05:30  INFO 10356 --- [FinanceManagementSystem] [main] F.demo.Security.SecurityConfig           : SecurityConfig - Initializing AuthenticationManager bean.
+2026-09-01T22:16:36.599+05:30  INFO 10356 --- [FinanceManagementSystem] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-09-01T22:16:40.319+05:30  WARN 10356 --- [FinanceManagementSystem] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-01T22:16:40.455+05:30  INFO 10356 --- [FinanceManagementSystem] [main] F.demo.Security.SecurityConfig           : SecurityConfig - Configuring Spring Security filter chain.
+2026-09-01T22:16:41.131+05:30  INFO 10356 --- [FinanceManagementSystem] [main] F.demo.Security.SecurityConfig           : SecurityConfig - Spring Security filter chain configured successfully.
+2026-09-01T22:16:42.091+05:30  INFO 10356 --- [FinanceManagementSystem] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-09-01T22:16:42.119+05:30  INFO 10356 --- [FinanceManagementSystem] [main] F.demo.DemoApplication                   : Started DemoApplication in 37.898 seconds (process running for 40.057)
+2026-09-01T22:16:42.128+05:30  INFO 10356 --- [FinanceManagementSystem] [main] F.demo.Init.CreateAdminIfNot             : DEFAULT ADMIN - checking default admin...
+2026-09-01T22:16:42.263+05:30 DEBUG 10356 --- [FinanceManagementSystem] [main] org.hibernate.SQL                        : select count(*) from users u1_0
