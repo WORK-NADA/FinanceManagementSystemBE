@@ -219,14 +219,14 @@ public class SupplierController {
     // ACTIVATE SUPPLIER
     // ==================================================
 
-    @PatchMapping("/{publicId}/activate")
+    @PatchMapping("/{publicId}/reactivate")
     public ResponseEntity<APIResponse<Void>>
-    activateSupplier(
+    reactivateSupplier(
             @PathVariable UUID publicId
     ) {
 
         log.info(
-                "CONTROLLER - request came in activateSupplier..."
+                "CONTROLLER - request came in reactivateSupplier..."
         );
 
 
@@ -234,7 +234,7 @@ public class SupplierController {
                 "CONTROLLER - calling supplier service..."
         );
 
-        supplierService.activateSupplier(publicId);
+        supplierService.reactivateSupplier(publicId);
 
 
         log.info(

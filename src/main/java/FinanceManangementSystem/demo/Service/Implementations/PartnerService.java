@@ -1,5 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
+
 import FinanceManangementSystem.demo.Model.Partner;
 import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestPartnerDTO;
@@ -42,7 +44,7 @@ public class PartnerService implements PartnerServiceInterface {
 
         if (partnerRepo.existsByMobileNumber(dto.getMobileNumber())) {
             log.info("SERVICE - partner mobile number already exists...");
-            throw new RuntimeException("Partner with this mobile number already exists");
+            throw new InvalidRequestException("Partner with this mobile number already exists");
         }
 
         BigDecimal currentSum = partnerRepo.sumActiveSharePercentage(currentUser);
@@ -51,7 +53,7 @@ public class PartnerService implements PartnerServiceInterface {
 
         if (currentSum.add(dto.getSharePercentage()).compareTo(new BigDecimal("100.00")) > 0) {
             log.info("SERVICE - total partner share would exceed 100%...");
-            throw new RuntimeException("Total partner share cannot exceed 100%");
+            throw new InvalidRequestException("Total partner share cannot exceed 100%");
         }
 
         Partner partner = modelMapper.map(dto, Partner.class);
@@ -70,7 +72,7 @@ public class PartnerService implements PartnerServiceInterface {
         User currentUser = currentUserService.getCurrentUser();
 
         Partner partner = partnerRepo.findByUserAndPublicId(currentUser, publicId)
-                .orElseThrow(() -> new RuntimeException("Partner not found"));
+                .orElseThrow(() -> new InvalidRequestException("Partner not found"));
 
         return mapToResponse(partner);
     }
@@ -111,12 +113,12 @@ public class PartnerService implements PartnerServiceInterface {
         User currentUser = currentUserService.getCurrentUser();
 
         Partner partner = partnerRepo.findByUserAndPublicId(currentUser, publicId)
-                .orElseThrow(() -> new RuntimeException("Partner not found"));
+                .orElseThrow(() -> new InvalidRequestException("Partner not found"));
 
         if (!partner.getMobileNumber().equals(dto.getMobileNumber())
                 && partnerRepo.existsByMobileNumberAndPublicIdNot(dto.getMobileNumber(), publicId)) {
             log.info("SERVICE - partner mobile number already exists...");
-            throw new RuntimeException("Partner with this mobile number already exists");
+            throw new InvalidRequestException("Partner with this mobile number already exists");
         }
 
         BigDecimal otherSum = partnerRepo.sumActiveSharePercentageExcluding(publicId);
@@ -124,7 +126,7 @@ public class PartnerService implements PartnerServiceInterface {
 
         if (otherSum.add(dto.getSharePercentage()).compareTo(new BigDecimal("100.00")) > 0) {
             log.info("SERVICE - total partner share would exceed 100% on update...");
-            throw new RuntimeException("Total partner share cannot exceed 100%");
+            throw new InvalidRequestException("Total partner share cannot exceed 100%");
         }
 
         partner.setPartnerName(dto.getPartnerName());
@@ -146,7 +148,7 @@ public class PartnerService implements PartnerServiceInterface {
         User currentUser = currentUserService.getCurrentUser();
 
         Partner partner = partnerRepo.findByUserAndPublicIdAndIsActiveTrue(currentUser, publicId)
-                .orElseThrow(() -> new RuntimeException("Partner not found or already inactive"));
+                .orElseThrow(() -> new InvalidRequestException("Partner not found or already inactive"));
 
         partner.setIsActive(false);
         partnerRepo.save(partner);
@@ -160,7 +162,7 @@ public class PartnerService implements PartnerServiceInterface {
         User currentUser = currentUserService.getCurrentUser();
 
         Partner partner = partnerRepo.findByUserAndPublicId(currentUser, publicId)
-                .orElseThrow(() -> new RuntimeException("Partner not found"));
+                .orElseThrow(() -> new InvalidRequestException("Partner not found"));
 
         partner.setIsActive(true);
         partnerRepo.save(partner);

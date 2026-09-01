@@ -19,7 +19,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("sale-payment")
 @RequiredArgsConstructor
-@CrossOrigin
 public class SalePaymentController {
 
     private final SalePaymentServiceInterface salePaymentService;

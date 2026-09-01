@@ -31,20 +31,20 @@ public class CreateAdminIfNot implements CommandLineRunner {
 
             User admin = new User();
 
-            admin.setOwnerName("Ashish Patel");
-            admin.setUsername("Ashish@11");
-            admin.setEmail("ashish@gmail.com");
-            admin.setPassword(passwordEncoder.encode("Ashish@123"));
-            admin.setMobileNumber("9974729064");
+            admin.setOwnerName("Urvi Gondaliya");
+            admin.setUsername("Urvi24");
+            admin.setEmail("urvip249@gmail.com");
+            admin.setPassword(passwordEncoder.encode("urviAK2005!"));
+            admin.setMobileNumber("9892648658");
             admin.setRole(UserRole.ADMIN);
 
             UserAddress address = new UserAddress();
 
-            address.setHouseNo("530");
-            address.setSocietyName("Mor");
-            address.setArea("Olpad");
+            address.setHouseNo("29");
+            address.setSocietyName("Avadh Bunglows");
+            address.setArea("Mota varaccha");
             address.setCity("Surat");
-            address.setPincode("394530");
+            address.setPincode("394105");
             address.setState("Gujarat");
             // No need to set country.
             // @PrePersist will automatically set it to "India".

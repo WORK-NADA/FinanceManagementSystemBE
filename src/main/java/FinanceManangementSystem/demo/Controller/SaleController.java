@@ -21,7 +21,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("sale")
 @RequiredArgsConstructor
-@CrossOrigin
 public class SaleController {
 
     private final SaleServiceInterface saleService;
@@ -31,7 +30,7 @@ public class SaleController {
     // ADD SALE
     // =========================================================
 
-    @PostMapping
+    @PostMapping("add")
     public ResponseEntity<APIResponse<ResponseSaleDTO>>
     addSale(
             @Valid @RequestBody RequestSaleDTO dto
@@ -113,7 +112,7 @@ public class SaleController {
     // GET ALL SALES
     // =========================================================
 
-    @GetMapping
+    @GetMapping("all")
         public ResponseEntity<APIResponse<Page<ResponseSaleDTO>>>
         getAllSales(@RequestParam(defaultValue = "0") int page,
                                  @RequestParam(defaultValue = "20") int size) {

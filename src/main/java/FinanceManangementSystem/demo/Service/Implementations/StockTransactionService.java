@@ -347,7 +347,7 @@ public class StockTransactionService
                                 stockPublicId
                         )
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new InvalidRequestException(
                                         "Stock not found"
                                 )
                         );
@@ -411,7 +411,7 @@ public class StockTransactionService
                                 stockPublicId
                         )
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new InvalidRequestException(
                                         "Stock not found"
                                 )
                         );
@@ -468,11 +468,11 @@ public class StockTransactionService
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             transaction = stockTransactionRepository
                     .findByPublicId(publicId)
-                    .orElseThrow(() -> new RuntimeException("Stock transaction not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Stock transaction not found"));
         } else {
             transaction = stockTransactionRepository
                     .findByUserAndPublicId(currentUser, publicId)
-                    .orElseThrow(() -> new RuntimeException("Stock transaction not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Stock transaction not found"));
         }
 
         return mapToResponse(transaction);
@@ -524,7 +524,7 @@ public class StockTransactionService
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
 
             stockRepository.findByPublicId(stockPublicId)
-                    .orElseThrow(() -> new RuntimeException("Stock not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Stock not found"));
 
             return stockTransactionRepository
                     .findByStockPublicIdOrderByTransactionDateDesc(stockPublicId)
@@ -535,7 +535,7 @@ public class StockTransactionService
         } else {
 
             stockRepository.findByUserAndPublicId(currentUser, stockPublicId)
-                    .orElseThrow(() -> new RuntimeException("Stock not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Stock not found"));
 
             return stockTransactionRepository
                     .findByUserAndStockPublicIdOrderByTransactionDateDesc(currentUser, stockPublicId)
@@ -568,15 +568,15 @@ public class StockTransactionService
 
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             stock = stockRepository.findByPublicId(stockPublicId)
-                    .orElseThrow(() -> new RuntimeException("Stock not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Stock not found"));
         } else {
             stock = stockRepository.findByUserAndPublicId(currentUser, stockPublicId)
-                    .orElseThrow(() -> new RuntimeException("Stock not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Stock not found"));
         }
 
         if (transactionType == null) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Transaction type is required"
             );
         }
@@ -613,7 +613,7 @@ public class StockTransactionService
         if (fromDate == null ||
                 toDate == null) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "From date and to date are required"
             );
         }
@@ -621,7 +621,7 @@ public class StockTransactionService
 
         if (fromDate.isAfter(toDate)) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "From date cannot be after to date"
             );
         }
@@ -663,7 +663,7 @@ public class StockTransactionService
 
         if (transactionType == null) {
 
-            throw new RuntimeException(
+            throw new InvalidRequestException(
                     "Transaction type is required"
             );
         }

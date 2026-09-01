@@ -57,4 +57,17 @@ public class AdminService implements AdminServiceInterface {
         ResponseUserDTO response = modelMapper.map(user,ResponseUserDTO.class);
         return response;
     }
+    @Override
+    @Transactional(readOnly = true)
+    public java.util.List<ResponseUserDTO> listAllUsers() {
+        log.info("SERVICE - request came in listAllUsers...");
+        
+        java.util.List<User> users = userRepo.findAllByOrderByCreatedAtDesc();
+        
+        log.info("SERVICE - users fetched successfully...");
+        
+        return users.stream()
+                .map(user -> modelMapper.map(user, ResponseUserDTO.class))
+                .collect(java.util.stream.Collectors.toList());
+    }
 }

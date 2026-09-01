@@ -1,5 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
+
 import FinanceManangementSystem.demo.Model.Partner;
 import FinanceManangementSystem.demo.Model.PartnerProfitShare;
 import FinanceManangementSystem.demo.Model.ProfitDistribution;
@@ -59,26 +61,26 @@ public class ProfitDistributionService implements ProfitDistributionServiceInter
         LocalDate to = dto.getToDate();
 
         if (from.isAfter(to)) {
-            throw new RuntimeException("fromDate must be before or equal to toDate");
+            throw new InvalidRequestException("fromDate must be before or equal to toDate");
         }
 
         User currentUser = currentUserService.getCurrentUser();
 
         if (distributionRepo.existsByUserAndFromDateAndToDate(currentUser, from, to)) {
-            throw new RuntimeException("Profit already distributed for this period");
+            throw new InvalidRequestException("Profit already distributed for this period");
         }
 
         List<Partner> activePartners = partnerRepo.findByUserAndIsActiveTrue(currentUser);
 
         if (activePartners.isEmpty()) {
-            throw new RuntimeException("No active partners to distribute profit");
+            throw new InvalidRequestException("No active partners to distribute profit");
         }
 
         BigDecimal activeSum = partnerRepo.sumActiveSharePercentage(currentUser);
         if (activeSum == null) activeSum = BigDecimal.ZERO;
 
         if (activeSum.compareTo(new BigDecimal("100.00")) != 0) {
-            throw new RuntimeException("Active partner shares must total exactly 100% before distribution");
+            throw new InvalidRequestException("Active partner shares must total exactly 100% before distribution");
         }
 
         // Compute totals
@@ -98,7 +100,7 @@ public class ProfitDistributionService implements ProfitDistributionServiceInter
         BigDecimal netProfit = totalRevenue.subtract(totalPurchaseCost).subtract(totalExpenses);
 
         if (netProfit.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new RuntimeException("No profit to distribute for this period");
+            throw new InvalidRequestException("No profit to distribute for this period");
         }
 
         // Persist distribution record
@@ -186,10 +188,10 @@ public class ProfitDistributionService implements ProfitDistributionServiceInter
         ProfitDistribution dist;
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             dist = distributionRepo.findByPublicId(publicId)
-                    .orElseThrow(() -> new RuntimeException("Distribution not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Distribution not found"));
         } else {
             dist = distributionRepo.findByUserAndPublicId(currentUser, publicId)
-                    .orElseThrow(() -> new RuntimeException("Distribution not found"));
+                    .orElseThrow(() -> new InvalidRequestException("Distribution not found"));
         }
 
         ResponseProfitDistributionDTO resp = modelMapper.map(dist, ResponseProfitDistributionDTO.class);
@@ -269,10 +271,14 @@ public class ProfitDistributionService implements ProfitDistributionServiceInter
 
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             dist = distributionRepo.findFirstByOrderByToDateDesc()
-                    .orElseThrow(() -> new RuntimeException("No distributions found"));
+                    .orElse(null);
         } else {
             dist = distributionRepo.findFirstByUserOrderByToDateDesc(currentUser)
-                    .orElseThrow(() -> new RuntimeException("No distributions found"));
+                    .orElse(null);
+        }
+
+        if (dist == null) {
+            return null;
         }
 
         return getDistributionByPublicId(dist.getPublicId());

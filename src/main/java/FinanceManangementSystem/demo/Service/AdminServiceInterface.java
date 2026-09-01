@@ -5,4 +5,5 @@ import FinanceManangementSystem.demo.Payloads.ResponseDTO.ResponseUserDTO;
 
 public interface AdminServiceInterface {
     ResponseUserDTO registration(RequestUserDTO dto);
+    java.util.List<ResponseUserDTO> listAllUsers();
 }
