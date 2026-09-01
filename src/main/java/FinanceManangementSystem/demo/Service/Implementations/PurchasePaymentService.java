@@ -1,6 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
 import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
+import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 
 import FinanceManangementSystem.demo.Enums.DocumentType;
 import FinanceManangementSystem.demo.Enums.PaymentStatus;
@@ -238,10 +239,10 @@ public class PurchasePaymentService
 
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             payment = purchasePaymentRepo.findByPublicId(publicId)
-                    .orElseThrow(() -> new InvalidRequestException("Purchase payment not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Purchase payment not found"));
         } else {
             payment = purchasePaymentRepo.findByUserAndPublicId(currentUser, publicId)
-                    .orElseThrow(() -> new InvalidRequestException("Purchase payment not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Purchase payment not found"));
         }
 
         Purchase purchase =
@@ -281,10 +282,10 @@ public class PurchasePaymentService
 
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             purchase = purchaseRepo.findByPublicId(purchasePublicId)
-                    .orElseThrow(() -> new InvalidRequestException("Purchase not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Purchase not found"));
         } else {
             purchase = purchaseRepo.findByUserAndPublicId(currentUser, purchasePublicId)
-                    .orElseThrow(() -> new InvalidRequestException("Purchase not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Purchase not found"));
         }
 
         BigDecimal paidAmount =
@@ -321,7 +322,7 @@ public class PurchasePaymentService
 
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             supplierRepo.findByPublicIdAndIsActiveTrue(supplierPublicId)
-                    .orElseThrow(() -> new InvalidRequestException("Active supplier not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Active supplier not found"));
             return purchasePaymentRepo
                     .findByPurchase_Supplier_PublicIdOrderByPaymentDateDesc(supplierPublicId)
                     .stream()
@@ -334,7 +335,7 @@ public class PurchasePaymentService
         }
 
         supplierRepo.findByUserAndPublicIdAndIsActiveTrue(currentUser, supplierPublicId)
-                .orElseThrow(() -> new InvalidRequestException("Active supplier not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Active supplier not found"));
 
         return purchasePaymentRepo
                 .findByUserAndPurchase_Supplier_PublicIdOrderByPaymentDateDesc(
@@ -371,10 +372,10 @@ public class PurchasePaymentService
 
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             purchase = purchaseRepo.findByPublicId(purchasePublicId)
-                    .orElseThrow(() -> new InvalidRequestException("Purchase not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Purchase not found"));
         } else {
             purchase = purchaseRepo.findByUserAndPublicId(currentUser, purchasePublicId)
-                    .orElseThrow(() -> new InvalidRequestException("Purchase not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Purchase not found"));
         }
 
         return buildPurchaseDetails(
@@ -469,7 +470,7 @@ public class PurchasePaymentService
 
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             supplier = supplierRepo.findByPublicIdAndIsActiveTrue(supplierPublicId)
-                    .orElseThrow(() -> new InvalidRequestException("Active supplier not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Active supplier not found"));
             List<Purchase> pendingPurchases = purchaseRepo.findBySupplierAndPaymentStatusIn(supplier, List.of(
                     PaymentStatus.PENDING,
                     PaymentStatus.PARTIALLY_PAID
@@ -478,7 +479,7 @@ public class PurchasePaymentService
         }
 
         supplier = supplierRepo.findByUserAndPublicIdAndIsActiveTrue(currentUser, supplierPublicId)
-                .orElseThrow(() -> new InvalidRequestException("Active supplier not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Active supplier not found"));
 
         List<Purchase> pendingPurchases = purchaseRepo.findByUser(currentUser).stream()
                 .filter(p -> p.getSupplier() != null && p.getSupplier().getPublicId().equals(supplier.getPublicId()))

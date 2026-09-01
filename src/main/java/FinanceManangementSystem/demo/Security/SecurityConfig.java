@@ -69,6 +69,7 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(accessDeniedHandler())
+                        .authenticationEntryPoint(authenticationEntryPoint())
                 );
 
         http.addFilterBefore(
@@ -102,6 +103,27 @@ public class SecurityConfig {
                     {
                         "status": 403,
                         "message": "No access to view this page"
+                    }
+                    """);
+        };
+    }
+
+    @Bean
+    public org.springframework.security.web.AuthenticationEntryPoint authenticationEntryPoint() {
+        return (request, response, authException) -> {
+            log.warn(
+                    "Unauthenticated request. URI: {}, Method: {}",
+                    request.getRequestURI(),
+                    request.getMethod()
+            );
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+
+            response.getWriter().write("""
+                    {
+                        "status": 401,
+                        "message": "Authentication required"
                     }
                     """);
         };

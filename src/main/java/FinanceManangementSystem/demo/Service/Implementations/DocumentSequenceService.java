@@ -1,5 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
+
 import FinanceManangementSystem.demo.Enums.DocumentType;
 import FinanceManangementSystem.demo.Model.DocumentSequence;
 import FinanceManangementSystem.demo.Model.User;
@@ -70,7 +72,7 @@ public class DocumentSequenceService implements SequenceServiceInterface {
                             year
                     )
                     .orElseThrow(() ->
-                            new RuntimeException(
+                            new ResourceNotFoundException(
                                     "Unable to initialize document sequence"
                             )
                     );

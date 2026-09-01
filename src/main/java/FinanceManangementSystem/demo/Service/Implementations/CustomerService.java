@@ -1,9 +1,11 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
+
+
 import FinanceManangementSystem.demo.Enums.UserRole;
 import FinanceManangementSystem.demo.Exceptions.DuplicateResourceException;
 import FinanceManangementSystem.demo.Exceptions.InvalidStateException;
-import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 import FinanceManangementSystem.demo.Model.Customer;
 import FinanceManangementSystem.demo.Model.CustomerAddress;
 import FinanceManangementSystem.demo.Model.User;
@@ -67,10 +69,18 @@ public class CustomerService
 
 
         // -----------------------------------------------------
+        // RESOLVE CURRENT USER (needed for per-user checks)
+        // -----------------------------------------------------
+
+        User currentUser = currentUserService.getCurrentUser();
+
+
+        // -----------------------------------------------------
         // CHECK DUPLICATE MOBILE
         // -----------------------------------------------------
 
-        if (customerRepo.existsByMobileNumber(
+        if (customerRepo.existsByUserAndMobileNumber(
+                currentUser,
                 mobileNumber
         )) {
 
@@ -89,7 +99,7 @@ public class CustomerService
         // -----------------------------------------------------
 
         if (email != null
-                && customerRepo.existsByEmail(email)) {
+                && customerRepo.existsByUserAndEmail(currentUser, email)) {
 
             log.warn(
                     "SERVICE - email already exists..."
@@ -106,7 +116,7 @@ public class CustomerService
         // -----------------------------------------------------
 
         if (gstNumber != null
-                && customerRepo.existsByGstNumber(gstNumber)) {
+                && customerRepo.existsByUserAndGstNumber(currentUser, gstNumber)) {
 
             log.warn(
                     "SERVICE - GST number already exists..."
@@ -121,8 +131,6 @@ public class CustomerService
         // -----------------------------------------------------
         // CREATE CUSTOMER
         // -----------------------------------------------------
-
-        User currentUser = currentUserService.getCurrentUser();
 
         Customer customer =
                 new Customer();
@@ -348,13 +356,13 @@ public class CustomerService
             customer = customerRepo.findByPublicId(publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - customer not found...");
-                        return new RuntimeException("Customer not found");
+                        return new ResourceNotFoundException("Customer not found");
                     });
         } else {
             customer = customerRepo.findByUserAndPublicId(currentUser, publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - customer not found for current user...");
-                        return new RuntimeException("Customer not found");
+                        return new ResourceNotFoundException("Customer not found");
                     });
         }
 
@@ -400,7 +408,8 @@ public class CustomerService
         // -----------------------------------------------------
 
         if (customerRepo
-                .existsByMobileNumberAndPublicIdNot(
+                .existsByUserAndMobileNumberAndPublicIdNot(
+                        currentUser,
                         mobileNumber,
                         publicId
                 )) {
@@ -421,7 +430,8 @@ public class CustomerService
 
         if (email != null
                 && customerRepo
-                .existsByEmailAndPublicIdNot(
+                .existsByUserAndEmailAndPublicIdNot(
+                        currentUser,
                         email,
                         publicId
                 )) {
@@ -442,7 +452,8 @@ public class CustomerService
 
         if (gstNumber != null
                 && customerRepo
-                .existsByGstNumberAndPublicIdNot(
+                .existsByUserAndGstNumberAndPublicIdNot(
+                        currentUser,
                         gstNumber,
                         publicId
                 )) {
@@ -647,13 +658,13 @@ public class CustomerService
             customer = customerRepo.findByPublicId(publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - customer not found...");
-                        return new RuntimeException("Customer not found");
+                        return new ResourceNotFoundException("Customer not found");
                     });
         } else {
             customer = customerRepo.findByUserAndPublicId(currentUser, publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - customer not found for current user...");
-                        return new RuntimeException("Customer not found");
+                        return new ResourceNotFoundException("Customer not found");
                     });
         }
 

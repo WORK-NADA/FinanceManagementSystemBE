@@ -59,6 +59,12 @@ import java.util.UUID;
                         name = "idx_purchase_raw_material",
                         columnList = "raw_material"
                 )
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_purchase_user_number",
+                        columnNames = {"user_id", "purchase_number"}
+                )
         }
 )
 public class Purchase {
@@ -220,7 +226,6 @@ public class Purchase {
     @Column(
             name = "purchase_number",
             nullable = false,
-            unique = true,
             length = 30,
             updatable = false
     )

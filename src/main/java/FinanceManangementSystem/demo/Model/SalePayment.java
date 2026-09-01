@@ -28,6 +28,12 @@ import java.util.UUID;
                         name = "idx_sale_payment_date",
                         columnList = "payment_date"
                 )
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_sale_payment_user_ref",
+                        columnNames = {"user_id", "reference_number"}
+                )
         }
 )
 public class SalePayment {
@@ -84,7 +90,6 @@ public class SalePayment {
     @Column(
             name = "reference_number",
             nullable = false,
-            unique = true,
             length = 50,
             updatable = false
     )

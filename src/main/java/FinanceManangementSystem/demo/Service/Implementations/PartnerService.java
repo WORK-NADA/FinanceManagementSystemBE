@@ -1,6 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
 import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
+import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 
 import FinanceManangementSystem.demo.Model.Partner;
 import FinanceManangementSystem.demo.Model.User;
@@ -72,7 +73,7 @@ public class PartnerService implements PartnerServiceInterface {
         User currentUser = currentUserService.getCurrentUser();
 
         Partner partner = partnerRepo.findByUserAndPublicId(currentUser, publicId)
-                .orElseThrow(() -> new InvalidRequestException("Partner not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Partner not found"));
 
         return mapToResponse(partner);
     }
@@ -113,7 +114,7 @@ public class PartnerService implements PartnerServiceInterface {
         User currentUser = currentUserService.getCurrentUser();
 
         Partner partner = partnerRepo.findByUserAndPublicId(currentUser, publicId)
-                .orElseThrow(() -> new InvalidRequestException("Partner not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Partner not found"));
 
         if (!partner.getMobileNumber().equals(dto.getMobileNumber())
                 && partnerRepo.existsByMobileNumberAndPublicIdNot(dto.getMobileNumber(), publicId)) {
@@ -147,8 +148,12 @@ public class PartnerService implements PartnerServiceInterface {
 
         User currentUser = currentUserService.getCurrentUser();
 
-        Partner partner = partnerRepo.findByUserAndPublicIdAndIsActiveTrue(currentUser, publicId)
-                .orElseThrow(() -> new InvalidRequestException("Partner not found or already inactive"));
+        Partner partner = partnerRepo.findByUserAndPublicId(currentUser, publicId)
+                .orElseThrow(() -> new ResourceNotFoundException("Partner not found"));
+
+        if (!partner.getIsActive()) {
+            return;
+        }
 
         partner.setIsActive(false);
         partnerRepo.save(partner);
@@ -162,7 +167,7 @@ public class PartnerService implements PartnerServiceInterface {
         User currentUser = currentUserService.getCurrentUser();
 
         Partner partner = partnerRepo.findByUserAndPublicId(currentUser, publicId)
-                .orElseThrow(() -> new InvalidRequestException("Partner not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Partner not found"));
 
         partner.setIsActive(true);
         partnerRepo.save(partner);

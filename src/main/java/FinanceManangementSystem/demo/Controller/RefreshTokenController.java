@@ -29,7 +29,7 @@ public class RefreshTokenController {
 
 
     @PostMapping("refresh")
-    public ResponseEntity<APIResponse<java.util.Map<String,String>>> refresh(@RequestBody RequestRefreshTokenDTO request){
+    public ResponseEntity<APIResponse<java.util.Map<String,String>>> refresh(@jakarta.validation.Valid @RequestBody RequestRefreshTokenDTO request){
         log.info("CONTROLLER - request came in refresh token controller...");
 
         RefreshToken refreshToken = refreshTokenRepo.findByToken(request.getRefreshToken())

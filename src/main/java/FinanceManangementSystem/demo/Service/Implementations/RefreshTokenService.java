@@ -28,8 +28,7 @@ public class RefreshTokenService implements RefreshTokenInterface {
                         .token(UUID.randomUUID().toString())
                         .user(user)
                         .expiryDate(
-                                LocalDateTime.now()
-//                                        .plusDays(7)
+                                LocalDateTime.now().plusDays(7)
                         )
                         .build();
 

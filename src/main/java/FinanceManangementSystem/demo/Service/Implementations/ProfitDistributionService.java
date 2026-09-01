@@ -1,6 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
 import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
+import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 
 import FinanceManangementSystem.demo.Model.Partner;
 import FinanceManangementSystem.demo.Model.PartnerProfitShare;
@@ -188,10 +189,10 @@ public class ProfitDistributionService implements ProfitDistributionServiceInter
         ProfitDistribution dist;
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             dist = distributionRepo.findByPublicId(publicId)
-                    .orElseThrow(() -> new InvalidRequestException("Distribution not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Distribution not found"));
         } else {
             dist = distributionRepo.findByUserAndPublicId(currentUser, publicId)
-                    .orElseThrow(() -> new InvalidRequestException("Distribution not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Distribution not found"));
         }
 
         ResponseProfitDistributionDTO resp = modelMapper.map(dist, ResponseProfitDistributionDTO.class);

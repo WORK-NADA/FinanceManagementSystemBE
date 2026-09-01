@@ -121,6 +121,54 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles a malformed path variable — e.g. a non-UUID string where a UUID publicId is
+     * expected (GET /customer/abc123). This is a client input error, not a server bug.
+     */
+    @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatch(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException ex) {
+        log.warn("Type mismatch on parameter '{}': {}", ex.getName(), ex.getMessage());
+
+        ErrorResponse resp = new ErrorResponse(
+                "INVALID_PARAMETER",
+                "Invalid value for parameter '" + ex.getName() + "'"
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
+    }
+
+    /**
+     * Handles malformed JSON request bodies, including an enum value that doesn't match any
+     * constant (e.g. "unit": "LB" when only G/KG/TON are valid). This is a client input error.
+     */
+    @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleUnreadableBody(org.springframework.http.converter.HttpMessageNotReadableException ex) {
+        log.warn("Malformed request body: {}", ex.getMessage());
+
+        ErrorResponse resp = new ErrorResponse(
+                "MALFORMED_REQUEST",
+                "Request body is malformed or contains an invalid value"
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
+    }
+
+    /**
+     * Handles DB-level unique-constraint violations (e.g. duplicate document number).
+     * These should not be exposed to the client as 500s — surface them as 409 Conflict.
+     */
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrity(org.springframework.dao.DataIntegrityViolationException ex) {
+        log.error("Data integrity violation: {}", ex.getMostSpecificCause().getMessage());
+
+        ErrorResponse resp = new ErrorResponse(
+                "CONFLICT",
+                "Request could not be completed due to a data conflict"
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(resp);
+    }
+
+    /**
      * Handles all unexpected/unhandled exceptions that are not caught by more specific handlers.
      * Spring exception handler matching is by most-specific-first, so this handler will only
      * catch truly unexpected errors (NPEs, bugs, etc.) that are NOT instances of ApplicationException,

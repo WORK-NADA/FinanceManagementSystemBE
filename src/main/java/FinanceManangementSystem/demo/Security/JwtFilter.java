@@ -114,6 +114,24 @@ public class JwtFilter extends OncePerRequestFilter {
                     }
                     """);
 
+        } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
+
+            log.warn(
+                    "JwtFilter - Invalid token: {}",
+                    e.getMessage()
+            );
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            response.getWriter().write("""
+                    {
+                        "code": "INVALID_TOKEN",
+                        "message": "Access token is invalid or malformed"
+                    }
+                    """);
+
         }
     }
 }

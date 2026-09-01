@@ -1,5 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
+import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
+
 import FinanceManangementSystem.demo.Exceptions.DuplicateResourceException;
 import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
 import FinanceManangementSystem.demo.Exceptions.InvalidStateException;
@@ -300,7 +302,7 @@ public class StockService
                                 publicId
                         )
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new ResourceNotFoundException(
                                         "Stock not found"
                                 )
                         );
@@ -476,10 +478,10 @@ public class StockService
 
         if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
             stock = stockRepository.findByPublicId(publicId)
-                    .orElseThrow(() -> new RuntimeException("Stock not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Stock not found"));
         } else {
             stock = stockRepository.findByUserAndPublicId(currentUser, publicId)
-                    .orElseThrow(() -> new RuntimeException("Stock not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Stock not found"));
         }
 
         if (Boolean.TRUE.equals(
@@ -527,7 +529,7 @@ public class StockService
                                 publicId
                         )
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new ResourceNotFoundException(
                                         "Stock not found"
                                 )
                         );
@@ -573,7 +575,7 @@ public class StockService
                         publicId
                 )
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new ResourceNotFoundException(
                                 "Stock not found"
                         )
                 );

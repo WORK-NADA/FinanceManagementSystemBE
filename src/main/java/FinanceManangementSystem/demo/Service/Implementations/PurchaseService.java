@@ -1,6 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
 import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
+import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 
 import FinanceManangementSystem.demo.Enums.DocumentType;
 import FinanceManangementSystem.demo.Enums.PaymentStatus;
@@ -348,13 +349,13 @@ public class PurchaseService
             purchase = purchaseRepo.findByPublicId(publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - purchase not found...");
-                        return new InvalidRequestException("Purchase not found");
+                        return new ResourceNotFoundException("Purchase not found");
                     });
         } else {
             purchase = purchaseRepo.findByUserAndPublicId(currentUser, publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - purchase not found for current user...");
-                        return new InvalidRequestException("Purchase not found");
+                        return new ResourceNotFoundException("Purchase not found");
                     });
         }
 
@@ -403,13 +404,13 @@ public class PurchaseService
             supplier = supplierRepo.findByPublicId(supplierPublicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - supplier not found...");
-                        return new InvalidRequestException("Supplier not found");
+                        return new ResourceNotFoundException("Supplier not found");
                     });
         } else {
             supplier = supplierRepo.findByUserAndPublicId(currentUser, supplierPublicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - supplier not found for current user...");
-                        return new InvalidRequestException("Supplier not found");
+                        return new ResourceNotFoundException("Supplier not found");
                     });
         }
 
@@ -555,13 +556,13 @@ public class PurchaseService
             purchase = purchaseRepo.findByPublicId(publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - purchase not found...");
-                        return new InvalidRequestException("Purchase not found");
+                        return new ResourceNotFoundException("Purchase not found");
                     });
         } else {
             purchase = purchaseRepo.findByUserAndPublicId(currentUser, publicId)
                     .orElseThrow(() -> {
                         log.info("SERVICE - purchase not found for current user...");
-                        return new InvalidRequestException("Purchase not found");
+                        return new ResourceNotFoundException("Purchase not found");
                     });
         }
 
@@ -621,13 +622,13 @@ public class PurchaseService
 
         if (currentUser.getRole() == UserRole.ADMIN) {
             supplier = supplierRepo.findByPublicIdAndIsActiveTrue(dto.getSupplierPublicId())
-                    .orElseThrow(() -> new InvalidRequestException("Active supplier not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Active supplier not found"));
         } else {
             supplier = supplierRepo.findByUserAndPublicIdAndIsActiveTrue(
                             currentUser,
                             dto.getSupplierPublicId()
                     )
-                    .orElseThrow(() -> new InvalidRequestException("Active supplier not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Active supplier not found"));
         }
 
 
