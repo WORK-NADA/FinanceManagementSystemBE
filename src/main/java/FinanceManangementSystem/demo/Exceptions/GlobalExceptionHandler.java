@@ -11,6 +11,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,6 +81,24 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(resp);
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<ErrorResponse> handleMalformedJwt(MalformedJwtException ex) {
+        ErrorResponse resp = new ErrorResponse(
+                "INVALID_TOKEN",
+                "Token is invalid or malformed"
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resp);
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<ErrorResponse> handleSignatureException(SignatureException ex) {
+        ErrorResponse resp = new ErrorResponse(
+                "INVALID_TOKEN_SIGNATURE",
+                "Token signature is invalid"
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resp);
     }
 
     /**

@@ -198,19 +198,16 @@ public class SupplierService implements SupplierServiceInterface {
                 "SERVICE - request came in getSupplierByPublicId..."
         );
 
+        User currentUser = currentUserService.getCurrentUser();
+        Supplier supplier;
 
-        Supplier supplier =
-                supplierRepo.findByPublicId(publicId)
-                        .orElseThrow(() -> {
-
-                            log.info(
-                                    "SERVICE - supplier not found..."
-                            );
-
-                            return new ResourceNotFoundException(
-                                    "Supplier not found"
-                            );
-                        });
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            supplier = supplierRepo.findByPublicId(publicId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Supplier not found"));
+        } else {
+            supplier = supplierRepo.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Supplier not found"));
+        }
 
 
         log.info(
@@ -467,19 +464,16 @@ public class SupplierService implements SupplierServiceInterface {
         );
 
 
-        Supplier supplier =
-                supplierRepo.findByPublicId(publicId)
-                        .orElseThrow(() -> {
+        User currentUser = currentUserService.getCurrentUser();
+        Supplier supplier;
 
-                            log.info(
-                                    "SERVICE - supplier not found..."
-                            );
-
-                            return new ResourceNotFoundException(
-                                    "Supplier not found"
-                            );
-                        });
-
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            supplier = supplierRepo.findByPublicId(publicId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Supplier not found"));
+        } else {
+            supplier = supplierRepo.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Supplier not found"));
+        }
 
         if (!supplier.getIsActive()) {
 
@@ -487,9 +481,7 @@ public class SupplierService implements SupplierServiceInterface {
                     "SERVICE - supplier is already inactive..."
             );
 
-            throw new InvalidStateException(
-                    "Supplier is already inactive"
-            );
+            return;
         }
 
 
@@ -519,19 +511,16 @@ public class SupplierService implements SupplierServiceInterface {
         );
 
 
-        Supplier supplier =
-                supplierRepo.findByPublicId(publicId)
-                        .orElseThrow(() -> {
+        User currentUser = currentUserService.getCurrentUser();
+        Supplier supplier;
 
-                            log.info(
-                                    "SERVICE - supplier not found..."
-                            );
-
-                            return new ResourceNotFoundException(
-                                    "Supplier not found"
-                            );
-                        });
-
+        if (currentUser.getRole() == FinanceManangementSystem.demo.Enums.UserRole.ADMIN) {
+            supplier = supplierRepo.findByPublicId(publicId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Supplier not found"));
+        } else {
+            supplier = supplierRepo.findByUserAndPublicId(currentUser, publicId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Supplier not found"));
+        }
 
         if (supplier.getIsActive()) {
 
@@ -539,9 +528,7 @@ public class SupplierService implements SupplierServiceInterface {
                     "SERVICE - supplier is already active..."
             );
 
-            throw new InvalidStateException(
-                    "Supplier is already active"
-            );
+            return;
         }
 
 

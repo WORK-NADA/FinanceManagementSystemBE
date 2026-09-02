@@ -260,10 +260,7 @@ public class StockService
 
         if (rawMaterial == null ||
                 rawMaterial.trim().isEmpty()) {
-
-            throw new InvalidRequestException(
-                    "Raw material is required"
-            );
+            return java.util.Collections.emptyList();
         }
 
 

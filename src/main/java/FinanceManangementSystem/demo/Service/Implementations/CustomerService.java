@@ -605,9 +605,7 @@ public class CustomerService
                     "SERVICE - customer is already inactive..."
             );
 
-            throw new InvalidStateException(
-                    "Customer is already inactive"
-            );
+            return;
         }
 
 
@@ -681,9 +679,7 @@ public class CustomerService
                     "SERVICE - customer is already active..."
             );
 
-            throw new InvalidStateException(
-                    "Customer is already active"
-            );
+            return;
         }
 
 

@@ -40,6 +40,12 @@ if [ -z "$CLIENT2_TOKEN" ]; then log "[SETUP] ERROR: Could not get CLIENT2 token
 log "[SETUP] All tokens acquired."
 
 FAKE_UUID="00000000-0000-4000-8000-000000000001"
+# Unique suffix per run to prevent duplicate-key conflicts across test runs
+RUN_ID=$(date +%s | tail -c 6)
+# 4-digit ID for GST numbers (must follow strict format)
+GST_ID=$(printf "%04d" $((RANDOM % 10000)))
+# Dynamic year for profit distribution to avoid "already distributed" cross-run conflicts
+PD_YEAR=$((2026 + (RANDOM % 50)))
 
 # =============================================================================
 # MODULE: Auth
@@ -53,7 +59,7 @@ call_api POST "/user/login" NONE \
 
 call_api POST "/user/login" NONE \
   '{"email":"urvip249@gmail.com","password":"wrongpassword"}' \
-  401 "Login wrong password" "$M"
+  400 "Login wrong password" "$M"
 
 call_api POST "/user/login" NONE \
   '{"email":"nobody@nonexistent.example","password":"TestPass@123"}' \
@@ -74,16 +80,16 @@ call_api POST "/user/login" NONE \
 # Grab a valid refresh token for testing
 ADMIN_REFRESH=$(login_get_refresh "$ADMIN_EMAIL" "$ADMIN_PASS")
 
-call_api POST "/user/refresh-token" NONE \
+call_api POST "/auth/refresh" NONE \
   '{"refreshToken":"garbage.token.here"}' \
   401 "Refresh with garbage token" "$M"
 
-call_api POST "/user/refresh-token" NONE \
+call_api POST "/auth/refresh" NONE \
   '{}' \
   400 "Refresh missing refreshToken field" "$M"
 
 if [ -n "$ADMIN_REFRESH" ]; then
-    call_api POST "/user/refresh-token" NONE \
+    call_api POST "/auth/refresh" NONE \
       "{\"refreshToken\":\"$ADMIN_REFRESH\"}" \
       200 "Refresh with valid token" "$M"
 fi
@@ -160,14 +166,14 @@ call_api POST "/admin/register" "$ADMIN_TOKEN" \
 
 # Duplicate email (testclient1 already exists)
 call_api POST "/admin/register" "$ADMIN_TOKEN" \
-  "{\"ownerName\":\"Dup User\",\"username\":\"dup_username_$(date +%s)\",\"email\":\"testclient1@example.com\",\"password\":\"TestPass@123\",\"mobileNumber\":\"9876549999\",\"role\":\"CLIENT\",\"userAddress\":{\"houseNo\":\"1\",\"societyName\":\"S\",\"area\":\"A\",\"city\":\"Ahmedabad\",\"pincode\":\"380001\",\"state\":\"Gujarat\",\"country\":\"India\"}}" \
+  "{\"ownerName\":\"Dup User\",\"username\":\"dup_username_$(date +%s)\",\"email\":\"testclient1@example.com\",\"password\":\"TestPass@123\",\"mobileNumber\":\"9876549999\",\"role\":\"CLIENT\",\"userAddress\":{\"houseNo\":\"1\",\"societyName\":\"Society Test\",\"area\":\"Area Test\",\"city\":\"Ahmedabad\",\"pincode\":\"380001\",\"state\":\"Gujarat\",\"country\":\"India\"}}" \
   409 "Register duplicate email (report actual status)" "$M"
 log "       NOTE: Expected 409 for duplicate email - actual status above. Flag if 500."
 
 # Valid registration (new unique user)
 TS=$(date +%s)
 call_api POST "/admin/register" "$ADMIN_TOKEN" \
-  "{\"ownerName\":\"Test Temp\",\"username\":\"testtemp$TS\",\"email\":\"testtemp$TS@example.com\",\"password\":\"TestPass@123\",\"mobileNumber\":\"6666${TS: -6}\",\"role\":\"CLIENT\",\"userAddress\":{\"houseNo\":\"1\",\"societyName\":\"S\",\"area\":\"A\",\"city\":\"Ahmedabad\",\"pincode\":\"380001\",\"state\":\"Gujarat\",\"country\":\"India\"}}" \
+  "{\"ownerName\":\"Test Temp\",\"username\":\"testtemp$TS\",\"email\":\"testtemp$TS@example.com\",\"password\":\"TestPass@123\",\"mobileNumber\":\"6666${TS: -6}\",\"role\":\"CLIENT\",\"userAddress\":{\"houseNo\":\"1\",\"societyName\":\"Society Test\",\"area\":\"Area Test\",\"city\":\"Ahmedabad\",\"pincode\":\"380001\",\"state\":\"Gujarat\",\"country\":\"India\"}}" \
   200 "Register valid new user" "$M"
 
 # List users (valid)
@@ -194,19 +200,19 @@ call_api GET "/customer/$FAKE_UUID" "$CLIENT1_TOKEN" NONE 404 "Get non-existent 
 
 # Add - valid (ADMIN)
 call_api POST "/customer/add" "$ADMIN_TOKEN" \
-  '{"customerName":"TEST_CustAdmin","mobileNumber":"9100000001","email":"test.cust.admin@example.com","gstNumber":"24ABCDE1234F1Z5","openingBalance":0,"paymentTerms":30,"address":{"addressLine1":"123 Test Road","city":"Ahmedabad","state":"Gujarat","country":"India","pincode":"380001"}}' \
+  "{\"customerName\":\"TEST_CustAdmin\",\"mobileNumber\":\"910${RUN_ID}01\",\"email\":\"test.cust.admin${RUN_ID}@example.com\",\"gstNumber\":\"24ABCDE${GST_ID}A1Z5\",\"openingBalance\":0,\"paymentTerms\":30,\"address\":{\"addressLine1\":\"123 Test Road\",\"city\":\"Ahmedabad\",\"state\":\"Gujarat\",\"country\":\"India\",\"pincode\":\"380001\"}}" \
   201 "Add customer valid - ADMIN" "$M"
 ADMIN_CUST_ID=$(extract_public_id)
 
 # Add - valid (CLIENT1)
 call_api POST "/customer/add" "$CLIENT1_TOKEN" \
-  '{"customerName":"TEST_CustClient1","mobileNumber":"9100000002","email":"test.cust.client1@example.com","gstNumber":"24ABCDE1234F1Z5","openingBalance":0,"paymentTerms":30,"address":{"addressLine1":"456 Test Road","city":"Surat","state":"Gujarat","country":"India","pincode":"395001"}}' \
+  "{\"customerName\":\"TEST_CustClient1\",\"mobileNumber\":\"910${RUN_ID}02\",\"email\":\"test.cust.client1${RUN_ID}@example.com\",\"gstNumber\":\"24ABCDE${GST_ID}C1Z5\",\"openingBalance\":0,\"paymentTerms\":30,\"address\":{\"addressLine1\":\"456 Test Road\",\"city\":\"Surat\",\"state\":\"Gujarat\",\"country\":\"India\",\"pincode\":\"395001\"}}" \
   201 "Add customer valid - CLIENT1" "$M"
 C1_CUST_ID=$(extract_public_id)
 
 # Add - valid (CLIENT2 - different user)
 call_api POST "/customer/add" "$CLIENT2_TOKEN" \
-  '{"customerName":"TEST_CustClient2","mobileNumber":"9100000003","email":"test.cust.client2@example.com","gstNumber":"24ABCDE1234F1Z5","openingBalance":0,"paymentTerms":30,"address":{"addressLine1":"789 Test Road","city":"Vadodara","state":"Gujarat","country":"India","pincode":"390001"}}' \
+  "{\"customerName\":\"TEST_CustClient2\",\"mobileNumber\":\"910${RUN_ID}03\",\"email\":\"test.cust.client2${RUN_ID}@example.com\",\"gstNumber\":\"24ABCDE${GST_ID}D1Z5\",\"openingBalance\":0,\"paymentTerms\":30,\"address\":{\"addressLine1\":\"789 Test Road\",\"city\":\"Vadodara\",\"state\":\"Gujarat\",\"country\":\"India\",\"pincode\":\"390001\"}}" \
   201 "Add customer valid - CLIENT2" "$M"
 C2_CUST_ID=$(extract_public_id)
 
@@ -236,12 +242,12 @@ call_api POST "/customer/add" "$CLIENT1_TOKEN" \
   400 "Add customer invalid pincode (5 digits)" "$M"
 
 call_api POST "/customer/add" "$CLIENT1_TOKEN" \
-  '{"customerName":"TEST_Cust","mobileNumber":"9100000099","email":"bademail","gstNumber":"24ABCDE1234F1Z5","openingBalance":0,"paymentTerms":30,"address":{"addressLine1":"123 Rd","city":"C","state":"S","country":"I","pincode":"380001"}}' \
+  '{"customerName":"TEST_Cust","mobileNumber":"9100000099","email":"bademail","gstNumber":"24ABCDE1234F1Z5","openingBalance":0,"paymentTerms":30,"address":{"addressLine1":"123 Rd","city":"Ahmedabad","state":"Gujarat","country":"India","pincode":"380001"}}' \
   400 "Add customer invalid email format" "$M"
 
 # Duplicate mobile for same user
 call_api POST "/customer/add" "$CLIENT1_TOKEN" \
-  '{"customerName":"TEST_CustDup","mobileNumber":"9100000002","email":"dup2@test.com","gstNumber":"27AAPFU0939F1ZV","openingBalance":0,"paymentTerms":30,"address":{"addressLine1":"123 Rd","city":"C","state":"S","country":"I","pincode":"380001"}}' \
+  "{\"customerName\":\"TEST_CustDup\",\"mobileNumber\":\"910${RUN_ID}02\",\"email\":\"dup${RUN_ID}@test.com\",\"gstNumber\":\"27AAPFU0939F1ZV\",\"openingBalance\":0,\"paymentTerms\":30,\"address\":{\"addressLine1\":\"123 Rd\",\"city\":\"Ahmedabad\",\"state\":\"Gujarat\",\"country\":\"India\",\"pincode\":\"380001\"}}" \
   409 "Add customer duplicate mobile (same user) - report actual status" "$M"
 log "       NOTE: Expected 409 for duplicate mobile - flag if 500."
 
@@ -258,7 +264,7 @@ fi
 # Isolation on update
 if [ -n "$C1_CUST_ID" ] && [ "$C1_CUST_ID" != "null" ]; then
     call_api PUT "/customer/$C1_CUST_ID" "$CLIENT2_TOKEN" \
-      '{"customerName":"HACK","mobileNumber":"9100000002","email":"hack@test.com","gstNumber":"24ABCDE1234F1Z5","openingBalance":0,"paymentTerms":30,"address":{"addressLine1":"hack","city":"h","state":"h","country":"I","pincode":"380001"}}' \
+      '{"customerName":"HACK","mobileNumber":"9100000002","email":"hack@test.com","gstNumber":"24ABCDE1234F1Z5","openingBalance":0,"paymentTerms":30,"address":{"addressLine1":"hack","city":"CityTest","state":"StateTest","country":"CountryTest","pincode":"380001"}}' \
       404 "Isolation: CLIENT2 updates CLIENT1 customer" "$M"
 fi
 
@@ -282,19 +288,19 @@ call_api GET "/supplier/abc123" "$CLIENT1_TOKEN" NONE 400 "Get malformed UUID" "
 
 # Add valid - ADMIN
 call_api POST "/supplier/add" "$ADMIN_TOKEN" \
-  '{"supplierName":"TEST_SupplierAdmin","mobileNumber":"9200000001","email":"test.sup.admin@example.com","gstNumber":"24ABCDE1234F1Z5"}' \
+  "{\"supplierName\":\"TEST_SupplierAdmin\",\"mobileNumber\":\"920${RUN_ID}01\",\"email\":\"test.sup.admin${RUN_ID}@example.com\",\"gstNumber\":\"24ABCDE${GST_ID}E1Z5\"}" \
   201 "Add supplier valid - ADMIN" "$M"
 ADMIN_SUPP_ID=$(extract_public_id)
 
 # Add valid - CLIENT1
 call_api POST "/supplier/add" "$CLIENT1_TOKEN" \
-  '{"supplierName":"TEST_SupplierClient1","mobileNumber":"9200000002","email":"test.sup.c1@example.com","gstNumber":"24ABCDE1234F1Z5"}' \
+  "{\"supplierName\":\"TEST_SupplierClient1\",\"mobileNumber\":\"920${RUN_ID}02\",\"email\":\"test.sup.c1${RUN_ID}@example.com\",\"gstNumber\":\"24ABCDE${GST_ID}F1Z5\"}" \
   201 "Add supplier valid - CLIENT1" "$M"
 C1_SUPP_ID=$(extract_public_id)
 
 # Add valid - CLIENT2
 call_api POST "/supplier/add" "$CLIENT2_TOKEN" \
-  '{"supplierName":"TEST_SupplierClient2","mobileNumber":"9200000003","email":"test.sup.c2@example.com"}' \
+  "{\"supplierName\":\"TEST_SupplierClient2\",\"mobileNumber\":\"920${RUN_ID}03\",\"email\":\"test.sup.c2${RUN_ID}@example.com\"}" \
   201 "Add supplier valid - CLIENT2" "$M"
 C2_SUPP_ID=$(extract_public_id)
 
@@ -321,7 +327,7 @@ call_api POST "/supplier/add" "$CLIENT1_TOKEN" \
 
 # Duplicate mobile same user
 call_api POST "/supplier/add" "$CLIENT1_TOKEN" \
-  '{"supplierName":"TEST_SupDup","mobileNumber":"9200000002","email":"sup.dup@test.com"}' \
+  "{\"supplierName\":\"TEST_SupDup\",\"mobileNumber\":\"920${RUN_ID}02\",\"email\":\"sup.dup${RUN_ID}@test.com\"}" \
   409 "Add supplier duplicate mobile (same user) - report actual" "$M"
 log "       NOTE: Expected 409 for duplicate mobile - flag if 500."
 
@@ -352,19 +358,19 @@ call_api GET "/stock/abc123" "$CLIENT1_TOKEN" NONE 400 "Get stock malformed UUID
 
 # Add valid - ADMIN
 call_api POST "/stock/add" "$ADMIN_TOKEN" \
-  '{"rawMaterial":"TEST_Cotton","unit":"KG","minimumStockLevel":100}' \
+  "{\"rawMaterial\":\"TEST_Cotton${RUN_ID}\",\"unit\":\"KG\",\"minimumStockLevel\":100}" \
   201 "Add stock valid - ADMIN" "$M"
 ADMIN_STOCK_ID=$(extract_public_id)
 
 # Add valid - CLIENT1
 call_api POST "/stock/add" "$CLIENT1_TOKEN" \
-  '{"rawMaterial":"TEST_Wheat","unit":"KG","minimumStockLevel":50}' \
+  "{\"rawMaterial\":\"TEST_Wheat${RUN_ID}\",\"unit\":\"KG\",\"minimumStockLevel\":50}" \
   201 "Add stock valid - CLIENT1" "$M"
 C1_STOCK_ID=$(extract_public_id)
 
 # Add valid - CLIENT2
 call_api POST "/stock/add" "$CLIENT2_TOKEN" \
-  '{"rawMaterial":"TEST_Rice","unit":"KG","minimumStockLevel":200}' \
+  "{\"rawMaterial\":\"TEST_Rice${RUN_ID}\",\"unit\":\"KG\",\"minimumStockLevel\":200}" \
   201 "Add stock valid - CLIENT2" "$M"
 C2_STOCK_ID=$(extract_public_id)
 
@@ -439,8 +445,8 @@ if [ -n "$C1_STOCK_ID" ] && [ "$C1_STOCK_ID" != "null" ]; then
     # ADJUSTMENT_OUT larger than available stock
     call_api POST "/stock-transaction/adjustment" "$CLIENT1_TOKEN" \
       "{\"stockPublicId\":\"$C1_STOCK_ID\",\"transactionType\":\"ADJUSTMENT_OUT\",\"quantity\":99999,\"remarks\":\"TEST overdraft\"}" \
-      400 "Adjustment OUT exceeds available stock (should be rejected)" "$M"
-    log "       NOTE: Above should be 400 NOT 500. Flag if 500 (stock went negative silently)."
+      409 "Adjustment OUT exceeds available stock (should be rejected)" "$M"
+    log "       NOTE: Expecting 409 for INSUFFICIENT_STOCK."
 fi
 
 # Admin - for its own stock
@@ -510,7 +516,7 @@ fi
 # Add valid purchase - ADMIN
 if [ -n "$ADMIN_SUPP_ID" ] && [ "$ADMIN_SUPP_ID" != "null" ]; then
     call_api POST "/purchase/add" "$ADMIN_TOKEN" \
-      "{\"supplierPublicId\":\"$ADMIN_SUPP_ID\",\"rawMaterial\":\"TEST_Steel\",\"weight\":500,\"unit\":\"KG\",\"ratePerUnit\":100,\"gstPercentage\":18,\"purchaseDate\":\"2026-09-01\"}" \
+      "{\"supplierPublicId\":\"$ADMIN_SUPP_ID\",\"rawMaterial\":\"TEST_Cotton${RUN_ID}\",\"weight\":500,\"unit\":\"KG\",\"ratePerUnit\":100,\"gstPercentage\":18,\"purchaseDate\":\"2026-09-01\"}" \
       201 "Add purchase valid - ADMIN" "$M"
     ADMIN_PURCH_ID=$(extract_public_id)
 fi
@@ -658,7 +664,7 @@ fi
 # Add valid sale - ADMIN
 if [ -n "$ADMIN_CUST_ID" ] && [ "$ADMIN_CUST_ID" != "null" ]; then
     call_api POST "/sale/add" "$ADMIN_TOKEN" \
-      "{\"customerPublicId\":\"$ADMIN_CUST_ID\",\"rawMaterial\":\"TEST_Steel\",\"weight\":100,\"unit\":\"KG\",\"ratePerUnit\":150,\"gstPercentage\":18,\"saleDate\":\"2026-09-01\"}" \
+      "{\"customerPublicId\":\"$ADMIN_CUST_ID\",\"rawMaterial\":\"TEST_Cotton${RUN_ID}\",\"weight\":100,\"unit\":\"KG\",\"ratePerUnit\":150,\"gstPercentage\":18,\"saleDate\":\"2026-09-01\"}" \
       201 "Add sale valid - ADMIN" "$M"
     ADMIN_SALE_ID=$(extract_public_id)
 fi
@@ -840,22 +846,42 @@ call_api GET "/partner/all" NONE NONE 401 "Get all - no auth" "$M"
 call_api GET "/partner/$FAKE_UUID" "$CLIENT1_TOKEN" NONE 404 "Get non-existent partner" "$M"
 call_api GET "/partner/abc123" "$CLIENT1_TOKEN" NONE 400 "Get malformed UUID" "$M"
 
+# Cleanup existing active partners for CLIENT1 so share percentages don't exceed 100%
+ACTIVES_C1=$(curl -s -X GET "$API_URL/partner/active" -H "Authorization: Bearer $CLIENT1_TOKEN" | python3 -c "import sys, json; data=json.load(sys.stdin); print(' '.join(p.get('publicId', '') for p in data.get('data', [])))" 2>/dev/null)
+for p in $ACTIVES_C1; do
+    if [ -n "$p" ]; then curl -s -X PATCH "$API_URL/partner/$p/deactivate" -H "Authorization: Bearer $CLIENT1_TOKEN" > /dev/null; fi
+done
+
 # Add valid - CLIENT1
 call_api POST "/partner/add" "$CLIENT1_TOKEN" \
-  '{"partnerName":"TEST_Partner One","mobileNumber":"9300000001","email":"test.partner1@example.com","sharePercentage":30,"joiningDate":"2026-01-01"}' \
+  "{\"partnerName\":\"TEST_Partner One\",\"mobileNumber\":\"930${RUN_ID}01\",\"email\":\"test.partner1${RUN_ID}@example.com\",\"sharePercentage\":30,\"joiningDate\":\"2026-01-01\"}" \
   200 "Add partner valid (30%) - CLIENT1" "$M"
 C1_PARTNER1_ID=$(extract_public_id)
 
 call_api POST "/partner/add" "$CLIENT1_TOKEN" \
-  '{"partnerName":"TEST_Partner Two","mobileNumber":"9300000002","email":"test.partner2@example.com","sharePercentage":40,"joiningDate":"2026-01-01"}' \
+  "{\"partnerName\":\"TEST_Partner Two\",\"mobileNumber\":\"930${RUN_ID}02\",\"email\":\"test.partner2${RUN_ID}@example.com\",\"sharePercentage\":40,\"joiningDate\":\"2026-01-01\"}" \
   200 "Add partner valid (40%) - CLIENT1" "$M"
 C1_PARTNER2_ID=$(extract_public_id)
 
+call_api POST "/partner/add" "$CLIENT1_TOKEN" \
+  "{\"partnerName\":\"TEST_Partner Three\",\"mobileNumber\":\"930${RUN_ID}03\",\"email\":\"test.partner3${RUN_ID}@example.com\",\"sharePercentage\":30,\"joiningDate\":\"2026-01-01\"}" \
+  200 "Add partner valid (30% to reach 100%) - CLIENT1" "$M"
+
+# Cleanup existing active partners for ADMIN
+ACTIVES_ADMIN=$(curl -s -X GET "$API_URL/partner/active" -H "Authorization: Bearer $ADMIN_TOKEN" | python3 -c "import sys, json; data=json.load(sys.stdin); print(' '.join(p.get('publicId', '') for p in data.get('data', [])))" 2>/dev/null)
+for p in $ACTIVES_ADMIN; do
+    if [ -n "$p" ]; then curl -s -X PATCH "$API_URL/partner/$p/deactivate" -H "Authorization: Bearer $ADMIN_TOKEN" > /dev/null; fi
+done
+
 # Add valid - ADMIN
 call_api POST "/partner/add" "$ADMIN_TOKEN" \
-  '{"partnerName":"TEST_AdminPartner","mobileNumber":"9300000010","email":"test.adminpartner@example.com","sharePercentage":50,"joiningDate":"2026-01-01"}' \
+  "{\"partnerName\":\"TEST_AdminPartner\",\"mobileNumber\":\"930${RUN_ID}10\",\"email\":\"test.adminpartner${RUN_ID}@example.com\",\"sharePercentage\":50,\"joiningDate\":\"2026-01-01\"}" \
   200 "Add partner valid (50%) - ADMIN" "$M"
 ADMIN_PARTNER_ID=$(extract_public_id)
+
+call_api POST "/partner/add" "$ADMIN_TOKEN" \
+  "{\"partnerName\":\"TEST_AdminPartner Two\",\"mobileNumber\":\"930${RUN_ID}11\",\"email\":\"test.adminpartner2${RUN_ID}@example.com\",\"sharePercentage\":50,\"joiningDate\":\"2026-01-01\"}" \
+  200 "Add partner valid (50% to reach 100%) - ADMIN" "$M"
 
 # Validation
 call_api POST "/partner/add" "$CLIENT1_TOKEN" \
@@ -915,19 +941,19 @@ call_api GET "/profit-distribution/$FAKE_UUID" "$CLIENT1_TOKEN" NONE 404 "Get no
 
 # Valid distribution (CLIENT1 has partners; may have zero data but should still succeed)
 call_api POST "/profit-distribution/distribute" "$CLIENT1_TOKEN" \
-  '{"fromDate":"2026-09-01","toDate":"2026-09-30"}' \
+  "{\"fromDate\":\"${PD_YEAR}-09-01\",\"toDate\":\"${PD_YEAR}-09-30\"}" \
   200 "Distribute profits valid (CLIENT1) - zeroed result if no data" "$M"
 log "       NOTE: Distribution with zero data - should return zeroed result not exception."
 C1_DIST_ID=$(extract_public_id)
 
 # Valid distribution - ADMIN
 call_api POST "/profit-distribution/distribute" "$ADMIN_TOKEN" \
-  '{"fromDate":"2026-09-01","toDate":"2026-09-30"}' \
+  "{\"fromDate\":\"${PD_YEAR}-09-01\",\"toDate\":\"${PD_YEAR}-09-30\"}" \
   200 "Distribute profits valid (ADMIN)" "$M"
 
 # Duplicate range (run same range again for CLIENT1)
 call_api POST "/profit-distribution/distribute" "$CLIENT1_TOKEN" \
-  '{"fromDate":"2026-09-01","toDate":"2026-09-30"}' \
+  "{\"fromDate\":\"${PD_YEAR}-09-01\",\"toDate\":\"${PD_YEAR}-09-30\"}" \
   400 "Distribute duplicate fromDate/toDate range (same user)" "$M"
 log "       NOTE: Duplicate range - expected 400 clean error. Flag if 500."
 

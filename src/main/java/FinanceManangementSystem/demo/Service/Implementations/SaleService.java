@@ -74,20 +74,12 @@ public class SaleService
                                 dto.getCustomerPublicId()
                         )
                         .orElseThrow(() -> {
-
-                            log.info(
-                                    "SERVICE - active customer not found..."
-                            );
-
-                            return new InvalidRequestException(
-                                    "Active customer not found"
-                            );
+                            log.info("SERVICE - active customer not found...");
+                            return new ResourceNotFoundException("Active customer not found");
                         });
-
 
         // -----------------------------------------------------
         // CHECK CUSTOMER INVOICE NUMBER
-        // -----------------------------------------------------
 
         String customerInvoiceNumber =
                 dto.getCustomerInvoiceNumber();

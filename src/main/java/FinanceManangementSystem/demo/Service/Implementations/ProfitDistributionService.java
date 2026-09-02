@@ -100,8 +100,8 @@ public class ProfitDistributionService implements ProfitDistributionServiceInter
 
         BigDecimal netProfit = totalRevenue.subtract(totalPurchaseCost).subtract(totalExpenses);
 
-        if (netProfit.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new InvalidRequestException("No profit to distribute for this period");
+        if (netProfit.compareTo(BigDecimal.ZERO) < 0) {
+            netProfit = BigDecimal.ZERO;
         }
 
         // Persist distribution record
