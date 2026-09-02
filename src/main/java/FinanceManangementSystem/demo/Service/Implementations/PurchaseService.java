@@ -83,7 +83,7 @@ public class PurchaseService
                                     "SERVICE - active supplier not found..."
                             );
 
-                            return new InvalidRequestException(
+                            return new ResourceNotFoundException(
                                     "Active supplier not found"
                             );
                         });
@@ -447,10 +447,7 @@ public class PurchaseService
 
 
         if (fromDate.isAfter(toDate)) {
-
-            throw new InvalidRequestException(
-                    "From date cannot be after to date"
-            );
+            return java.util.Collections.emptyList();
         }
 
 

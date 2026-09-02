@@ -169,7 +169,8 @@ public interface StockTransactionRepository
      * is not allowed.
      */
 
-    boolean existsByReferenceNumberAndTransactionType(
+    boolean existsByUserAndReferenceNumberAndTransactionType(
+            User user,
             String referenceNumber,
             StockTransactionType transactionType
     );

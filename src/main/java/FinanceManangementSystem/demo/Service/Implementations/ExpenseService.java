@@ -1,6 +1,7 @@
 package FinanceManangementSystem.demo.Service.Implementations;
 
 import FinanceManangementSystem.demo.Exceptions.InvalidRequestException;
+import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 
 import FinanceManangementSystem.demo.Enums.DocumentType;
 import FinanceManangementSystem.demo.Enums.ExpenseCategory;
@@ -144,7 +145,7 @@ public class ExpenseService
                                     "SERVICE - expense not found..."
                             );
 
-                            return new InvalidRequestException(
+                            return new ResourceNotFoundException(
                                     "Expense not found"
                             );
                         });
@@ -204,7 +205,7 @@ public class ExpenseService
                                     "SERVICE - inactive or non-existent expense cannot be updated..."
                             );
 
-                            return new InvalidRequestException(
+                            return new ResourceNotFoundException(
                                     "Inactive expense cannot be updated"
                             );
                         });

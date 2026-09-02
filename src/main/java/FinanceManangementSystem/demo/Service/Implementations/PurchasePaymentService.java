@@ -79,7 +79,7 @@ public class PurchasePaymentService
                                     "SERVICE - purchase not found..."
                             );
 
-                            return new InvalidRequestException(
+                            return new ResourceNotFoundException(
                                     "Purchase not found"
                             );
                         });

@@ -621,10 +621,7 @@ public class StockTransactionService
 
 
         if (fromDate.isAfter(toDate)) {
-
-            throw new InvalidRequestException(
-                    "From date cannot be after to date"
-            );
+            return java.util.Collections.emptyList();
         }
 
 
@@ -894,7 +891,8 @@ public class StockTransactionService
 
 
         if (stockTransactionRepository
-                .existsByReferenceNumberAndTransactionType(
+                .existsByUserAndReferenceNumberAndTransactionType(
+                        user,
                         trimmedReference,
                         transactionType
                 )) {

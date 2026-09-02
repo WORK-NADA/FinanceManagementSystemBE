@@ -74,20 +74,12 @@ public class SalePaymentService
                                 dto.getSalePublicId()
                         )
                         .orElseThrow(() -> {
-
-                            log.info(
-                                    "SERVICE - sale not found..."
-                            );
-
-                            return new InvalidRequestException(
-                                    "Sale not found"
-                            );
+                            log.info("SERVICE - sale not found...");
+                            return new ResourceNotFoundException("Sale not found");
                         });
-
 
         // -----------------------------------------------------
         // VALIDATE AMOUNT
-        // -----------------------------------------------------
 
         BigDecimal currentReceivedAmount =
                 salePaymentRepo
