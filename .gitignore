@@ -1,19 +1,23 @@
-# Ignore compiled classes and build output
+# Compiled classes and build output
 target/
 *.class
 *.jar
 *.war
 
-# Ignore logs
+# Logs
 logs/
 *.log
 *.gz
 
-# Ignore IDE workspace settings
+# IDE
 .idea/
 *.iml
 .vscode/
 
-# Ignore secret properties file
-src/main/resources/secrets.properties
+# Secrets
 secrets.properties
+src/main/resources/secrets.properties
+
+# Environment files
+.env
+.env.*

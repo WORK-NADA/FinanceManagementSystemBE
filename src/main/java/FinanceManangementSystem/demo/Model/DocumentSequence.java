@@ -13,7 +13,7 @@ import lombok.*;
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "uk_seq_user_type_year",
-                        columnNames = {"user_id", "document_type", "year"}
+                        columnNames = {"user_id", "document_type", "doc_year"}
                 )
         }
 )
@@ -44,6 +44,7 @@ public class DocumentSequence {
     private DocumentType documentType;
 
     @Column(
+            name = "doc_year",
             nullable = false
     )
     private Integer year;

@@ -55,6 +55,24 @@ public class UserAddress {
 
     @PrePersist
     public void prePersist() {
+        if (houseNo == null || houseNo.isBlank()) {
+            houseNo = "Admin Office";
+        }
+        if (societyName == null || societyName.isBlank()) {
+            societyName = "Headquarters";
+        }
+        if (area == null || area.isBlank()) {
+            area = "Central";
+        }
+        if (city == null || city.isBlank()) {
+            city = "Surat";
+        }
+        if (pincode == null || pincode.isBlank()) {
+            pincode = "395001";
+        }
+        if (state == null || state.isBlank()) {
+            state = "Gujarat";
+        }
         if (country == null || country.isBlank()) {
             country = "India";
         }
