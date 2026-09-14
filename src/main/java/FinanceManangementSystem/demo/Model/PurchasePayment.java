@@ -31,7 +31,7 @@ import java.util.UUID;
         },
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_purchase_payment_user_number",
+                        name = "uk_pur_pay_user_num",
                         columnNames = {"user_id", "payment_number"}
                 )
         }

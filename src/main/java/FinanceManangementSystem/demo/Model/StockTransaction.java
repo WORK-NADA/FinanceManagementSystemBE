@@ -27,12 +27,12 @@ import java.util.UUID;
                 // --------------------------------------------------
 
                 @Index(
-                        name = "idx_stock_transaction_stock",
+                        name = "idx_stk_tx_stock",
                         columnList = "stock_id"
                 ),
 
                 @Index(
-                        name = "idx_stock_transaction_stock_date",
+                        name = "idx_stk_tx_stock_date",
                         columnList = "stock_id, transaction_date"
                 ),
 
@@ -41,7 +41,7 @@ import java.util.UUID;
                 // --------------------------------------------------
 
                 @Index(
-                        name = "idx_stock_transaction_type",
+                        name = "idx_stk_tx_type",
                         columnList = "transaction_type"
                 ),
 
@@ -50,7 +50,7 @@ import java.util.UUID;
                 // --------------------------------------------------
 
                 @Index(
-                        name = "idx_stock_transaction_reference",
+                        name = "idx_stk_tx_reference",
                         columnList = "reference_number"
                 ),
 
@@ -59,7 +59,7 @@ import java.util.UUID;
                 // --------------------------------------------------
 
                 @Index(
-                        name = "idx_stock_transaction_date",
+                        name = "idx_stk_tx_date",
                         columnList = "transaction_date"
                 ),
 
@@ -68,7 +68,7 @@ import java.util.UUID;
                 // --------------------------------------------------
 
                 @Index(
-                        name = "idx_stock_transaction_user",
+                        name = "idx_stk_tx_user",
                         columnList = "user_id"
                 )
         },

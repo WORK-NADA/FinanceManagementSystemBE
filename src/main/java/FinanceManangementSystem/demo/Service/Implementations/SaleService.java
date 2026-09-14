@@ -68,6 +68,8 @@ public class SaleService
         );
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
         // -----------------------------------------------------
         // FIND ACTIVE CUSTOMER
         // -----------------------------------------------------
@@ -76,18 +78,24 @@ public class SaleService
                 "SERVICE - finding active customer..."
         );
 
-        Customer customer =
-                customerRepo
-                        .findByPublicIdAndIsActiveTrue(
-                                dto.getCustomerPublicId()
-                        )
-                        .orElseThrow(() -> {
-                            log.info("SERVICE - active customer not found...");
-                            return new ResourceNotFoundException("Active customer not found");
-                        });
+        Customer customer;
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            customer = customerRepo.findByPublicIdAndIsActiveTrue(dto.getCustomerPublicId())
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - active customer not found...");
+                        return new ResourceNotFoundException("Active customer not found");
+                    });
+        } else {
+            customer = customerRepo.findByUserAndPublicIdAndIsActiveTrue(currentUser, dto.getCustomerPublicId())
+                    .orElseThrow(() -> {
+                        log.info("SERVICE - active customer not found for current user...");
+                        return new ResourceNotFoundException("Active customer not found");
+                    });
+        }
 
         // -----------------------------------------------------
         // CHECK CUSTOMER INVOICE NUMBER
+        // -----------------------------------------------------
 
         String customerInvoiceNumber =
                 dto.getCustomerInvoiceNumber();
@@ -118,8 +126,6 @@ public class SaleService
         // -----------------------------------------------------
         // CREATE SALE
         // -----------------------------------------------------
-
-        User currentUser = currentUserService.getCurrentUser();
 
         Sale sale = new Sale();
 

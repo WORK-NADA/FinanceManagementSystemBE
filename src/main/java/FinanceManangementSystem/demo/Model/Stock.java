@@ -53,7 +53,7 @@ import java.util.UUID;
                 // --------------------------------------------------
 
                 @UniqueConstraint(
-                        name = "uk_stock_user_raw_material_unit",
+                        name = "uk_stock_user_raw_mat_unit",
                         columnNames = {
                                 "user_id",
                                 "raw_material",

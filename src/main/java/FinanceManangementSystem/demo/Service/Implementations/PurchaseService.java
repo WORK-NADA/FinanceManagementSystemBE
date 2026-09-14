@@ -70,6 +70,8 @@ public class PurchaseService
         );
 
 
+        User currentUser = currentUserService.getCurrentUser();
+
         // -----------------------------------------------------
         // FIND ACTIVE SUPPLIER
         // -----------------------------------------------------
@@ -78,21 +80,35 @@ public class PurchaseService
                 "SERVICE - finding active supplier..."
         );
 
-        Supplier supplier =
-                supplierRepo
-                        .findByPublicIdAndIsActiveTrue(
-                                dto.getSupplierPublicId()
-                        )
-                        .orElseThrow(() -> {
-
-                            log.info(
-                                    "SERVICE - active supplier not found..."
-                            );
-
-                            return new ResourceNotFoundException(
-                                    "Active supplier not found"
-                            );
-                        });
+        Supplier supplier;
+        if (currentUser.getRole() == UserRole.ADMIN) {
+            supplier = supplierRepo
+                    .findByPublicIdAndIsActiveTrue(
+                            dto.getSupplierPublicId()
+                    )
+                    .orElseThrow(() -> {
+                        log.info(
+                                "SERVICE - active supplier not found..."
+                        );
+                        return new ResourceNotFoundException(
+                                "Active supplier not found"
+                        );
+                    });
+        } else {
+            supplier = supplierRepo
+                    .findByUserAndPublicIdAndIsActiveTrue(
+                            currentUser,
+                            dto.getSupplierPublicId()
+                    )
+                    .orElseThrow(() -> {
+                        log.info(
+                                "SERVICE - active supplier not found for current user..."
+                        );
+                        return new ResourceNotFoundException(
+                                "Active supplier not found"
+                        );
+                    });
+        }
 
 
         // -----------------------------------------------------
@@ -135,8 +151,6 @@ public class PurchaseService
         // -----------------------------------------------------
         // CREATE PURCHASE
         // -----------------------------------------------------
-
-        User currentUser = currentUserService.getCurrentUser();
 
         Purchase purchase =
                 new Purchase();
