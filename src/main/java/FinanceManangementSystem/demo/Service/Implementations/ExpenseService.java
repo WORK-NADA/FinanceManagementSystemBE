@@ -5,6 +5,7 @@ import FinanceManangementSystem.demo.Exceptions.ResourceNotFoundException;
 
 import FinanceManangementSystem.demo.Enums.DocumentType;
 import FinanceManangementSystem.demo.Enums.ExpenseCategory;
+import FinanceManangementSystem.demo.Enums.UserRole;
 import FinanceManangementSystem.demo.Model.Expense;
 import FinanceManangementSystem.demo.Model.User;
 import FinanceManangementSystem.demo.Payloads.RequestDTO.RequestExpenseDTO;
@@ -147,26 +148,13 @@ public class ExpenseService
 
         log.info(
                 "SERVICE - request came in getExpenseByPublicId..."
-        );
+        );        User currentUser = currentUserService.getCurrentUser();
 
-        User currentUser = currentUserService.getCurrentUser();
-
-        Expense expense =
-                expenseRepo
-                        .findByUserAndPublicId(
-                                currentUser,
-                                publicId
-                        )
-                        .orElseThrow(() -> {
-
-                            log.info(
-                                    "SERVICE - expense not found..."
-                            );
-
-                            return new ResourceNotFoundException(
-                                    "Expense not found"
-                            );
-                        });
+        Expense expense = (currentUser.getRole() == UserRole.ADMIN)
+                ? expenseRepo.findByPublicId(publicId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Expense not found"))
+                : expenseRepo.findByUserAndPublicId(currentUser, publicId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Expense not found"));
 
         return mapToResponse(
                 expense
@@ -220,26 +208,13 @@ public class ExpenseService
 
         log.info(
                 "SERVICE - request came in updateExpense..."
-        );
+        );        User currentUser = currentUserService.getCurrentUser();
 
-        User currentUser = currentUserService.getCurrentUser();
-
-        Expense expense =
-                expenseRepo
-                        .findByUserAndPublicIdAndIsActiveTrue(
-                                currentUser,
-                                publicId
-                        )
-                        .orElseThrow(() -> {
-
-                            log.info(
-                                    "SERVICE - inactive or non-existent expense cannot be updated..."
-                            );
-
-                            return new ResourceNotFoundException(
-                                    "Inactive expense cannot be updated"
-                            );
-                        });
+        Expense expense = (currentUser.getRole() == UserRole.ADMIN)
+                ? expenseRepo.findByPublicIdAndIsActiveTrue(publicId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Inactive expense cannot be updated"))
+                : expenseRepo.findByUserAndPublicIdAndIsActiveTrue(currentUser, publicId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Inactive expense cannot be updated"));
 
         expense.setCategory(
                 dto.getCategory()
@@ -308,19 +283,13 @@ public class ExpenseService
 
         log.info(
                 "SERVICE - request came in deleteExpense..."
-        );
+        );        User currentUser = currentUserService.getCurrentUser();
 
-        User currentUser = currentUserService.getCurrentUser();
-
-        Expense expense =
-                expenseRepo
-                        .findByUserAndPublicId(
-                                currentUser,
-                                publicId
-                        )
-                        .orElseThrow(() -> new InvalidRequestException(
-                                "Expense not found"
-                        ));
+        Expense expense = (currentUser.getRole() == UserRole.ADMIN)
+                ? expenseRepo.findByPublicId(publicId)
+                        .orElseThrow(() -> new InvalidRequestException("Expense not found"))
+                : expenseRepo.findByUserAndPublicId(currentUser, publicId)
+                        .orElseThrow(() -> new InvalidRequestException("Expense not found"));
 
         if (!expense.getIsActive()) {
 

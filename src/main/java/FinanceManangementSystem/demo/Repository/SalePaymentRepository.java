@@ -3,6 +3,8 @@ package FinanceManangementSystem.demo.Repository;
 import FinanceManangementSystem.demo.Model.Sale;
 import FinanceManangementSystem.demo.Model.SalePayment;
 import FinanceManangementSystem.demo.Model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,6 +25,8 @@ public interface SalePaymentRepository
     );
 
     Optional<SalePayment> findByUserAndPublicId(User user, UUID publicId);
+
+    Page<SalePayment> findByUser(User user, Pageable pageable);
 
     List<SalePayment> findByUserAndSaleOrderByPaymentDateDesc(User user, Sale sale);
 

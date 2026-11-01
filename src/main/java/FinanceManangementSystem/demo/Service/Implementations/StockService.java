@@ -174,8 +174,11 @@ public class StockService
 
         User currentUser = currentUserService.getCurrentUser();
 
-        return stockRepository
-                .findByUserAndIsActiveTrue(currentUser)
+        List<Stock> stocks = (currentUser.getRole() == UserRole.ADMIN)
+                ? stockRepository.findByIsActiveTrue()
+                : stockRepository.findByUserAndIsActiveTrue(currentUser);
+
+        return stocks
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -197,8 +200,11 @@ public class StockService
 
         User currentUser = currentUserService.getCurrentUser();
 
-        return stockRepository
-                .findByUserAndIsActiveFalse(currentUser)
+        List<Stock> stocks = (currentUser.getRole() == UserRole.ADMIN)
+                ? stockRepository.findByIsActiveFalse()
+                : stockRepository.findByUserAndIsActiveFalse(currentUser);
+
+        return stocks
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -220,8 +226,11 @@ public class StockService
 
         User currentUser = currentUserService.getCurrentUser();
 
-        return stockRepository
-                .findByUser(currentUser)
+        List<Stock> stocks = (currentUser.getRole() == UserRole.ADMIN)
+                ? stockRepository.findAll()
+                : stockRepository.findByUser(currentUser);
+
+        return stocks
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -241,11 +250,15 @@ public class StockService
 
         User currentUser = currentUserService.getCurrentUser();
 
-        return stockRepository
-                .findByUser(currentUser)
+        List<Stock> stocks = (currentUser.getRole() == UserRole.ADMIN)
+                ? stockRepository.findActiveStocksBelowMinimumLevel()
+                : stockRepository.findByUser(currentUser).stream()
+                        .filter(stock -> Boolean.TRUE.equals(stock.getIsActive()))
+                        .filter(stock -> stock.getCurrentQuantity().compareTo(stock.getMinimumStockLevel()) <= 0)
+                        .toList();
+
+        return stocks
                 .stream()
-                .filter(stock -> Boolean.TRUE.equals(stock.getIsActive()))
-                .filter(stock -> stock.getCurrentQuantity().compareTo(stock.getMinimumStockLevel()) <= 0)
                 .map(this::mapToResponse)
                 .toList();
     }
