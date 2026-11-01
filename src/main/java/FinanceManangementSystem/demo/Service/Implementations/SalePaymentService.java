@@ -484,18 +484,12 @@ public class SalePaymentService
                     });
         }
 
-        List<ResponseSalePaymentDTO> filtered = salePaymentRepo.findAll(pageable)
-                .getContent()
-                .stream()
-                .filter(payment -> payment.getUser() != null && payment.getUser().equals(currentUser))
+        return salePaymentRepo.findByUser(currentUser, pageable)
                 .map(payment -> {
                     Sale sale = payment.getSale();
                     BigDecimal receivedAmount = salePaymentRepo.sumReceivedAmountBySale(sale);
                     return mapToResponse(payment, sale, receivedAmount);
-                })
-                .toList();
-
-        return new PageImpl<>(filtered, pageable, filtered.size());
+                });
     }
 
 

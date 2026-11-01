@@ -442,18 +442,12 @@ public class PurchasePaymentService
                                         });
                 }
 
-                List<ResponsePurchasePaymentDTO> filtered = purchasePaymentRepo.findAll(pageable)
-                                .getContent()
-                                .stream()
-                                .filter(payment -> payment.getUser() != null && payment.getUser().equals(currentUser))
+                return purchasePaymentRepo.findByUser(currentUser, pageable)
                                 .map(payment -> {
                                         Purchase purchase = payment.getPurchase();
                                         java.math.BigDecimal paidAmount = purchasePaymentRepo.sumPaidAmountByPurchase(purchase);
                                         return mapToResponse(payment, purchase, paidAmount);
-                                })
-                                .toList();
-
-                return new PageImpl<>(filtered, pageable, filtered.size());
+                                });
         }
 
 

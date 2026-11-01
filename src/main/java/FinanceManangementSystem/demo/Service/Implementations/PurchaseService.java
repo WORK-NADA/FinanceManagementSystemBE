@@ -451,8 +451,13 @@ public class PurchaseService
                     });
         }
 
-        return purchaseRepo.findByUser(currentUser).stream()
-                .filter(p -> p.getSupplier() != null && p.getSupplier().getPublicId().equals(supplier.getPublicId()))
+        List<Purchase> purchases = (currentUser.getRole() == UserRole.ADMIN)
+                ? purchaseRepo.findBySupplier(supplier)
+                : purchaseRepo.findByUser(currentUser).stream()
+                        .filter(p -> p.getSupplier() != null && p.getSupplier().getPublicId().equals(supplier.getPublicId()))
+                        .toList();
+
+        return purchases.stream()
                 .map(this::mapToResponse)
                 .toList();
     }
@@ -749,7 +754,7 @@ public class PurchaseService
         // REVERT STOCK
         // -----------------------------------------------------
         stockTransactionService.revertPurchaseStock(
-                currentUser,
+                purchase.getUser(),
                 purchase.getRawMaterial(),
                 purchase.getUnit(),
                 purchase.getWeight(),

@@ -377,8 +377,13 @@ public class SaleService
             customer = customerRepo.findByUserAndPublicId(currentUser, customerPublicId)
                     .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
         }
-        return saleRepo.findByUser(currentUser).stream()
-                .filter(s -> s.getCustomer() != null && s.getCustomer().getPublicId().equals(customer.getPublicId()))
+        List<Sale> sales = (currentUser.getRole() == UserRole.ADMIN)
+                ? saleRepo.findByCustomer(customer)
+                : saleRepo.findByUser(currentUser).stream()
+                        .filter(s -> s.getCustomer() != null && s.getCustomer().getPublicId().equals(customer.getPublicId()))
+                        .toList();
+
+        return sales.stream()
                 .map(this::mapToResponse)
                 .toList();
     }
@@ -596,7 +601,7 @@ public class SaleService
         // REVERT STOCK (Return sold goods back to inventory)
         // -----------------------------------------------------
         stockTransactionService.revertSaleStock(
-                currentUser,
+                sale.getUser(),
                 sale.getRawMaterial(),
                 sale.getUnit(),
                 sale.getWeight(),
